@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="Nginx处理请求的11个阶段   阶段 模块     post_read realip   server_rewrite rewrite   find_config    rewrite rewrite   post_rewrite    pre access limit_conn,limit_req   access auth_basic,access,auth_request   post_">
+<meta name="description" content="HTTP 处理请求的11个阶段   阶段 模块     post_read realip   server_rewrite rewrite   find_config    rewrite rewrite   post_rewrite    pre access limit_conn,limit_req   access auth_basic,access,auth_request   post_">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nginx modules">
 <meta property="og:url" content="http://yoursite.com/2019/02/17/Nginx-modules/index.html">
 <meta property="og:site_name" content="javfa&#39;s blog">
-<meta property="og:description" content="Nginx处理请求的11个阶段   阶段 模块     post_read realip   server_rewrite rewrite   find_config    rewrite rewrite   post_rewrite    pre access limit_conn,limit_req   access auth_basic,access,auth_request   post_">
+<meta property="og:description" content="HTTP 处理请求的11个阶段   阶段 模块     post_read realip   server_rewrite rewrite   find_config    rewrite rewrite   post_rewrite    pre access limit_conn,limit_req   access auth_basic,access,auth_request   post_">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-02-17T09:42:05.646Z">
+<meta property="og:updated_time" content="2019-02-17T13:08:30.215Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx modules">
-<meta name="twitter:description" content="Nginx处理请求的11个阶段   阶段 模块     post_read realip   server_rewrite rewrite   find_config    rewrite rewrite   post_rewrite    pre access limit_conn,limit_req   access auth_basic,access,auth_request   post_">
+<meta name="twitter:description" content="HTTP 处理请求的11个阶段   阶段 模块     post_read realip   server_rewrite rewrite   find_config    rewrite rewrite   post_rewrite    pre access limit_conn,limit_req   access auth_basic,access,auth_request   post_">
 
 
 
@@ -299,7 +299,7 @@
       
 
       
-        <h2 id="Nginx处理请求的11个阶段"><a href="#Nginx处理请求的11个阶段" class="headerlink" title="Nginx处理请求的11个阶段"></a>Nginx处理请求的11个阶段</h2><table>
+        <h2 id="HTTP-处理请求的11个阶段"><a href="#HTTP-处理请求的11个阶段" class="headerlink" title="HTTP 处理请求的11个阶段"></a>HTTP 处理请求的11个阶段</h2><table>
 <thead>
 <tr>
 <th style="text-align:center">阶段</th>
@@ -353,7 +353,13 @@
 </tr>
 </tbody>
 </table>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">st=&gt;start:S</span><br><span class="line">end=&gt;end:E</span><br><span class="line">op1=&gt;operation:O</span><br><span class="line">con1=&gt;condition:C</span><br><span class="line">io=&gt;inputoutput:IO</span><br><span class="line">st-&gt;op1-&gt;con1</span><br><span class="line">con1(yes)-&gt;end</span><br><span class="line">con1(no)-&gt;io-&gt;end</span><br></pre></td></tr></table></figure>
+<p>使用模块的前提：模块需要先编译进Nginx的二进制文件。<br>对于每个模块，我们需要了解：</p>
+<ul>
+<li>该模块提供哪些配置项</li>
+<li>模块何时被使用</li>
+<li>该模块提供了哪些变量</li>
+</ul>
+
       
     </div>
     
@@ -373,22 +379,6 @@
       
       
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/02/17/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-          </div>
-        </div>
       
 
       
@@ -462,7 +452,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">1</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -499,7 +489,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx处理请求的11个阶段"><span class="nav-number">1.</span> <span class="nav-text">Nginx处理请求的11个阶段</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP-处理请求的11个阶段"><span class="nav-number">1.</span> <span class="nav-text">HTTP 处理请求的11个阶段</span></a></li></ol></div>
             
 
           </div>
