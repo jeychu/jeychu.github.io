@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="微服务架构时代，运维体系建设要以应用为核心。 在微服务的架构模式下，我们的运维视角一定转到应用这个核心概念上来，一切要以应用的角度分析和看待问题。  应用的起源微服务架构一般都是从单体架构或分层架构演进而来。软件架构服务化的过程，就是我们根据业务模型进行细化的过程，在这个过程中切分出一个个具备不同职责的业务逻辑模块，然后每个微服务模块都会提供相应业务逻辑的服务化接口。解释简单点，就一个字，拆！从一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="运维体系管理">
+<meta property="og:url" content="http://yoursite.com/2019/02/21/运维体系管理/index.html">
+<meta property="og:site_name" content="javfa&#39;s blog">
+<meta property="og:description" content="微服务架构时代，运维体系建设要以应用为核心。 在微服务的架构模式下，我们的运维视角一定转到应用这个核心概念上来，一切要以应用的角度分析和看待问题。  应用的起源微服务架构一般都是从单体架构或分层架构演进而来。软件架构服务化的过程，就是我们根据业务模型进行细化的过程，在这个过程中切分出一个个具备不同职责的业务逻辑模块，然后每个微服务模块都会提供相应业务逻辑的服务化接口。解释简单点，就一个字，拆！从一">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-02-21T14:02:27.349Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="运维体系管理">
+<meta name="twitter:description" content="微服务架构时代，运维体系建设要以应用为核心。 在微服务的架构模式下，我们的运维视角一定转到应用这个核心概念上来，一切要以应用的角度分析和看待问题。  应用的起源微服务架构一般都是从单体架构或分层架构演进而来。软件架构服务化的过程，就是我们根据业务模型进行细化的过程，在这个过程中切分出一个个具备不同职责的业务逻辑模块，然后每个微服务模块都会提供相应业务逻辑的服务化接口。解释简单点，就一个字，拆！从一">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/21/运维体系管理/">
+
+
+
+
+
+  <title>运维体系管理 | javfa's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">javfa's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/21/运维体系管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Javfa">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="javfa's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">运维体系管理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-21T20:51:23+08:00">
+                2019-02-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="微服务架构时代，运维体系建设要以应用为核心。"><a href="#微服务架构时代，运维体系建设要以应用为核心。" class="headerlink" title="微服务架构时代，运维体系建设要以应用为核心。"></a>微服务架构时代，运维体系建设要以应用为核心。</h1><blockquote>
+<p>在微服务的架构模式下，我们的运维视角一定转到应用这个核心概念上来，一切要以应用的角度分析和看待问题。</p>
+</blockquote>
+<h2 id="应用的起源"><a href="#应用的起源" class="headerlink" title="应用的起源"></a>应用的起源</h2><p>微服务架构一般都是从单体架构或分层架构演进而来。软件架构服务化的过程，就是我们根据业务模型进行细化的过程，在这个过程中切分出一个个具备不同职责的业务逻辑模块，然后每个微服务模块都会提供相应业务逻辑的服务化接口。<br>解释简单点，就一个字，拆！从一个单体工程，拆分出N个独立模块。这些模块都可以独立部署和运行，并提供对应的业务能力。拆分后的模块数量与业务体量和复杂度相关，少则几个、十几个，多则几十、几百个，所以为了统一概念，我们通常称这些模块为应用。<br>为了确保每个应用的唯一性，我们给每个应用定义一个唯一的标识符，这个唯一标识符我们称之为应用名。<br>这个定义为应用的概念，将成为我们微服务架构管理的核心概念。</p>
+<h2 id="应用模型及关系模型的建立"><a href="#应用模型及关系模型的建立" class="headerlink" title="应用模型及关系模型的建立"></a>应用模型及关系模型的建立</h2><p>上面我们定义出来的一个个应用，都是从业务角度入手进行拆分细化出来的业务逻辑单元。它虽然可以独立部署和运行，但是每一个应用都只具备相对单一的业务职能。如果要完成整体的业务流程和目标，就需要和周边其它的服务化应用交互。同时，这个过程中还需要依赖各种与业务无直接关系、相对独立的基础设施和组件，比如机器资源、域名、DB、缓存、消息队列等等<br>所以，除了应用这个实体之外，还会存在其他各类基础组件实体。同时。在应用运行过程中，还需要不断地与他们产生和建立各种各样复杂的关联关系，这也为我们后续的运维带来很多困难。<br>我们要做的就是应用模型以及各种关系模型的梳理和建立，因为只有模型和关系梳理清楚了，才能为我们后面一系列的运维自动化、持续交付以及稳定性保障打下一个良好基础。</p>
+<ol>
+<li><p>应用业务模型</p>
+<p>应用业务模型，也就是每个应用对外提供的业务服务能力，并以API的方式暴露给外部。<br>这个业务模型通常都是业务架构师在进行业务需求分析和拆解时进行设计，更多的时聚焦在业务逻辑上，所以从运维的角度，我们一般不会关注太多。</p>
+</li>
+<li><p>应用管理模型</p>
+<p>应用管理模型，也就是应用自身的各种属性，如应用名、应用功能信息、责任人、Git地址、部署结构（代码路径、日志路径以及各类配置文件路径等）、启停方式、健康检测方式等待。这其中，应用名时应用的唯一标识，我们用AppName来表示。</p>
+</li>
+<li><p>应用运行时所依赖的基础设施和组件</p>
+<ul>
+<li>资源层面：应用运行所必需的资源载体有物理机、虚拟机或容器等，如果对外提供HTTP服务，及需要VIP和DNS域名服务；</li>
+<li>基础组件：这一部分其实就是我们所说的中间件体系，不如应用运行过程中必然要存储和访问数据，这就需要有数据库和数据库中间件；想要更快访问数据，同时减轻DB的访问压力，就需要缓存；应用之间如果需要数据交互或同步，就需要消息队列；如果进行文件存储和访问，就需要存储系统等等。<br>从这里我们可以挖掘出一条规律，那就是这些基础设施和组件都是为上层的一个个业务应用所服务的。也正是因为业务和应用上的需求，才开启了它们各自的生命周期。如果脱离了这些业务应用，它们之间并没有单纯存在的意义。所以，从始至终基础设施和组件都跟应用这个概念保持着紧密的联系。</li>
+</ul>
+<p>理清了这个思路，我们再去梳理它们之间的关系就会顺畅很多，分为两步：</p>
+<ul>
+<li>第一步，建立各个基础设施和组件的数据模型，同时识别出它们的唯一标识。这个套路跟应用管理模型的梳理类似，以典型的缓存为例，每当我们申请一个缓存空间时，通常会以NameSpace来标识唯一命名，同时这个缓存空间会有空间容量和Paritition分区等信息。</li>
+<li>第二步，识别出基础设施及组件可以与应用名AppName建立关联关系的属性，或者在基础组件的数据模型中增加所属应用这样的字段。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>微服务架构模式下的运维思路一定要转变，一定要将视角转换到应用这个维度，从一开始就要统一规划，从一开始就要将架构、开发和运维的工作拉通了去看，这一点是与传统运维的思路完全不同的。<strong>规划以应用为核心的运维管理体系</strong></p>
+</blockquote>
+<h1 id="标准化体系建设"><a href="#标准化体系建设" class="headerlink" title="标准化体系建设"></a>标准化体系建设</h1><p>标准化工作是运维过程中最基础、最重要的，但也是最容易忽视的一个环节。<br><strong>标准先行</strong><br>我们运维工作的开展常常不知从何下手，或者上来就冲着工具和自动化去了，却始终不得章法，工具做了一堆，效率却并没有提升。其实绝大多数情况下，问题和原因就是标准化这个基础工作没做扎实。<br>为何标准化这个事情如此重要呢？<br>为什么要做标准化？<br><strong>标准化的过程实际上就是对运维对象的识别和建模的过程</strong>。形成统一的对象模型后，各方在统一的认识下展开有效协作，然后针对不同的运维对象，再抽取出它们所对应的运维场景，接下来才是运维场景的自动化实现。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/21/Web性能基础/" rel="next" title="Web性能基础">
+                <i class="fa fa-chevron-left"></i> Web性能基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Javfa</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#微服务架构时代，运维体系建设要以应用为核心。"><span class="nav-number">1.</span> <span class="nav-text">微服务架构时代，运维体系建设要以应用为核心。</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#应用的起源"><span class="nav-number">1.1.</span> <span class="nav-text">应用的起源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用模型及关系模型的建立"><span class="nav-number">1.2.</span> <span class="nav-text">应用模型及关系模型的建立</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#标准化体系建设"><span class="nav-number">2.</span> <span class="nav-text">标准化体系建设</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Javfa</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
