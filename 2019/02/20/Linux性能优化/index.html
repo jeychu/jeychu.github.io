@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="如何学习内核： 以应用为目的来学习，边学边用，学以致用 以培养内核的阅读能力为主要目标 阅读和修改真实的代码，而非只是阅读书籍 需要不断的更新和学习，因为内核的策略和方法一直在不断的变化着  123勿贪大求全，聚焦关键应用奠定基础，循序渐进兴趣是第一驱动力 内核基础层 内核中提供基础服务的部分   代码总量很少，但难度高 提供基本稳定的API 数据结构  内核同步机制 内存管理和任务调度 学习方法">
+<meta name="description" content="性能优化的目标 减少延时 增加吞吐量性能等级约定 基于业务需求监控 信息采集 绘图 分析监控信息采集绘图分析系统调度算法IO调度算法CPU调度算法systemtap  实例">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux Kernel">
-<meta property="og:url" content="http://yoursite.com/2019/02/20/Linux-Kernel/index.html">
+<meta property="og:title" content="Linux性能优化">
+<meta property="og:url" content="http://yoursite.com/2019/02/20/Linux性能优化/index.html">
 <meta property="og:site_name" content="javfa&#39;s blog">
-<meta property="og:description" content="如何学习内核： 以应用为目的来学习，边学边用，学以致用 以培养内核的阅读能力为主要目标 阅读和修改真实的代码，而非只是阅读书籍 需要不断的更新和学习，因为内核的策略和方法一直在不断的变化着  123勿贪大求全，聚焦关键应用奠定基础，循序渐进兴趣是第一驱动力 内核基础层 内核中提供基础服务的部分   代码总量很少，但难度高 提供基本稳定的API 数据结构  内核同步机制 内存管理和任务调度 学习方法">
+<meta property="og:description" content="性能优化的目标 减少延时 增加吞吐量性能等级约定 基于业务需求监控 信息采集 绘图 分析监控信息采集绘图分析系统调度算法IO调度算法CPU调度算法systemtap  实例">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-02-20T13:14:27.194Z">
+<meta property="og:updated_time" content="2019-02-20T13:34:47.314Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux Kernel">
-<meta name="twitter:description" content="如何学习内核： 以应用为目的来学习，边学边用，学以致用 以培养内核的阅读能力为主要目标 阅读和修改真实的代码，而非只是阅读书籍 需要不断的更新和学习，因为内核的策略和方法一直在不断的变化着  123勿贪大求全，聚焦关键应用奠定基础，循序渐进兴趣是第一驱动力 内核基础层 内核中提供基础服务的部分   代码总量很少，但难度高 提供基本稳定的API 数据结构  内核同步机制 内存管理和任务调度 学习方法">
+<meta name="twitter:title" content="Linux性能优化">
+<meta name="twitter:description" content="性能优化的目标 减少延时 增加吞吐量性能等级约定 基于业务需求监控 信息采集 绘图 分析监控信息采集绘图分析系统调度算法IO调度算法CPU调度算法systemtap  实例">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/02/20/Linux-Kernel/">
+  <link rel="canonical" href="http://yoursite.com/2019/02/20/Linux性能优化/">
 
 
 
 
 
-  <title>Linux Kernel | javfa's blog</title>
+  <title>Linux性能优化 | javfa's blog</title>
   
 
 
@@ -232,7 +232,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/20/Linux-Kernel/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/20/Linux性能优化/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Javfa">
@@ -249,7 +249,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Linux Kernel</h1>
+          <h1 class="post-title" itemprop="name headline">Linux性能优化</h1>
         
 
         <div class="post-meta">
@@ -261,7 +261,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-20T16:47:55+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-20T21:18:11+08:00">
                 2019-02-20
               </time>
             
@@ -299,59 +299,12 @@
       
 
       
-        <h1 id="如何学习内核："><a href="#如何学习内核：" class="headerlink" title="如何学习内核："></a>如何学习内核：</h1><ul>
-<li>以应用为目的来学习，边学边用，学以致用</li>
-<li>以培养内核的阅读能力为主要目标</li>
-<li>阅读和修改真实的代码，而非只是阅读书籍</li>
-<li>需要不断的更新和学习，因为内核的策略和方法一直在不断的变化着</li>
+        <h1 id="性能优化的目标"><a href="#性能优化的目标" class="headerlink" title="性能优化的目标"></a>性能优化的目标</h1><ul>
+<li>减少延时</li>
+<li>增加吞吐量<h1 id="性能等级约定"><a href="#性能等级约定" class="headerlink" title="性能等级约定"></a>性能等级约定</h1></li>
+<li>基于业务需求<h1 id="监控-信息采集-绘图-分析"><a href="#监控-信息采集-绘图-分析" class="headerlink" title="监控 信息采集 绘图 分析"></a>监控 信息采集 绘图 分析</h1><h2 id="监控"><a href="#监控" class="headerlink" title="监控"></a>监控</h2><h2 id="信息采集"><a href="#信息采集" class="headerlink" title="信息采集"></a>信息采集</h2><h2 id="绘图"><a href="#绘图" class="headerlink" title="绘图"></a>绘图</h2><h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h1 id="系统调度算法"><a href="#系统调度算法" class="headerlink" title="系统调度算法"></a>系统调度算法</h1><h2 id="IO调度算法"><a href="#IO调度算法" class="headerlink" title="IO调度算法"></a>IO调度算法</h2><h2 id="CPU调度算法"><a href="#CPU调度算法" class="headerlink" title="CPU调度算法"></a>CPU调度算法</h2><h1 id="systemtap"><a href="#systemtap" class="headerlink" title="systemtap"></a>systemtap</h1></li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">勿贪大求全，聚焦关键应用</span><br><span class="line">奠定基础，循序渐进</span><br><span class="line">兴趣是第一驱动力</span><br></pre></td></tr></table></figure>
-<h2 id="内核基础层"><a href="#内核基础层" class="headerlink" title="内核基础层"></a>内核基础层</h2><blockquote>
-<p>内核中提供基础服务的部分</p>
-</blockquote>
-<ul>
-<li>代码总量很少，但难度高</li>
-<li>提供基本稳定的API</li>
-<li>数据结构 </li>
-<li>内核同步机制</li>
-<li>内存管理和任务调度</li>
-<li>学习方法：<ul>
-<li>以API接口学习为主要内容，不细究实现</li>
-<li>日后应该加强基础层的研读</li>
-</ul>
-</li>
-</ul>
-<h2 id="内核应用层"><a href="#内核应用层" class="headerlink" title="内核应用层"></a>内核应用层</h2><blockquote>
-<p>建立在基础层之上，提供应用服务的部分</p>
-</blockquote>
-<ul>
-<li>占代码的90%以上，数量多，重复性强</li>
-<li>接口经常变化</li>
-<li>文件系统 </li>
-<li>设备和驱动</li>
-<li>网络</li>
-<li>学习方法：<ul>
-<li>文件系统是应用层的基础和灵魂</li>
-<li>从文件系统入手，驻步扩展</li>
-<li>以架构为核心，举一反三</li>
-<li>设备和驱动不依赖具体设备，以通用架构为主</li>
-</ul>
-</li>
-</ul>
-<h2 id="最终目的："><a href="#最终目的：" class="headerlink" title="最终目的："></a>最终目的：</h2><ul>
-<li>独立思考，独立学习，成为在该领域有影响力的专家</li>
-<li>在代码中寻找答案</li>
-<li>这个课程就是要形成一个起点，从这个起点出发，不断的学习、思考、实践、分享</li>
-</ul>
-<h2 id="内核编译："><a href="#内核编译：" class="headerlink" title="内核编译："></a>内核编译：</h2><ul>
-<li>编译的实质：<ul>
-<li>基于头文件和c文件产生对象文件</li>
-<li>将所有的对象文件链接起来，生成可执行文件</li>
-</ul>
-</li>
-<li>内核编译的核心问题：make文件和配置文件</li>
-</ul>
-
+<h1 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h1>
       
     </div>
     
@@ -375,8 +328,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/02/17/Nginx-modules/" rel="next" title="Nginx modules">
-                <i class="fa fa-chevron-left"></i> Nginx modules
+              <a href="/2019/02/20/Linux-Kernel/" rel="next" title="Linux Kernel">
+                <i class="fa fa-chevron-left"></i> Linux Kernel
               </a>
             
           </div>
@@ -385,8 +338,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/02/20/Linux性能优化/" rel="prev" title="Linux性能优化">
-                Linux性能优化 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/02/21/Web性能基础/" rel="prev" title="Web性能基础">
+                Web性能基础 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -501,7 +454,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#如何学习内核："><span class="nav-number">1.</span> <span class="nav-text">如何学习内核：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内核基础层"><span class="nav-number">1.1.</span> <span class="nav-text">内核基础层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内核应用层"><span class="nav-number">1.2.</span> <span class="nav-text">内核应用层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最终目的："><span class="nav-number">1.3.</span> <span class="nav-text">最终目的：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内核编译："><span class="nav-number">1.4.</span> <span class="nav-text">内核编译：</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#性能优化的目标"><span class="nav-number">1.</span> <span class="nav-text">性能优化的目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#性能等级约定"><span class="nav-number">2.</span> <span class="nav-text">性能等级约定</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#监控-信息采集-绘图-分析"><span class="nav-number">3.</span> <span class="nav-text">监控 信息采集 绘图 分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#监控"><span class="nav-number">3.1.</span> <span class="nav-text">监控</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#信息采集"><span class="nav-number">3.2.</span> <span class="nav-text">信息采集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#绘图"><span class="nav-number">3.3.</span> <span class="nav-text">绘图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析"><span class="nav-number">3.4.</span> <span class="nav-text">分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#系统调度算法"><span class="nav-number">4.</span> <span class="nav-text">系统调度算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IO调度算法"><span class="nav-number">4.1.</span> <span class="nav-text">IO调度算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU调度算法"><span class="nav-number">4.2.</span> <span class="nav-text">CPU调度算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#systemtap"><span class="nav-number">5.</span> <span class="nav-text">systemtap</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实例"><span class="nav-number">6.</span> <span class="nav-text">实例</span></a></li></ol></div>
             
 
           </div>
