@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="HTTP 处理请求的11个阶段   阶段 模块     post_read realip   server_rewrite rewrite   find_config    rewrite rewrite   post_rewrite    pre access limit_conn,limit_req   access auth_basic,access,auth_request   post_">
+<meta name="description" content="运行中的Nginx进程间的关系在正式提供服务的产品环境中，部署Nginx时都是使用一个master进程来管理多个worker进程，一般情况下，worker进程的数量与服务器上的CPU核心数相等。每一个worker进程都时繁忙的，它们在真正地提供互联网服务，master进程则很“清闲”，只负责监控管理worker进程。worker之间通过共享内存、原子操作等一些进程间通信机制来实现负载均衡等功能。N">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Nginx modules">
-<meta property="og:url" content="http://yoursite.com/2019/02/17/Nginx-modules/index.html">
+<meta property="og:title" content="Nginx的配置">
+<meta property="og:url" content="http://yoursite.com/2019/02/21/Nginx的配置/index.html">
 <meta property="og:site_name" content="javfa&#39;s blog">
-<meta property="og:description" content="HTTP 处理请求的11个阶段   阶段 模块     post_read realip   server_rewrite rewrite   find_config    rewrite rewrite   post_rewrite    pre access limit_conn,limit_req   access auth_basic,access,auth_request   post_">
+<meta property="og:description" content="运行中的Nginx进程间的关系在正式提供服务的产品环境中，部署Nginx时都是使用一个master进程来管理多个worker进程，一般情况下，worker进程的数量与服务器上的CPU核心数相等。每一个worker进程都时繁忙的，它们在真正地提供互联网服务，master进程则很“清闲”，只负责监控管理worker进程。worker之间通过共享内存、原子操作等一些进程间通信机制来实现负载均衡等功能。N">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-02-20T13:37:26.194Z">
+<meta property="og:updated_time" content="2019-02-21T16:28:03.601Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Nginx modules">
-<meta name="twitter:description" content="HTTP 处理请求的11个阶段   阶段 模块     post_read realip   server_rewrite rewrite   find_config    rewrite rewrite   post_rewrite    pre access limit_conn,limit_req   access auth_basic,access,auth_request   post_">
+<meta name="twitter:title" content="Nginx的配置">
+<meta name="twitter:description" content="运行中的Nginx进程间的关系在正式提供服务的产品环境中，部署Nginx时都是使用一个master进程来管理多个worker进程，一般情况下，worker进程的数量与服务器上的CPU核心数相等。每一个worker进程都时繁忙的，它们在真正地提供互联网服务，master进程则很“清闲”，只负责监控管理worker进程。worker之间通过共享内存、原子操作等一些进程间通信机制来实现负载均衡等功能。N">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/02/17/Nginx-modules/">
+  <link rel="canonical" href="http://yoursite.com/2019/02/21/Nginx的配置/">
 
 
 
 
 
-  <title>Nginx modules | javfa's blog</title>
+  <title>Nginx的配置 | javfa's blog</title>
   
 
 
@@ -232,7 +232,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/17/Nginx-modules/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/21/Nginx的配置/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Javfa">
@@ -249,7 +249,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Nginx modules</h1>
+          <h1 class="post-title" itemprop="name headline">Nginx的配置</h1>
         
 
         <div class="post-meta">
@@ -261,8 +261,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-17T17:06:52+08:00">
-                2019-02-17
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-21T23:21:21+08:00">
+                2019-02-21
               </time>
             
 
@@ -299,67 +299,34 @@
       
 
       
-        <h2 id="HTTP-处理请求的11个阶段"><a href="#HTTP-处理请求的11个阶段" class="headerlink" title="HTTP 处理请求的11个阶段"></a>HTTP 处理请求的11个阶段</h2><table>
-<thead>
-<tr>
-<th style="text-align:center">阶段</th>
-<th style="text-align:right">模块</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">post_read</td>
-<td style="text-align:right">realip</td>
-</tr>
-<tr>
-<td style="text-align:center">server_rewrite</td>
-<td style="text-align:right">rewrite</td>
-</tr>
-<tr>
-<td style="text-align:center">find_config</td>
-<td style="text-align:right"></td>
-</tr>
-<tr>
-<td style="text-align:center">rewrite</td>
-<td style="text-align:right">rewrite</td>
-</tr>
-<tr>
-<td style="text-align:center">post_rewrite</td>
-<td style="text-align:right"></td>
-</tr>
-<tr>
-<td style="text-align:center">pre access</td>
-<td style="text-align:right">limit_conn,limit_req</td>
-</tr>
-<tr>
-<td style="text-align:center">access</td>
-<td style="text-align:right">auth_basic,access,auth_request</td>
-</tr>
-<tr>
-<td style="text-align:center">post_access</td>
-<td style="text-align:right"></td>
-</tr>
-<tr>
-<td style="text-align:center">pre content</td>
-<td style="text-align:right">try_files</td>
-</tr>
-<tr>
-<td style="text-align:center">content</td>
-<td style="text-align:right">index,autoindex,concat</td>
-</tr>
-<tr>
-<td style="text-align:center">log</td>
-<td style="text-align:right">access_log</td>
-</tr>
-</tbody>
-</table>
-<p>使用模块的前提：模块需要先编译进Nginx的二进制文件。<br>对于每个模块，我们需要了解：</p>
+        <h1 id="运行中的Nginx进程间的关系"><a href="#运行中的Nginx进程间的关系" class="headerlink" title="运行中的Nginx进程间的关系"></a>运行中的Nginx进程间的关系</h1><p>在正式提供服务的产品环境中，部署Nginx时都是使用一个master进程来管理多个worker进程，一般情况下，worker进程的数量与服务器上的CPU核心数相等。每一个worker进程都时繁忙的，它们在真正地提供互联网服务，master进程则很“清闲”，只负责监控管理worker进程。worker之间通过共享内存、原子操作等一些进程间通信机制来实现负载均衡等功能。<br>Nginx时支持单进程（master进程）提供服务的，那么为什么产品环境下要按照master、worker方式配置同时启动多个进程呢？这样做的好处主要有一下两点：</p>
 <ul>
-<li>该模块提供哪些配置项</li>
-<li>模块何时被使用</li>
-<li>该模块提供了哪些变量</li>
+<li>由于master进程不会对用户请求提供服务，只用于管理真正提供服务的worker进程，所以master进程可以是唯一的，它仅专注于自己的纯管理工作，为管理员提供命令行服务，包括诸如启动服务、停止服务、重新配置文件、平滑升级程序等。master进程需要拥有较大的权限，例如，通常会使用root用户启动master进程。worker进程的权限要小于或者等于master进程，这样master进程才可以完全地管理worker进程。当任意一个worker进程出现错误从而导致coredump时，master进程会立刻启动新的worker进程继续服务。</li>
+<li>多个worker进程处理互联网请求不但可以提高服务的健壮性，最重要的是，这样可以充分利用现在常见的SMP多核架构，从而实现微观上真正的多核并发处理。为什么要把worker进程数量设置得跟CPU核心数量一致呢？对于Nginx，一个worker进程可以同时处理的请求数只受限于内存大小，而且在架构上，<strong>不同的worker进程之间处理并发请求时几乎没有同步锁的限制</strong>，worker进程通常不会进入睡眠状态，因此，当Nginx上的进程数与CPU核心数相等时（最好每一个worker进程都绑定特定的CPU核心【使用taskset命令来设置进程的CPU亲和性（affinity），将进程绑定到某个或某组CPU核心上】），进程间的切换的代价是最小的。<h1 id="Nginx服务的基本配置"><a href="#Nginx服务的基本配置" class="headerlink" title="Nginx服务的基本配置"></a>Nginx服务的基本配置</h1><h2 id="用于调试进程和定位问题的配置项"><a href="#用于调试进程和定位问题的配置项" class="headerlink" title="用于调试进程和定位问题的配置项"></a>用于调试进程和定位问题的配置项</h2></li>
 </ul>
-<p>Nginx能够实现类似于iptables的功能</p>
+<ol>
+<li><p>是否以守护进程方式运行Nginx</p>
+<p>语法：daemon on|off;</p>
+<p>默认：daemon on;</p>
+<p>关闭守护进程的模式，方便使用gdb跟踪调试Nginx，在研究Nginx架构时很有用。</p>
+</li>
+<li><p>是否以master/worker方式工作</p>
+<p>语法：master_process on | off;</p>
+<p>默认：master_process on;</p>
+<p>如果用off关闭了master_process方式，就不会fork出worker子进程来处理请求，而是用master进程自身来处理请求。</p>
+</li>
+<li><p>error日志的位置</p>
+<p>语法：error_log /path/file level;</p>
+<p>默认：error_log logs/error.log error;</p>
+<p>error日志是定位Nginx问题的最佳工具，我们可以根据自己的需求妥善设置error日志的路径和级别。<br>/path/file可以是：</p>
+<ul>
+<li>一个具体的文件，例如，默认情况下是logs/error.log文件，最好将它放到一个磁盘空间足够大的位置；</li>
+<li>也可以是/dev/null，这也是关闭error日志的唯一方法；</li>
+<li>也可以是stderr，将日志输出到标准错误文件中；<br>level是日志的输出级别，取值范围是debug、info、notice、warn、error、crit、alert、emerg，从左到右级别一次增大。当设定一个级别时，大于或者等于该级别的日志都会输出到/path/file文件中，小于该级别的日志则不会输出。</li>
+</ul>
+</li>
+<li>是否处理几个特殊的调试点<br>语法：debug_points [stop|abort]</li>
+</ol>
 
       
     </div>
@@ -384,15 +351,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2019/02/21/运维体系管理/" rel="next" title="运维体系管理">
+                <i class="fa fa-chevron-left"></i> 运维体系管理
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/02/20/Linux-Kernel/" rel="prev" title="Linux Kernel">
-                Linux Kernel <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -506,7 +473,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP-处理请求的11个阶段"><span class="nav-number">1.</span> <span class="nav-text">HTTP 处理请求的11个阶段</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#运行中的Nginx进程间的关系"><span class="nav-number">1.</span> <span class="nav-text">运行中的Nginx进程间的关系</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nginx服务的基本配置"><span class="nav-number">2.</span> <span class="nav-text">Nginx服务的基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#用于调试进程和定位问题的配置项"><span class="nav-number">2.1.</span> <span class="nav-text">用于调试进程和定位问题的配置项</span></a></li></ol></li></ol></div>
             
 
           </div>
