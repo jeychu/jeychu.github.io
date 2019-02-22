@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="javfa&#39;s blog">
 <meta property="og:description" content="运行中的Nginx进程间的关系在正式提供服务的产品环境中，部署Nginx时都是使用一个master进程来管理多个worker进程，一般情况下，worker进程的数量与服务器上的CPU核心数相等。每一个worker进程都时繁忙的，它们在真正地提供互联网服务，master进程则很“清闲”，只负责监控管理worker进程。worker之间通过共享内存、原子操作等一些进程间通信机制来实现负载均衡等功能。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-02-22T08:12:16.776Z">
+<meta property="og:updated_time" content="2019-02-22T09:16:57.938Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx的配置">
 <meta name="twitter:description" content="运行中的Nginx进程间的关系在正式提供服务的产品环境中，部署Nginx时都是使用一个master进程来管理多个worker进程，一般情况下，worker进程的数量与服务器上的CPU核心数相等。每一个worker进程都时繁忙的，它们在真正地提供互联网服务，master进程则很“清闲”，只负责监控管理worker进程。worker之间通过共享内存、原子操作等一些进程间通信机制来实现负载均衡等功能。">
@@ -326,10 +326,63 @@
 <li>也可以是stderr，将日志输出到标准错误文件中；</li>
 </ul>
 <p>level是日志的输出级别，取值范围是debug、info、notice、warn、error、crit、alert、emerg，从左到右级别依次增大。当设定一个级别时，大于或者等于该级别的日志都会输出到/path/file文件中，小于该级别的日志则不会输出。</p>
+<p>如果日志级别设定到debug，必须在configure时加入–with-debug配置项。</p>
 </li>
 <li><p>是否处理几个特殊的调试点</p>
+<p>语法：debug_points [stop|abort]</p>
+<p>这个配置项也是用来帮助用户跟踪调试Nginx的。Nginx在一些关键的错误逻辑中设置了调试点。如果设置了debug_points为stop，那么Nginx的代码执行到这些调试点时就会发出SIGSTOP信号以用于调试。如果设置为abort，则会产生一个coredump文件，可以使用gdb来查看Nginx当时的各种信息。</p>
 </li>
-<li>语法：debug_points [stop|abort]</li>
+<li><p>仅对指定的客户端输出debug级别的日志</p>
+<p>语法：debug_connection [IP|CIDR]</p>
+<p>这个配置项实际上属于事件类配置，因此，它必须放在events {…}中才有效。</p>
+<p>对来自于指定IP地址的请求才会输出debug级别的日志，其他请求仍然沿用error_log中配置的日志级别。</p>
+</li>
+<li><p>限制coredump核心转储文件的大小</p>
+<p>语法：worker_rlimit_core size;</p>
+<p>在Linux系统中，当进程发生错误或收到信号而终止时，系统会将进程执行时的内存内容写入一个文件，以作为调试只用，这就是所谓的核心转储（core dumps）.</p>
+</li>
+<li><p>指定coredump文件生成目录</p>
+<p>语法：working_directory path;</p>
+</li>
+</ol>
+<h2 id="正常运行的配置项"><a href="#正常运行的配置项" class="headerlink" title="正常运行的配置项"></a>正常运行的配置项</h2><ol>
+<li><p>定义环境变量</p>
+<p>语法：env VAR|VAR=VALUE;</p>
+<p>这个配置项可以让用户直接设置操作系统上的环境变量。</p>
+</li>
+<li><p>嵌入其他配置文件</p>
+<p>语法：include /path/file;</p>
+</li>
+<li><p>pid文件的路径</p>
+<p>语法：pid /path/file;</p>
+<p>默认：pid logs/nginx.pid;</p>
+</li>
+<li><p>Nginx worker进程运行的用户和用户组</p>
+<p>语法：user username [groupname];</p>
+<p>默认：user nobody nodoby;</p>
+</li>
+<li><p>指定Nginx worker进程可以打开的最大句柄描述符个数</p>
+<p>语法：worker_rlimit_nofile limit;</p>
+</li>
+<li><p>限制信号队列</p>
+<p>语法：worker_rlimit_sigpending limit;</p>
+<p>设置每个用户发往Nginx的信号队列的大小。也就是说，当某个用户的信号队列满了，这个用户再发送的信号量就会被丢掉。</p>
+</li>
+</ol>
+<h2 id="优化性能的配置项"><a href="#优化性能的配置项" class="headerlink" title="优化性能的配置项"></a>优化性能的配置项</h2><ol>
+<li><p>Nginx worker进程个数</p>
+<p>语法：worker_processes number;</p>
+<p>默认：worker_processes 1;</p>
+</li>
+<li><p>绑定Nginx worker进程到指定的CPU内核</p>
+<p>语法：worker_cpu_affinity cpumask [cpumask…]</p>
+<p>例如，如果有4个CPU内核，可以进行如下配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">worker_processes 4;</span><br><span class="line">worker_cpu_affinity 1000 0100 0010 0001;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>SSL硬件加速</p>
+<p>语法：ssl_engine device;</p>
+<p>如果服务器上有ssl硬件加速设备，那么就可以进行配置以加快SSL协议的处理速度。</p>
+</li>
 </ol>
 
       
@@ -477,7 +530,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#运行中的Nginx进程间的关系"><span class="nav-number">1.</span> <span class="nav-text">运行中的Nginx进程间的关系</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nginx服务的基本配置"><span class="nav-number">2.</span> <span class="nav-text">Nginx服务的基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#用于调试进程和定位问题的配置项"><span class="nav-number">2.1.</span> <span class="nav-text">用于调试进程和定位问题的配置项</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#运行中的Nginx进程间的关系"><span class="nav-number">1.</span> <span class="nav-text">运行中的Nginx进程间的关系</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nginx服务的基本配置"><span class="nav-number">2.</span> <span class="nav-text">Nginx服务的基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#用于调试进程和定位问题的配置项"><span class="nav-number">2.1.</span> <span class="nav-text">用于调试进程和定位问题的配置项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正常运行的配置项"><span class="nav-number">2.2.</span> <span class="nav-text">正常运行的配置项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化性能的配置项"><span class="nav-number">2.3.</span> <span class="nav-text">优化性能的配置项</span></a></li></ol></li></ol></div>
             
 
           </div>
