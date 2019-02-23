@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="javfa&#39;s blog">
 <meta property="og:description" content="持续交付的价值持续交付的定义 持续交付是软件研发人员，如何将一个好点子，以最快的速度交付给用户的方法。 From 《持续交付：发布可靠软件的系统方法》  持续集成、持续交付和持续部署的关系我们通常会把软件研发工作拆解，拆分成不同模块或不同团队后进行编码，编码完成后，进行集成构建和测试。这个从编码到构建再到测试的反复持续的过程，就叫做“持续集成”。 “持续集成”一旦完成，则代表产品处于一个可交付的状">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-02-23T12:29:15.302Z">
+<meta property="og:updated_time" content="2019-02-23T12:33:53.448Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="持续交付">
 <meta name="twitter:description" content="持续交付的价值持续交付的定义 持续交付是软件研发人员，如何将一个好点子，以最快的速度交付给用户的方法。 From 《持续交付：发布可靠软件的系统方法》  持续集成、持续交付和持续部署的关系我们通常会把软件研发工作拆解，拆分成不同模块或不同团队后进行编码，编码完成后，进行集成构建和测试。这个从编码到构建再到测试的反复持续的过程，就叫做“持续集成”。 “持续集成”一旦完成，则代表产品处于一个可交付的状">
@@ -408,28 +408,20 @@
 <tr>
 <th>分支模型</th>
 <th>说明</th>
-<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>带生产分支</td>
 <td>1. 无法控制准确的发布时间，但又要求不停集成的。<br>2. 需要创建一个production分支来放置发布的代码</td>
-<td></td>
 </tr>
 <tr>
 <td>带环境分支</td>
 <td>1. 要求所有代码都在逐个环境中测试通过。<br>2. 需要为不同的环境建立不同的分支</td>
-<td></td>
 </tr>
 <tr>
 <td>带发布分支</td>
 <td>1. 用于对外界发布软件的项目，同时需要维护多个发布版本<br>2. 尽可能晚地从master拉取发布分支。<br>3. Bug修复应先合并到master，然后cherry pick到release分支。</td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
 </tr>
 </tbody>
 </table>
@@ -467,13 +459,13 @@
 </tr>
 <tr>
 <td>集成分支上线前回滚</td>
-<td>会影响团队其他成员<br>非线上故障，相对不紧急<br>可以对单独的commit做回滚</td>
-<td>一定不用 git reset –hard<br>可在gitlab上找到对应的Merge Request，点击revert</td>
+<td>1. 会影响团队其他成员<br>非线上故障，相对不紧急<br>可以对单独的commit做回滚</td>
+<td>1. 一定不用 git reset –hard<br>2. 可在gitlab上找到对应的Merge Request，点击revert</td>
 </tr>
 <tr>
 <td>集成分支上线后回滚</td>
-<td>会影响团队其他成员<br>线上故障，相对紧急<br>需回滚到包对应的commit</td>
-<td>一定不用 git reset <br>再集成分支的头上增加一个commit，该commit的内容等于包回滚后对应的commit</td>
+<td>1. 会影响团队其他成员<br>2. 线上故障，相对紧急<br>3. 需回滚到包对应的commit</td>
+<td>1. 一定不用 git reset <br>2. 再集成分支的头上增加一个commit，该commit的内容等于包回滚后对应的commit</td>
 </tr>
 </tbody>
 </table>
