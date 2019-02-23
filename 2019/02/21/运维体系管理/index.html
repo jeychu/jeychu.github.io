@@ -86,12 +86,10 @@
 <meta property="og:site_name" content="javfa&#39;s blog">
 <meta property="og:description" content="[TOC] 微服务架构时代，运维体系建设要以应用为核心。 在微服务的架构模式下，我们的运维视角一定转到应用这个核心概念上来，一切要以应用的角度分析和看待问题。  应用的起源微服务架构一般都是从单体架构或分层架构演进而来。软件架构服务化的过程，就是我们根据业务模型进行细化的过程，在这个过程中切分出一个个具备不同职责的业务逻辑模块，然后每个微服务模块都会提供相应业务逻辑的服务化接口。 解释简单点，就一">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/02/21/运维体系管理/assets/1550876246810.png">
-<meta property="og:updated_time" content="2019-02-22T22:57:47.378Z">
+<meta property="og:updated_time" content="2019-02-23T03:56:47.531Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="运维体系管理">
 <meta name="twitter:description" content="[TOC] 微服务架构时代，运维体系建设要以应用为核心。 在微服务的架构模式下，我们的运维视角一定转到应用这个核心概念上来，一切要以应用的角度分析和看待问题。  应用的起源微服务架构一般都是从单体架构或分层架构演进而来。软件架构服务化的过程，就是我们根据业务模型进行细化的过程，在这个过程中切分出一个个具备不同职责的业务逻辑模块，然后每个微服务模块都会提供相应业务逻辑的服务化接口。 解释简单点，就一">
-<meta name="twitter:image" content="http://yoursite.com/2019/02/21/运维体系管理/assets/1550876246810.png">
 
 
 
@@ -504,7 +502,67 @@
 </li>
 <li><p>稳定性保障平台，或者叫访问治理平台</p>
 <p>针对系统的稳定性，我们会在应用中做很多的降级限流和开关预案策略，这些都是跟应用直接关联的。而且按照我们前面介绍的，不同的集群分组，策略可能会有不同，所以又会跟集群分组相关。同时，这些策略最终下发到具体服务器上运行的应用实例上，所以这里就会需要应用、集群分组以及对应的资源关系。</p>
-<p><img src="assets/1550876246810.png" alt="1550876246810"></p>
+</li>
+</ol>
+<h1 id="持续交付"><a href="#持续交付" class="headerlink" title="持续交付"></a>持续交付</h1><p>前面，我们介绍了非常基础的运维建设环节。如果我们想要这些运维基础建设发挥更大的作用和价值，就需要针对运维场景进行场景化设计和自动化，让效率和稳定性真正提升上来。</p>
+<p>基础的事情做好之后，我们就要进入效率提升的运维场景自动化阶段了。</p>
+<p>这一阶段，首先要把持续交付做好。</p>
+<p>为什么要先做持续交付？如果说我们完成了一些运维职责范围内的自动化工具，提升的是运维效率的话，那么，<strong>做持续交付就是提升整个研发体系效率的关键</strong>。</p>
+<p>做持续交付的价值表现在哪里？</p>
+<p>持续交付覆盖了应用的整个生命周期，涉及产品、开发、测试、运维以及项目管理等相关方面。从生命周期出发，自然就会牵出整个自动化的全貌，就会有从全局着眼的规划设计，这时无论是在开发还是运维过程中存在的问题，都会完完整整地暴露出来。那么，应该以什么样的主线开展？各方应该如何配合？应该以怎样的优先级明确任务？这些问题就都清楚了。同时，也避免了各个环节只把注意力放在各自职责范围内的事情上，而忽略了整体的配合。所以，做好持续交付，对于整个研发体系意义重大。</p>
+<p>我们面临的实际场景是怎样的呢？</p>
+<p>我们知道，随着业务复杂度的升高，不管是分层架构，还是微服务架构，都会带来一个最明显的变化，那就是应用数量增多，有时甚至多达几十个、几百个。不同的应用就有不同的代码、依赖和配置，为了协同多应用之间的在线发布，我们还要做到服务能够平滑地进行上下线切换。同时，为了最大限度地降低发布风险，我们还需要继续多环境下的验证，以及上线后的灰度策略等等。</p>
+<p>应对这一切，如果只是手工维护，或者利用简单的脚本进行维护，都不能保证正常运作。这个时候，我们必须有一系列的流程、机制和工具链来支持和保障。</p>
+<h2 id="什么是持续交付？"><a href="#什么是持续交付？" class="headerlink" title="什么是持续交付？"></a>什么是持续交付？</h2><p><strong>持续交付代表着从业务需求开始到交付上线之后的端到端的过程</strong>。（业务/产品、开发、测试、运维的协作）</p>
+<h2 id="持续交付的关键点"><a href="#持续交付的关键点" class="headerlink" title="持续交付的关键点"></a>持续交付的关键点</h2><ol>
+<li><p>配置管理</p>
+<p>这一部分会利用到我们前面讲过的标准化和CMDB打下的基础，同时还会有更大的外延，比如环境配置、代码配置以及依赖管理等等。</p>
+<p>配置管理是非常关键的基础工作。有一点值得注意，那就是标准化是一个持续的过程。我们不太可能在一开始就把所有运维对象、属性和关系全部考虑清楚，面面俱到是不太现实的，所以，一定要具备标准化的意识，在开展运维工作的过程中，持续不断地用这个思路去标准化新出现的对象。先标准，再固化，如何自动化。</p>
+</li>
+<li><p>需求拆解</p>
+<p>需求拆解这个工作跟业务需求部门和业务开发有更直接的关系。在这里，运维需要做的是，明确需求拆解的粒度和我们最终发布上线的粒度相匹配。</p>
+</li>
+<li><p>提交管理</p>
+<p>需求拆解完成后，就进入到开发阶段，开发完成后向代码库中提交代码，这个过程中代码分支的合并策略选择就是提交管理。</p>
+</li>
+<li><p>构建打包</p>
+<p>这一部分是指讲提交的代码编译成可发布的软件包。</p>
+</li>
+<li><p>自动化测试</p>
+<p>自动化测试包括功能测试和非功能性测试。对于运维来说，会更注重非功能方面的特性。</p>
+</li>
+<li><p>部署发布</p>
+<p>这一部分是指发布到不同的环境，如开发环境、预发环境、线上Beta以及线上全量环境。针对不同的环境，发布策略和注意事项也会不同。</p>
+</li>
+</ol>
+<p>配置管理、提交管理、构建和部署发布是持续交付的重中之重，是关键路径，是从开发代码开始，到发布上线的必经之路。当时，因为这个几个环节出现了问题，不能解决，运维同学经常做手工发布，这样效率就跟不上，还经常出现各种问题。后来，我们就是先从这几个环节入手，把阻塞的问题解决掉，然后在这个主流程上不断增加外围能力，让整个流程的功能更加丰富和全面。整个系统也从原来的只具备持续部署发布功能的平台，逐步演进为具有持续交付能力的平台。</p>
+<p>下面详细展开说明：</p>
+<h3 id="配置管理"><a href="#配置管理" class="headerlink" title="配置管理"></a>配置管理</h3><p>按照持续交付的理念，这里所说的配置管理范围会更广，主要有以下几个部分。</p>
+<ul>
+<li>版本控制</li>
+<li>依赖配置</li>
+<li>软件配置</li>
+<li>环境配置</li>
+</ul>
+<p>讲持续交付，一上来就先讲配置管理，主要还是想强调：配置管理是基础，是关键。勿在浮沙筑高台，我们做工具平台或系统，一定要重视基础的建设。</p>
+<p>同时，这里还有一个前提，就是一定要做到代码和配置的分离。不要让配置写死在代码里，需要依靠严格的规范和约束。同时，对于那些因历史原因遗留在代码中的配置，要多花时间和精力把配置剥离出来，做这项工作没有什么好的方法或经验，只能多上心，多投入些精力。</p>
+<h4 id="版本控制"><a href="#版本控制" class="headerlink" title="版本控制"></a>版本控制</h4><p>版本控制的主要作用是保证团队在交付软件的过程中能够高效协作，版本控制提供了一种保障机制。</p>
+<p>版本控制及其工具是必不可少的，因为这是开发团队协作最基础的工具。</p>
+<h4 id="依赖管理"><a href="#依赖管理" class="headerlink" title="依赖管理"></a>依赖管理</h4><p>以Java为例，即使运行一个非常简单的Web应用，都会有大量的jar包依赖。如果人工去管理这些依赖，基本上是不可能的，所以就需要有依赖管理的工具。</p>
+<p>对于Java来说，依赖管理工具有Ant、Maven和Gradle。</p>
+<p>以Maven为例，大致用法是建立一个本地Maven源，构建时会优先从本地源中获取依赖包，本地源中没有对应的依赖时，会从公网下载，同时缓存到本地。</p>
+<h4 id="软件配置"><a href="#软件配置" class="headerlink" title="软件配置"></a>软件配置</h4><ol>
+<li><p>代码配置</p>
+<p>代码配置是跟代码运行时的业务逻辑相关的。比如应用的服务接口、并发线程数、超时时间等这些运行时参数；还有类似于业务或技术上的开关，比如商品评论是否开放、优惠时间段设置等。</p>
+</li>
+<li><p>应用配置</p>
+<p>应用配置就是应用这个对象的属性和关系信息。我们把应用配置放到持续交付这个场景中进行分析，对于这个配置可以细分为：</p>
+<ul>
+<li>应用构建时配置，比如它的编程语言、Git地址以及构建方式等；</li>
+<li>应用的部署配置，源代码目录、应用日志目录、Web日志目录、临时目录、脚本目录等；</li>
+<li>应用的运行配置，应用启停、服务上下线方式、健康检测方式等；</li>
+<li>应用运行时与基础组件的关联关系，比如其依赖的DB、缓存、消息以及存储的IP地址、域名、端口、用户名或Token等。</li>
+</ul>
 </li>
 </ol>
 
@@ -657,7 +715,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#微服务架构时代，运维体系建设要以应用为核心。"><span class="nav-number">1.</span> <span class="nav-text">微服务架构时代，运维体系建设要以应用为核心。</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#应用的起源"><span class="nav-number">1.1.</span> <span class="nav-text">应用的起源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用模型及关系模型的建立"><span class="nav-number">1.2.</span> <span class="nav-text">应用模型及关系模型的建立</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#标准化体系建设"><span class="nav-number">2.</span> <span class="nav-text">标准化体系建设</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要做标准化？"><span class="nav-number">2.1.</span> <span class="nav-text">为什么要做标准化？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础设施层面的标准化"><span class="nav-number">2.2.</span> <span class="nav-text">基础设施层面的标准化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用层面的标准化"><span class="nav-number">2.3.</span> <span class="nav-text">应用层面的标准化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础架构的标准化"><span class="nav-number">2.4.</span> <span class="nav-text">基础架构的标准化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的分布式基础架构组件"><span class="nav-number">2.4.1.</span> <span class="nav-text">常见的分布式基础架构组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基础架构组件的选型问题"><span class="nav-number">2.4.2.</span> <span class="nav-text">基础架构组件的选型问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其中运维的职责"><span class="nav-number">2.4.3.</span> <span class="nav-text">其中运维的职责</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础架构的服务化"><span class="nav-number">2.5.</span> <span class="nav-text">基础架构的服务化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要做基础架构的服务化"><span class="nav-number">2.5.1.</span> <span class="nav-text">为什么要做基础架构的服务化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运维的职责"><span class="nav-number">2.5.2.</span> <span class="nav-text">运维的职责</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何从生命周期的视角看待应用运维体系建设"><span class="nav-number">3.</span> <span class="nav-text">如何从生命周期的视角看待应用运维体系建设</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#应用的生命周期分析"><span class="nav-number">3.1.</span> <span class="nav-text">应用的生命周期分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CMDB"><span class="nav-number">4.</span> <span class="nav-text">CMDB</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CMDB缘起"><span class="nav-number">4.1.</span> <span class="nav-text">CMDB缘起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#传统运维思路下的CMDB"><span class="nav-number">4.2.</span> <span class="nav-text">传统运维思路下的CMDB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#互联网运维体系下的CMDB"><span class="nav-number">4.3.</span> <span class="nav-text">互联网运维体系下的CMDB</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何在CMDB中落地应用的概念？"><span class="nav-number">5.</span> <span class="nav-text">如何在CMDB中落地应用的概念？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何有效组织和管理应用"><span class="nav-number">5.1.</span> <span class="nav-text">如何有效组织和管理应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用的集群服务分组建设"><span class="nav-number">5.2.</span> <span class="nav-text">应用的集群服务分组建设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMDB在基础服务体系中的核心位置"><span class="nav-number">5.3.</span> <span class="nav-text">CMDB在基础服务体系中的核心位置</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#微服务架构时代，运维体系建设要以应用为核心。"><span class="nav-number">1.</span> <span class="nav-text">微服务架构时代，运维体系建设要以应用为核心。</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#应用的起源"><span class="nav-number">1.1.</span> <span class="nav-text">应用的起源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用模型及关系模型的建立"><span class="nav-number">1.2.</span> <span class="nav-text">应用模型及关系模型的建立</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#标准化体系建设"><span class="nav-number">2.</span> <span class="nav-text">标准化体系建设</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要做标准化？"><span class="nav-number">2.1.</span> <span class="nav-text">为什么要做标准化？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础设施层面的标准化"><span class="nav-number">2.2.</span> <span class="nav-text">基础设施层面的标准化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用层面的标准化"><span class="nav-number">2.3.</span> <span class="nav-text">应用层面的标准化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础架构的标准化"><span class="nav-number">2.4.</span> <span class="nav-text">基础架构的标准化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的分布式基础架构组件"><span class="nav-number">2.4.1.</span> <span class="nav-text">常见的分布式基础架构组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基础架构组件的选型问题"><span class="nav-number">2.4.2.</span> <span class="nav-text">基础架构组件的选型问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其中运维的职责"><span class="nav-number">2.4.3.</span> <span class="nav-text">其中运维的职责</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础架构的服务化"><span class="nav-number">2.5.</span> <span class="nav-text">基础架构的服务化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要做基础架构的服务化"><span class="nav-number">2.5.1.</span> <span class="nav-text">为什么要做基础架构的服务化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运维的职责"><span class="nav-number">2.5.2.</span> <span class="nav-text">运维的职责</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何从生命周期的视角看待应用运维体系建设"><span class="nav-number">3.</span> <span class="nav-text">如何从生命周期的视角看待应用运维体系建设</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#应用的生命周期分析"><span class="nav-number">3.1.</span> <span class="nav-text">应用的生命周期分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CMDB"><span class="nav-number">4.</span> <span class="nav-text">CMDB</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CMDB缘起"><span class="nav-number">4.1.</span> <span class="nav-text">CMDB缘起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#传统运维思路下的CMDB"><span class="nav-number">4.2.</span> <span class="nav-text">传统运维思路下的CMDB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#互联网运维体系下的CMDB"><span class="nav-number">4.3.</span> <span class="nav-text">互联网运维体系下的CMDB</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何在CMDB中落地应用的概念？"><span class="nav-number">5.</span> <span class="nav-text">如何在CMDB中落地应用的概念？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何有效组织和管理应用"><span class="nav-number">5.1.</span> <span class="nav-text">如何有效组织和管理应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用的集群服务分组建设"><span class="nav-number">5.2.</span> <span class="nav-text">应用的集群服务分组建设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMDB在基础服务体系中的核心位置"><span class="nav-number">5.3.</span> <span class="nav-text">CMDB在基础服务体系中的核心位置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#持续交付"><span class="nav-number">6.</span> <span class="nav-text">持续交付</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是持续交付？"><span class="nav-number">6.1.</span> <span class="nav-text">什么是持续交付？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持续交付的关键点"><span class="nav-number">6.2.</span> <span class="nav-text">持续交付的关键点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置管理"><span class="nav-number">6.2.1.</span> <span class="nav-text">配置管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#版本控制"><span class="nav-number">6.2.1.1.</span> <span class="nav-text">版本控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#依赖管理"><span class="nav-number">6.2.1.2.</span> <span class="nav-text">依赖管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#软件配置"><span class="nav-number">6.2.1.3.</span> <span class="nav-text">软件配置</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
