@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="javfa&#39;s blog">
 <meta property="og:description" content="持续交付的价值持续交付的定义 持续交付是软件研发人员，如何将一个好点子，以最快的速度交付给用户的方法。 From 《持续交付：发布可靠软件的系统方法》  持续集成、持续交付和持续部署的关系我们通常会把软件研发工作拆解，拆分成不同模块或不同团队后进行编码，编码完成后，进行集成构建和测试。这个从编码到构建再到测试的反复持续的过程，就叫做“持续集成”。 “持续集成”一旦完成，则代表产品处于一个可交付的状">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-02-23T12:33:53.448Z">
+<meta property="og:updated_time" content="2019-02-24T00:17:33.863Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="持续交付">
 <meta name="twitter:description" content="持续交付的价值持续交付的定义 持续交付是软件研发人员，如何将一个好点子，以最快的速度交付给用户的方法。 From 《持续交付：发布可靠软件的系统方法》  持续集成、持续交付和持续部署的关系我们通常会把软件研发工作拆解，拆分成不同模块或不同团队后进行编码，编码完成后，进行集成构建和测试。这个从编码到构建再到测试的反复持续的过程，就叫做“持续集成”。 “持续集成”一旦完成，则代表产品处于一个可交付的状">
@@ -304,8 +304,8 @@
 <p>From 《持续交付：发布可靠软件的系统方法》</p>
 </blockquote>
 <h2 id="持续集成、持续交付和持续部署的关系"><a href="#持续集成、持续交付和持续部署的关系" class="headerlink" title="持续集成、持续交付和持续部署的关系"></a>持续集成、持续交付和持续部署的关系</h2><p>我们通常会把软件研发工作拆解，拆分成不同模块或不同团队后进行编码，编码完成后，进行集成构建和测试。这个从编码到构建再到测试的反复持续的过程，就叫做“持续集成”。</p>
-<p>“持续集成”一旦完成，则代表产品处于一个可交付的状态，但并不代表这时最优状态，还需要根据外部使用者的反馈逐步优化。当然这里的使用者并不一定是真正的用户，还可能使测试人员、产品人员、用户体验工程师、安全工程师、企业领导等等。</p>
-<p>这个“持续集成”之后，获取外部对软件的反馈再通过“持续集成”进行优化的过程就叫做“持续交付”，它使“持续集成”的自然延续。</p>
+<p>“持续集成”一旦完成，则代表产品处于一个可交付的状态，但并不代表这是最优状态，还需要根据外部使用者的反馈逐步优化。当然这里的使用者并不一定是真正的用户，还可能是测试人员、产品人员、用户体验工程师、安全工程师、企业领导等等。</p>
+<p>这个“持续集成”之后，获取外部对软件的反馈再通过“持续集成”进行优化的过程就叫做“持续交付”，它是“持续集成”的自然延续。</p>
 <p>传统安装型软件，要现场调试，要用户购买等等，其难度可想而知。即使是可达度最高的互联网应用，由于生成环境的多样性、架构的复杂性、影响的广泛性（需要灰度发布）等等，就算产品已是待交付的状态，要真正达到用户可用的标准，还有大量的问题需要解决。</p>
 <p>而“持续部署”就是将可交付产品，快速且安全地交付用户使用的一套方法和系统，它是“持续交付”的最后“一公里”。</p>
 <h2 id="持续交付的显性价值"><a href="#持续交付的显性价值" class="headerlink" title="持续交付的显性价值"></a>持续交付的显性价值</h2><p>持续交付也通常以“发布流水线”的方式来解释，即研发团队从开发，到测试，再到部署，最终将产品交付给最终用户使用的过程。</p>
@@ -459,7 +459,7 @@
 </tr>
 <tr>
 <td>集成分支上线前回滚</td>
-<td>1. 会影响团队其他成员<br>非线上故障，相对不紧急<br>可以对单独的commit做回滚</td>
+<td>1. 会影响团队其他成员<br>2. 非线上故障，相对不紧急<br>3. 可以对单独的commit做回滚</td>
 <td>1. 一定不用 git reset –hard<br>2. 可在gitlab上找到对应的Merge Request，点击revert</td>
 </tr>
 <tr>
@@ -469,7 +469,105 @@
 </tr>
 </tbody>
 </table>
-<h2 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h2>
+<h2 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h2><p>在整个持续交付生命周期中，测试环境的易用程度会直接影响软件的交付程度，但因为以下两点，它又是最被容易忽略的一环。</p>
+<ol>
+<li>我们总是把环境理想化，忽略了其管理的难度；</li>
+<li>我们也很少设立专职的环境管理员，导致环境长期处于混乱状态。</li>
+</ol>
+<p>通常，我们在项目初期并不会关注测试环境的问题，然而在回顾时却发现在环境问题上浪费的时间非常惊人：硬件资源申请困难，测试环境配置繁琐，测试应用更新困难，基础设施稳定性差，服务调用异常，多项目并行造成互相干扰等等问题。</p>
+<p>构建一整套好的测试环境的关键点以及具体实施方案</p>
+<ol>
+<li>测试环境的结构一般是怎样的？</li>
+<li>什么才是好的测试环境？</li>
+</ol>
+<h3 id="互联网公司测试环境的结构"><a href="#互联网公司测试环境的结构" class="headerlink" title="互联网公司测试环境的结构"></a>互联网公司测试环境的结构</h3><p>当公司规模较小时，测试环境的维护相对容易。开发和测试公用一套数据库缓存等基础设施，因为应用数量不多，开发环境可以是单机的，无论是手动或半自动化的更新测试环境的应用，花费的时间都还在可接受范围内。</p>
+<p>这时，公司环境的结构很简单，分为开发环境，测试环境，生产环境即可。</p>
+<p>但实际上，大多数公司的研发过程及配套环境并没有这么简单，一般都会存在5套以上的大环境以及更多的子环境，每个环境的机器数量可能有数十台甚至更多。</p>
+<p>为什么需要这么多套环境呢？</p>
+<ul>
+<li><p>纵向上看，人员的增多提高了项目的并行度，如果这时还使用一套环境的话，就会发生以下问题：</p>
+<ul>
+<li>开发同学在debug一个问题时，发现下游的应用突然就不可用了；</li>
+<li>测试同学在跑了10多分钟测试脚本后，发现应用已经被开发更新掉了。</li>
+</ul>
+<p>这样的体验是让人崩溃的。</p>
+</li>
+<li><p>横向上看，公司的应用架构逐渐转为微服务化，完整的应用数量很容易就达到了几百甚至几千个的量级，建立一套完整的环境变得越来越复杂，往往是研发团队想要构建一套新的环境却构建不出来。</p>
+</li>
+</ul>
+<p>所以，目前互联网公司常见的环境模型一般分为开发环境，功能测试环境，验收测试环境，预发布环境，生产环境这五套大环境。</p>
+<ul>
+<li><p>开发环境</p>
+<p>微服务架构下，单机已经无法完整地运行业务应用，这就需要开发环境内包含一套完整的业务应用依赖以及相关的基础设施，以保证业务开发同学能在本地完成开发测试。</p>
+</li>
+<li><p>功能测试环境</p>
+<p>在开发环境下，每个下游依赖应用都只有一个可用的stable版本。而在实际的开发过程中，由于项目的并行开发，往往会同时存在多个可依赖的版本。而每个项目组的同学在测试时，都希望测试过程中的关键依赖应用是可以被独占的，版本是固定的，不会被其他项目组干扰。</p>
+<p>所以，一套独立的功能测试环境就很有必要了。<em>通常，互联网企业会通过中间件的方式分割出一块隔离区域，在功能测试环境中创建多个子环境来解决问题。</em></p>
+</li>
+<li><p>验收测试环境</p>
+<p>验收测试环境和功能测试环境是完全隔离的。当功能测试通过后，你可以在验收测试环境进行最终的验收。</p>
+<p>它除了可以用作测试之外，还可以用作产品展示。所以，除了测试和开发人员，产品经理也是验收测试环境的主要使用者。</p>
+</li>
+<li><p>预发布环境</p>
+<p>到预发布阶段，应用已经进入了生产网络，和真实的生产应用共享同一套数据库等基础设施。预发布是正式发布前的最后依次测试，在这个环境中往往可以发现线下环境中发现不了的Bug。这个环境的运维标准等同于生产环境，一般不允许开发人员直接登陆机器。</p>
+<p>根据不同的业务需求和部署策略，不同公司对预发布环境的实现也有所不同：</p>
+<ul>
+<li><p>一种比较常见的方式是，将金丝雀发布作为预发布，从接入真实流量的集群中挑选一台或一小组机器先进行版本更新，通过手工测试以及自动化测试和监控系统验证，降低新版本发布的风险。</p>
+<blockquote>
+<p>金丝雀发布：</p>
+<p>17世纪，英国矿井工人发现，金丝雀对瓦斯这种气体十分敏感。空气中哪怕有极其微量的瓦斯，金丝雀也会停止歌唱；而当瓦斯含量超过一定限度时，虽然鲁钝的人类毫无察觉，金丝雀却早已毒发身亡。当时在采矿设备相对简陋的条件下，工人们每次下井都会带上一只金丝雀作为“瓦斯检测指标”，以便在危险状况下紧急撤离</p>
+<p>金丝雀发布是灰度发布的一种方式。灰度发布是指在黑与白之间，能够平滑过渡的一种发布方式。让一部分用户继续用A，一部分用户开始用B，如果用户对B没有什么反对意见，那么逐步扩大范围，把所有的用户都迁移到B上面来。</p>
+<p>部署步骤：</p>
+<ul>
+<li>准备好部署各个阶段的工件，包括：构建工件、测试脚本、配置文件和部署清单文件。</li>
+<li>从负载均衡列表中移除掉“金丝雀”服务器</li>
+<li>升级“金丝雀”应用（排掉原有流量并进行部署）</li>
+<li>对应用进行自动化测试</li>
+<li>将“金丝雀”服务器重新添加到负载均衡列表中（连通性和健康检查）</li>
+<li>如果“金丝雀”在线使用测试成功，升级剩余的其他服务器，否则就回滚。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>另一种做法是，独立出一组始终不接入真实流量的机器，调用在预发布环境中形成闭环。</p>
+<p>相对于第一种方式，第二张方式对生产环境的影响更小，但需要额外的资源和维护成本。</p>
+</li>
+</ul>
+</li>
+<li><p>生产环境</p>
+<p>生产环境是用户真实使用的环境，对安全性和稳定性的要求最高。</p>
+</li>
+</ul>
+<h3 id="什么是好的测试环境？"><a href="#什么是好的测试环境？" class="headerlink" title="什么是好的测试环境？"></a>什么是好的测试环境？</h3><p>开发环境、功能测试环境、验收测试环境、预发布环境这四种测试环境形成的原因是什么？</p>
+<p>搭建测试环境的目的是保证最终交付的软件质量，但每套测试环境的用户并不完全一样：</p>
+<ul>
+<li>开发环境的用户是开发同学；</li>
+<li>功能测试环境的主要用户是测试同学；</li>
+<li>验收测试环境的用户是产品经理和测试同学；</li>
+<li>预发布环境的使用者是测试同学，但受益者却是运维同学。</li>
+</ul>
+<p>而每种角色对于产品研发流程中的需求也是不同的：</p>
+<ul>
+<li>开发同学关注研发效率；</li>
+<li>测试同学关注测试的可靠性；</li>
+<li>产品经理更关注的是真实的用户体验和产品的完整性；</li>
+<li>预发布环境的需求其实来自于运维同学，他们需要保证生产环境的稳定性，减少生产环境的变更，所以需要将预发布环境与线下环境完全隔离。</li>
+</ul>
+<p>当然，不论一套环境用户是测试同学还是开发同学，以下几个需求都是必须被做到的。</p>
+<ul>
+<li>可得性，即在开发一个新项目时，能快速获取构建一个环境需要的机器，基础设施。最好的情况是，能随时可得，随时归还。</li>
+<li>快速部署，即在搭建新环境时，能以最快的速度构建出一整套完整的环境。测试环境的部署很频繁，在代码提交后，能在很短的时间内构建代码，在环境上更新，就能更早开始测试。</li>
+<li>独立性，即一个环境在使用过程中，可以不受其他项目测试人员的干扰。</li>
+<li>稳定性，即不会因为下游服务，基础设施的异常，造成测试中断、等待。</li>
+<li>高仿真，主要分为两个方面：“测试数据真实”，即能在测试环境构建出真实的测试用例；“环境真实”，即基础服务的架构和行为与线上环境保持一致，避免因为环境不一致造成测试结果不一致。</li>
+</ul>
+<p>但是，毕竟各个环境的用户和使用场景不同，它们的需求也是有差别的。比如，相对于开发环境，验收测试环境对测试数据的仿真性要求会更高，而开发环境的灵活性，决定了不会过于严格的维护测试数据的真实性。</p>
+<p>当一个环境可以满足其真正核心用户的需求时，就是一个好用的测试环境。</p>
+<h3 id="测试环境的成本"><a href="#测试环境的成本" class="headerlink" title="测试环境的成本"></a>测试环境的成本</h3><ul>
+<li><p>机器资源的成本</p>
+<p>保证环境的独立性，是你构建更多套环境的一个主要原因。但是，一套独立的、拥有完整链路的环境成本是非常高的。</p>
+</li>
+</ul>
+
       
     </div>
     
@@ -615,7 +713,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#持续交付的价值"><span class="nav-number">1.</span> <span class="nav-text">持续交付的价值</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#持续交付的定义"><span class="nav-number">1.1.</span> <span class="nav-text">持续交付的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持续集成、持续交付和持续部署的关系"><span class="nav-number">1.2.</span> <span class="nav-text">持续集成、持续交付和持续部署的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持续交付的显性价值"><span class="nav-number">1.3.</span> <span class="nav-text">持续交付的显性价值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持续交付的隐性价值"><span class="nav-number">1.4.</span> <span class="nav-text">持续交付的隐性价值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何评估持续交付的价值"><span class="nav-number">1.5.</span> <span class="nav-text">如何评估持续交付的价值</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#影响持续交付的因素"><span class="nav-number">2.</span> <span class="nav-text">影响持续交付的因素</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#组织和文化因素"><span class="nav-number">2.1.</span> <span class="nav-text">组织和文化因素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码分支策略的选择"><span class="nav-number">2.2.</span> <span class="nav-text">代码分支策略的选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主干开发（TBD）"><span class="nav-number">2.2.1.</span> <span class="nav-text">主干开发（TBD）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特性分支开发"><span class="nav-number">2.2.2.</span> <span class="nav-text">特性分支开发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖管理"><span class="nav-number">2.3.</span> <span class="nav-text">依赖管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码回滚"><span class="nav-number">2.4.</span> <span class="nav-text">代码回滚</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是代码回滚？"><span class="nav-number">2.4.1.</span> <span class="nav-text">什么是代码回滚？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#哪些情况下需要回滚代码？"><span class="nav-number">2.4.2.</span> <span class="nav-text">哪些情况下需要回滚代码？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#哪些情况下包的回滚无需回滚代码？"><span class="nav-number">2.4.3.</span> <span class="nav-text">哪些情况下包的回滚无需回滚代码？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码回滚必须遵循的原则"><span class="nav-number">2.4.4.</span> <span class="nav-text">代码回滚必须遵循的原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三种典型回滚场景及回滚策略"><span class="nav-number">2.4.5.</span> <span class="nav-text">三种典型回滚场景及回滚策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试环境"><span class="nav-number">2.5.</span> <span class="nav-text">测试环境</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#持续交付的价值"><span class="nav-number">1.</span> <span class="nav-text">持续交付的价值</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#持续交付的定义"><span class="nav-number">1.1.</span> <span class="nav-text">持续交付的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持续集成、持续交付和持续部署的关系"><span class="nav-number">1.2.</span> <span class="nav-text">持续集成、持续交付和持续部署的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持续交付的显性价值"><span class="nav-number">1.3.</span> <span class="nav-text">持续交付的显性价值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持续交付的隐性价值"><span class="nav-number">1.4.</span> <span class="nav-text">持续交付的隐性价值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何评估持续交付的价值"><span class="nav-number">1.5.</span> <span class="nav-text">如何评估持续交付的价值</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#影响持续交付的因素"><span class="nav-number">2.</span> <span class="nav-text">影响持续交付的因素</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#组织和文化因素"><span class="nav-number">2.1.</span> <span class="nav-text">组织和文化因素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码分支策略的选择"><span class="nav-number">2.2.</span> <span class="nav-text">代码分支策略的选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主干开发（TBD）"><span class="nav-number">2.2.1.</span> <span class="nav-text">主干开发（TBD）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特性分支开发"><span class="nav-number">2.2.2.</span> <span class="nav-text">特性分支开发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖管理"><span class="nav-number">2.3.</span> <span class="nav-text">依赖管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码回滚"><span class="nav-number">2.4.</span> <span class="nav-text">代码回滚</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是代码回滚？"><span class="nav-number">2.4.1.</span> <span class="nav-text">什么是代码回滚？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#哪些情况下需要回滚代码？"><span class="nav-number">2.4.2.</span> <span class="nav-text">哪些情况下需要回滚代码？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#哪些情况下包的回滚无需回滚代码？"><span class="nav-number">2.4.3.</span> <span class="nav-text">哪些情况下包的回滚无需回滚代码？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码回滚必须遵循的原则"><span class="nav-number">2.4.4.</span> <span class="nav-text">代码回滚必须遵循的原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三种典型回滚场景及回滚策略"><span class="nav-number">2.4.5.</span> <span class="nav-text">三种典型回滚场景及回滚策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试环境"><span class="nav-number">2.5.</span> <span class="nav-text">测试环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#互联网公司测试环境的结构"><span class="nav-number">2.5.1.</span> <span class="nav-text">互联网公司测试环境的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是好的测试环境？"><span class="nav-number">2.5.2.</span> <span class="nav-text">什么是好的测试环境？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试环境的成本"><span class="nav-number">2.5.3.</span> <span class="nav-text">测试环境的成本</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
