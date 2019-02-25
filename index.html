@@ -17,7 +17,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?36564487">
+<link rel="stylesheet" href="/css/journal.css?93636430">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -133,9 +133,21 @@
 
         
         
+        <div class="pagination-indicator">
+            <span style="text-align: center">
+                1<br><div style="display: inline-block; transform: rotate(-28deg)">-</div><br>2
+            </span>
+        </div>
+        
 
         
 
+        
+        <a class="pagination-action" href="/page/2/">
+            <i class="material-icons pagination-action-icon">
+                chevron_right
+            </i>
+        </a>
         
         
     </div>
@@ -361,22 +373,18 @@ server_rew...
             </div>
         </a>
         
-        <a href="/2016/02/24/Linux内核设计/" class="a-block">
+        <a href="/2016/02/26/Linux内核设计02-从main到怠速/" class="a-block">
             <div class="post-item-wrapper">
                 <div class="post-item post-item-no-divider">
                     <div class="post-item-info-wrapper">
                         <div class="post-item-title">
-                            Linux内核设计
+                            Linux内核设计02-从main到怠速
                         </div>
                         <div class="post-item-summary">
-                            
-
-从开机加电到执行main函数之前的过程
-第一步，启动BIOS，准备实模式下的中断向量表和中断服务程序
-BIOS...
+                            从main到怠速开中断之前的准备工作复制根设备号和硬盘参数表物理内存规划格局虚拟盘设置与初始化内存管理结构mem_...
                         </div>
                         <div class="post-item-meta">
-                            2016-02-24
+                            2016-02-26
                         </div>
                     </div>
                     
@@ -386,6 +394,28 @@ BIOS...
         
     
         
+<div class="pagination">
+    
+        <a class="pagination-action" style="opacity: 0">
+            
+            <i class="material-icons pagination-action-icon">
+                chevron_left
+            </i>
+        </a>
+
+        <div class="pagination-indicator">
+            <span>1/2</span>
+        </div>
+
+        
+        <a class="pagination-action" href="/page/2/" style="opacity: 1">
+            
+                <i class="material-icons pagination-action-icon">
+                    chevron_right
+                </i>
+            </a>
+</div>
+
     </div>
     <div class="single-column-footer">
     Proudly published with Hexo<br>
@@ -402,6 +432,6 @@ BIOS...
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?52512943"></script>
+<script src="/js/journal.js?38007869"></script>
 </body>
 </html>

@@ -1,0 +1,214 @@
+
+
+<!DOCTYPE html>
+<html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <title>Linux内核设计02-从main到怠速 - javfa&#39;s blog</title>
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Javfa">
+<meta name="description" content="从main到怠速开中断之前的准备工作复制根设备号和硬盘参数表物理内存规划格局虚拟盘设置与初始化内存管理结构mem_...">
+<meta name="keywords" content>
+
+    <meta charset="utf-8">
+    <meta name="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta content="telephone=no" name="format-detection">
+    <meta name="renderer" content="webkit">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/journal.css?83553935">
+<script src="/js/loadCSS.js"></script>
+<script>
+    loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
+    (function (d) {
+        var config = {
+                kitId: 'dwg1tuc',
+                scriptTimeout: 3000,
+                async: true
+            },
+            h = d.documentElement, t = setTimeout(function () {
+                h.className = h.className.replace(/\bwf-loading\b/g, "") + " wf-inactive";
+            }, config.scriptTimeout), tk = d.createElement("script"), f = false,
+            s = d.getElementsByTagName("script")[0], a;
+        h.className += " wf-loading";
+        tk.src = 'https://use.typekit.net/' + config.kitId + '.js';
+        tk.async = true;
+        tk.onload = tk.onreadystatechange = function () {
+            a = this.readyState;
+            if (f || a && a != "complete" && a != "loaded") return;
+            f = true;
+            clearTimeout(t);
+            try {
+                Typekit.load(config)
+            } catch (e) {
+            }
+        };
+        s.parentNode.insertBefore(tk, s)
+    })(document);
+</script>
+<noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora|Montserrat|Anonymous+Pro:400|Material+Icons">
+</noscript>
+</head>
+<body>
+<div id="top"></div>
+<div id="app">
+<div class="single-column-drawer-container" ref="drawer" v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            <a class="a-block drawer-menu-item false" href="http://yoursite.com">
+                Home
+            </a>
+            <a class="a-block drawer-menu-item false" href="/archives">
+                Archive
+            </a>
+
+            
+            
+
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav ref="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div ref="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a ref="navTitle" class="navbar-brand" href="/">
+            javfa&#39;s blog
+        </a>
+    </div>
+</nav>
+<div class="single-column-header-container" ref="pageHead" v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="/">
+        <div class="single-column-header-title">javfa&#39;s blog</div>
+        <div class="single-column-header-subtitle"></div>
+    </a>
+</div>
+<div ref="sideContainer" class="side-container">
+    <a class="a-block nav-head false" href="/">
+        <div class="nav-title">
+            {博客@家發}
+        </div>
+        <div class="nav-subtitle">
+            隻言片語<br>於此匯聚
+        </div>
+    </a>
+
+    <div class="nav-link-list">
+        <a class="a-block no-tint nav-link-item false" href="/archives">
+            Archive
+        </a>
+
+        
+        
+
+        
+    </div>
+
+    
+    <div class="nav-footer">
+        Proudly published with Hexo<br>
+        
+        Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+        
+        &copy; 2019 <a href="http://yoursite.com">javfa&#39;s blog</a>
+    </div>
+</div>
+<div ref="extraContainer" class="extra-container">
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+
+        
+    </div>
+</div>
+
+<div ref="streamContainer" class="stream-container">
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            <div class="post-head-wrapper-text-only" style="background-image: url('')">
+                <div class="post-title">
+                    Linux内核设计02-从main到怠速
+                    <div class="post-meta">
+                        <time datetime="2016-02-25T16:35:35.000Z" itemprop="datePublished">
+                            2016-02-26 00:35
+                        </time>&nbsp;
+                        
+    
+                        
+                        
+                        <i class="material-icons" style>label</i>
+                        
+                        <a href="/tags/Linux/">Linux</a>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+    
+            <div class="post-body-wrapper">
+                <div class="post-body">
+                    <h1><span id="从main到怠速">从main到怠速</span></h1><h2><span id="开中断之前的准备工作">开中断之前的准备工作</span></h2><h3><span id="复制根设备号和硬盘参数表">复制根设备号和硬盘参数表</span></h3><h3><span id="物理内存规划格局">物理内存规划格局</span></h3><h3><span id="虚拟盘设置与初始化">虚拟盘设置与初始化</span></h3><h3><span id="内存管理结构mem_map初始化">内存管理结构mem_map初始化</span></h3><h3><span id="异常处理类中断服务程序挂接">异常处理类中断服务程序挂接</span></h3><h3><span id="初始化块设备请求项结构">初始化块设备请求项结构</span></h3><h3><span id="与建立人机交互界面相关的外设的中断服务程序挂接">与建立人机交互界面相关的外设的中断服务程序挂接</span></h3><h3><span id="开机启动时间设置">开机启动时间设置</span></h3><h3><span id="系统开始激活进程0">系统开始激活进程0</span></h3><h3><span id="进程相关事务初始化设置">进程相关事务初始化设置</span></h3><h3><span id="时钟中断设置">时钟中断设置</span></h3><h3><span id="系统调用服务程序挂接">系统调用服务程序挂接</span></h3><h3><span id="初始化缓冲区管理结构">初始化缓冲区管理结构</span></h3><h3><span id="初始化硬盘">初始化硬盘</span></h3><h3><span id="初始化软盘">初始化软盘</span></h3><h3><span id="开中断">开中断</span></h3><h2><span id="进程创建的最基本动作">进程创建的最基本动作</span></h2><h3><span id="操作系统为进程0创建进程1做准备">操作系统为进程0创建进程1做准备</span></h3><h3><span id="在进程槽中为进程1申请一个空闲位置并获取进程号">在进程槽中为进程1申请一个空闲位置并获取进程号</span></h3><h3><span id="复制进程信息之前先将以下数据压栈">复制进程信息之前，先将以下数据压栈</span></h3><h3><span id="初步设置进程1管理结构">初步设置进程1管理结构</span></h3><h3><span id="进程0创建进程1的过程中发生时钟中断">进程0创建进程1的过程中发生时钟中断</span></h3><h3><span id="从时钟中断返回">从时钟中断返回</span></h3><h3><span id="调整进程1管理结构">调整进程1管理结构</span></h3><h3><span id="设置进程1的线性地址空间及物理页面">设置进程1的线性地址空间及物理页面</span></h3><h3><span id="继续调整进程1管理结构">继续调整进程1管理结构</span></h3><h2><span id="加载根文件系统">加载根文件系统</span></h2><h3><span id="进程1如何开始执行">进程1如何开始执行</span></h3><h3><span id="进程1开始执行">进程1开始执行</span></h3><h3><span id="进程1开始以数据块的形式操作硬盘">进程1开始以数据块的形式操作硬盘</span></h3><h3><span id="将找到的缓冲块与请求项挂接">将找到的缓冲块与请求项挂接</span></h3><h3><span id="将请求项与硬盘处理函数挂接">将请求项与硬盘处理函数挂接</span></h3><h3><span id="进行硬盘读盘前的准备工作">进行硬盘读盘前的准备工作</span></h3><h3><span id="给硬盘下达读盘指令">给硬盘下达读盘指令</span></h3><h3><span id="进程1由于等待读盘操作挂起">进程1由于等待读盘操作挂起</span></h3><h3><span id="系统切换到进程0执行">系统切换到进程0执行</span></h3><h3><span id="进程0的执行过程">进程0的执行过程</span></h3><h3><span id="进程0执行过程中发生硬盘中断">进程0执行过程中发生硬盘中断</span></h3><h3><span id="硬盘中断服务程序响应后进程0继续执行">硬盘中断服务程序响应后，进程0继续执行</span></h3><h3><span id="再次响应硬盘中断并唤醒进程1">再次响应硬盘中断并唤醒进程1</span></h3><h3><span id="读盘操作完成后进程1继续执行">读盘操作完成后，进程1继续执行</span></h3><h3><span id="进程1继续设置硬盘管理结构">进程1继续设置硬盘管理结构</span></h3><h3><span id="进程1获取软盘超级块为加载根文件系统做准备">进程1获取软盘超级块，为加载根文件系统做准备</span></h3><h3><span id="进程1备份超级块数据">进程1备份超级块数据</span></h3><h3><span id="进程1将根文件系统从软盘拷贝到虚拟盘">进程1将根文件系统从软盘拷贝到虚拟盘</span></h3><h3><span id="进程1开始加载根文件系统">进程1开始加载根文件系统</span></h3><h3><span id="进程1准备加载根文件系统超级块">进程1准备加载根文件系统超级块</span></h3><h3><span id="进程1加载根文件系统超级块">进程1加载根文件系统超级块</span></h3><h3><span id="进程1继续加载根文件系统">进程1继续加载根文件系统</span></h3><h3><span id="进程1准备读取根目录i节点">进程1准备读取根目录i节点</span></h3><h3><span id="进程1加载根目录i节点">进程1加载根目录i节点</span></h3><h3><span id="进程1结束加载根文件系统的过程">进程1结束加载根文件系统的过程</span></h3><h2><span id="打开终端设备文件及复制文件句柄">打开终端设备文件及复制文件句柄</span></h2><h3><span id="进程1与内核文件表挂接为打开文件做准备">进程1与内核文件表挂接，为打开文件做准备</span></h3><h3><span id="确定打开操作的起点">确定打开操作的起点</span></h3><h3><span id="获得枝梢i节点-dev目录文件的i节点">获得枝梢i节点-dev目录文件的i节点</span></h3><h3><span id="确定dev目录文件i节点为枝梢i节点">确定dev目录文件i节点为枝梢i节点</span></h3><h3><span id="继续返回枝梢i节点">继续返回枝梢i节点</span></h3><h3><span id="查找tty0文件的i节点">查找tty0文件的i节点</span></h3><h3><span id="将tty0设备文件的i节点返回给sys_open系统调用">将tty0设备文件的i节点返回给sys_open系统调用</span></h3><h3><span id="分析tty0文件i节点">分析tty0文件i节点</span></h3><h3><span id="设置文件管理结构并返回给用户进程">设置文件管理结构并返回给用户进程</span></h3><h3><span id="进程1复制tty0文件句柄">进程1复制tty0文件句柄</span></h3><h3><span id="进程1继续复制tty0文件句柄">进程1继续复制tty0文件句柄</span></h3><h2><span id="创建进程2">创建进程2</span></h2><p>进程1准备创建进程2</p>
+<p>复制进程2管理结构并继续调整</p>
+<p>设置进程2的页目录项并复制进程2的页表</p>
+<p>调整进程2管理结构中与文件有关的内容</p>
+<p>进程1执行过程中发生时钟中断</p>
+<p>进程1从时钟中断返回，准备切换到进程2</p>
+<h2><span id="进程1等待进程2退出">进程1等待进程2退出</span></h2><h2><span id="shell程序的加载">shell程序的加载</span></h2><h2><span id="系统实现怠速">系统实现怠速</span></h2>
+                </div>
+            </div>
+    
+            <nav class="post-pagination">
+    
+    <a class="newer-posts" href="/2017/02/21/运维体系管理/">
+        Previous post<br>运维体系管理
+    </a>
+    
+    <span class="page-number"></span>
+    
+    <a class="older-posts" href="/2016/02/24/Linux内核设计01-加电到main/">
+        Next post<br>Linux内核设计01-从加电到main
+    </a>
+    
+</nav>
+
+    
+            
+
+
+        </div>
+    </div>
+    <div class="single-column-footer">
+    Proudly published with Hexo<br>
+    
+    Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+    
+    &copy; 2018 <a href="http://yoursite.com">javfa&#39;s blog</a>
+</div>
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js" integrity="sha256-EGs9T1xMHdvM1geM8jPpoo8EZ1V1VRsmcJz8OByENLA=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
+<script src="/js/journal.js?40689986"></script>
+
+
+
+</body>
+</html>
