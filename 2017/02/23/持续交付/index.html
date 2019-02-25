@@ -1,4 +1,184 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>持续交付 | javfa's blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">持续交付</h1><a id="logo" href="/.">javfa's blog</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">持续交付</h1><div class="post-meta">Feb 23, 2017</div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#持续交付的价值"><span class="toc-number">1.</span> <span class="toc-text">持续交付的价值</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#持续交付的定义"><span class="toc-number">1.1.</span> <span class="toc-text">持续交付的定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#持续集成、持续交付和持续部署的关系"><span class="toc-number">1.2.</span> <span class="toc-text">持续集成、持续交付和持续部署的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#持续交付的显性价值"><span class="toc-number">1.3.</span> <span class="toc-text">持续交付的显性价值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#持续交付的隐性价值"><span class="toc-number">1.4.</span> <span class="toc-text">持续交付的隐性价值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何评估持续交付的价值"><span class="toc-number">1.5.</span> <span class="toc-text">如何评估持续交付的价值</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#影响持续交付的因素"><span class="toc-number">2.</span> <span class="toc-text">影响持续交付的因素</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#组织和文化因素"><span class="toc-number">2.1.</span> <span class="toc-text">组织和文化因素</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码分支策略的选择"><span class="toc-number">2.2.</span> <span class="toc-text">代码分支策略的选择</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#主干开发（TBD）"><span class="toc-number">2.2.1.</span> <span class="toc-text">主干开发（TBD）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#特性分支开发"><span class="toc-number">2.2.2.</span> <span class="toc-text">特性分支开发</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖管理"><span class="toc-number">2.3.</span> <span class="toc-text">依赖管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码回滚"><span class="toc-number">2.4.</span> <span class="toc-text">代码回滚</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是代码回滚？"><span class="toc-number">2.4.1.</span> <span class="toc-text">什么是代码回滚？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#哪些情况下需要回滚代码？"><span class="toc-number">2.4.2.</span> <span class="toc-text">哪些情况下需要回滚代码？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#哪些情况下包的回滚无需回滚代码？"><span class="toc-number">2.4.3.</span> <span class="toc-text">哪些情况下包的回滚无需回滚代码？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码回滚必须遵循的原则"><span class="toc-number">2.4.4.</span> <span class="toc-text">代码回滚必须遵循的原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三种典型回滚场景及回滚策略"><span class="toc-number">2.4.5.</span> <span class="toc-text">三种典型回滚场景及回滚策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试环境"><span class="toc-number">2.5.</span> <span class="toc-text">测试环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#互联网公司测试环境的结构"><span class="toc-number">2.5.1.</span> <span class="toc-text">互联网公司测试环境的结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是好的测试环境？"><span class="toc-number">2.5.2.</span> <span class="toc-text">什么是好的测试环境？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试环境的成本"><span class="toc-number">2.5.3.</span> <span class="toc-text">测试环境的成本</span></a></li></ol></li></ol></li></ol></div></div><div class="post-content"><h1 id="持续交付的价值"><a href="#持续交付的价值" class="headerlink" title="持续交付的价值"></a>持续交付的价值</h1><h2 id="持续交付的定义"><a href="#持续交付的定义" class="headerlink" title="持续交付的定义"></a>持续交付的定义</h2><blockquote>
+<!DOCTYPE html>
+<html lang>
+  <head><meta name="generator" content="Hexo 3.8.0">
+    
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="持续交付——如何将一个好点子，以最快的速度交付给用户">
+
+
+
+
+  <meta name="keywords" content="运维, javfa's blog">
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="/default" title="javfa's blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.10.2">
+
+
+
+<link rel="canonical" href="http://yoursite.com/2017/02/23/持续交付/">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css">
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/nprogress/nprogress.min.css">
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.10.2">
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":true};
+</script>
+
+    <title> 持续交付 - javfa's blog </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">javfa's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            首页
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">javfa's blog</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          持续交付
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017-02-23
+        </span>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#持续交付的价值"><span class="toc-text">持续交付的价值</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#持续交付的定义"><span class="toc-text">持续交付的定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#持续集成、持续交付和持续部署的关系"><span class="toc-text">持续集成、持续交付和持续部署的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#持续交付的显性价值"><span class="toc-text">持续交付的显性价值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#持续交付的隐性价值"><span class="toc-text">持续交付的隐性价值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何评估持续交付的价值"><span class="toc-text">如何评估持续交付的价值</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#影响持续交付的因素"><span class="toc-text">影响持续交付的因素</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#组织和文化因素"><span class="toc-text">组织和文化因素</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码分支策略的选择"><span class="toc-text">代码分支策略的选择</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#主干开发（TBD）"><span class="toc-text">主干开发（TBD）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#特性分支开发"><span class="toc-text">特性分支开发</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖管理"><span class="toc-text">依赖管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码回滚"><span class="toc-text">代码回滚</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是代码回滚？"><span class="toc-text">什么是代码回滚？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#哪些情况下需要回滚代码？"><span class="toc-text">哪些情况下需要回滚代码？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#哪些情况下包的回滚无需回滚代码？"><span class="toc-text">哪些情况下包的回滚无需回滚代码？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码回滚必须遵循的原则"><span class="toc-text">代码回滚必须遵循的原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三种典型回滚场景及回滚策略"><span class="toc-text">三种典型回滚场景及回滚策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试环境"><span class="toc-text">测试环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#互联网公司测试环境的结构"><span class="toc-text">互联网公司测试环境的结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是好的测试环境？"><span class="toc-text">什么是好的测试环境？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试环境的成本"><span class="toc-text">测试环境的成本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何调节效率和成本的矛盾？"><span class="toc-text">如何调节效率和成本的矛盾？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#环境自描性"><span class="toc-text">环境自描性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#环境一定要标准化"><span class="toc-text">环境一定要标准化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#约定大于配置"><span class="toc-text">约定大于配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#让环境自己能开口说话"><span class="toc-text">让环境自己能开口说话</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </div>
+
+
+
+    <div class="post-content">
+      
+        <h1 id="持续交付的价值"><a href="#持续交付的价值" class="headerlink" title="持续交付的价值"></a>持续交付的价值</h1><h2 id="持续交付的定义"><a href="#持续交付的定义" class="headerlink" title="持续交付的定义"></a>持续交付的定义</h2><blockquote>
 <p>持续交付是软件研发人员，如何将一个好点子，以最快的速度交付给用户的方法。</p>
 <p>From 《持续交付：发布可靠软件的系统方法》</p>
 </blockquote>
@@ -208,7 +388,7 @@
 <p>它除了可以用作测试之外，还可以用作产品展示。所以，除了测试和开发人员，产品经理也是验收测试环境的主要使用者。</p>
 </li>
 <li><p>预发布环境</p>
-<p>到预发布阶段，应用已经进入了生产网络，和真实的生产应用共享同一套数据库等基础设施。预发布是正式发布前的最后依次测试，在这个环境中往往可以发现线下环境中发现不了的Bug。这个环境的运维标准等同于生产环境，一般不允许开发人员直接登陆机器。</p>
+<p>到预发布阶段，应用已经进入了生产网络，和真实的生产应用共享同一套数据库等基础设施。预发布是正式发布前的最后一次测试，在这个环境中往往可以发现线下环境中发现不了的Bug。这个环境的运维标准等同于生产环境，一般不允许开发人员直接登陆机器。</p>
 <p>根据不同的业务需求和部署策略，不同公司对预发布环境的实现也有所不同：</p>
 <ul>
 <li><p>一种比较常见的方式是，将金丝雀发布作为预发布，从接入真实流量的集群中挑选一台或一小组机器先进行版本更新，通过手工测试以及自动化测试和监控系统验证，降低新版本发布的风险。</p>
@@ -264,6 +444,325 @@
 <h3 id="测试环境的成本"><a href="#测试环境的成本" class="headerlink" title="测试环境的成本"></a>测试环境的成本</h3><ul>
 <li><p>机器资源的成本</p>
 <p>保证环境的独立性，是你构建更多套环境的一个主要原因。但是，一套独立的、拥有完整链路的环境成本是非常高的。</p>
+<p>以阿里云的价格为例：假设一个只有100个应用的微服务架构环境，选取单应用单机2核4G内存的低配置实例方式进行部署，单实例的年价格在2000元左右，100个实例的话，一年的花费就是20万元左右。</p>
+<p>而这只是最保守的计算，随着服务规模的增加，以及更多环境的需要，整体花费上涨两个数量级也是很正常的。</p>
+<p>这样的问题在开发环境和集成环境的表现是最明显的。为了保证这两套环境的独立性，你必然需要有很高的环境副本数。单无论如何，你都不可能让每一个开发和测试人员都拥有一套完整环境的硬件资源。</p>
+</li>
+<li><p>其次是管理成本</p>
+<p>管理成本，包括维护环境的可用性，配置的管理成本，和测试数据的维护成本三个维度。</p>
+<ul>
+<li><p>维护多套环境的第一要点是，维护环境的可用性。</p>
+<p>与云时代之前相比，容器技术已经解决了很多问题。比如，服务器操作系统级别的依赖的标准化更容易了；当出现硬件故障时，迁移和恢复服务也更加方便了。</p>
+<p>但是容器技术并没有解决故障定位的问题。微服务架构下集群的节点数量多，调用链复杂，你不再能确定到底是环境问题，还是程序本身的Bug，也就导致定位故障更加困难了。</p>
+<p>所以，更多套环境就意味着更大的集群规模，出现故障的几率会随之增加，而解决故障也会占用更长的工作时间。</p>
+</li>
+<li><p>维护多套环境的另一大成本，配置管理成本</p>
+<p>配置是环境管理中最核心的内容，创建一套环境时，为了保证它真正的独立可用，不仅要保证应用可以成功运行，还要保证应用在基础设施的配置是正确的。比如集成测试环境下部署了一个应用的多个平行项目，就需要有办法保证测试人员能访问到正确的应用。</p>
+<p>如果是web应用，你就要考虑把应用绑定到不同的域名，这样就会增加域名管理的成本；如果是一个service应用，就要考虑到这些service不会被其他项目的、无关环境的应用调用到，同时也不会调用到其他错误的服务。</p>
+<p>每多一套环境，就会多一套这样的配置，而且这些配置都需要在各类基础设施中生效。</p>
+</li>
+<li><p>测试数据的维护成本</p>
+<p>测试数据也是环境中极为重要的一个组成部分。当并行环境的数量变多后，数据的维护同样是让人头疼的问题。</p>
+<p>为了保证环境的高仿真，哪些环境公用一套数据库，以及测试数据的更新在多套环境中怎么执行等等，都需要非常高的管理成本。</p>
 </li>
 </ul>
-</div><div class="tags"><a href="/tags/运维/">运维</a></div><div class="post-nav"><a class="pre" href="/2019/02/17/Nginx-modules/">Nginx modules</a><a class="next" href="/2017/02/21/运维体系管理/">运维体系管理</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://yoursite.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/Web/" style="font-size: 15px;">Web</a> <a href="/tags/运维/" style="font-size: 15px;">运维</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/02/24/Nginx源码分析/">Nginx源码分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/21/Nginx的配置/">Nginx的配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/21/Web性能基础/">Web性能基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/20/Linux性能优化/">Linux性能优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/20/Linux-Kernel/">Linux Kernel</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/17/Nginx-modules/">Nginx modules</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/23/持续交付/">持续交付</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/21/运维体系管理/">运维体系管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/Linux内核设计/">Linux内核设计</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://www.ibm.com/developerworks/cn/topics/" title="ibm developerworks" target="_blank">ibm developerworks</a><ul></ul><a href="https://github.com/tufu9441/maupassant-hexo" title="maupassant-hexo" target="_blank">maupassant-hexo</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">javfa's blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
+</li>
+<li><p>最后是流程成本</p>
+<ul>
+<li><p>沟通成本</p>
+<p>每增加一套环境，你都需要考虑团队成员如何在新环境上沟通协作。谁在占用，何时退出这些信息，你都需要第一时间告知团队。当环境的数量变得非常多以后，做好这些事儿的难度就很大了。</p>
+</li>
+<li><p>测试成本</p>
+<p>在开发环境、集成测试环境、验收测试环境、预发布环境、生产环境这样的结构下，核心功能的测试流程就至少会执行五次。每引入一套新的环境，测试流程都会变得更加复杂。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="如何调节效率和成本的矛盾？"><a href="#如何调节效率和成本的矛盾？" class="headerlink" title="如何调节效率和成本的矛盾？"></a>如何调节效率和成本的矛盾？</h3><p>增加一套环境带来的成本竟然有那么多，但是为了提高持续交付的效率，隔离的多套环境又是必不可少的。</p>
+<p>那么，应该怎样去规划和设计环境呢？</p>
+<ul>
+<li><p>公共与泳道</p>
+<p>第一个关键点是抽象公共环境，而其中的公共服务基本都属于底层服务，相对比较稳定，这是解耦环境的重中之重。比如我们经常会将中间件、框架类服务，底层业务公共服务（账号、登陆、基本信息）部署在这套公共环境上。</p>
+<p>在公共环境的基础上，可以通过泳道的方式隔离相关测试应用，利用LB和SOA中间件对路由功能的支持，在一个大的公共集成测试环境中隔离出一个个独立的功能测试环境，那么增加的机器成本就仅与被并行的项目多少有关系了。</p>
+<p>具体案例：</p>
+<p>比如，你有一个新的下单流程需要测试。你可以将下单web2.0和下单sevice2.0抽离出来</p>
+</li>
+<li><p>避免产生多套公共环境</p>
+<p>用mock service模拟大多数服务</p>
+</li>
+<li><p>减轻配置的复杂度</p>
+<ul>
+<li>制定一套统一配置的解决方案</li>
+<li>要让环境自己说话，有效减少配置项</li>
+</ul>
+</li>
+</ul>
+<h2 id="环境自描性"><a href="#环境自描性" class="headerlink" title="环境自描性"></a>环境自描性</h2><blockquote>
+<p>要想把环境配置做好，就是要做到让环境自己能说话。</p>
+</blockquote>
+<p>环境配置可以分为:</p>
+<ul>
+<li><p>以环境中每台服务器为对象的运行时配置</p>
+<p>以一个Java Web应用为例，需要哪些运行时配置呢？</p>
+<ol>
+<li>安装war包运行依赖的基础环境，比如JDK、Tomcat等</li>
+<li>修改Tomcat的配置文件，关注点主要包括：应用的日志目录，日志的输出格式，war包的存放位置。Tomcat的server.xml配置包括：连接数、端口、线程池等参数</li>
+<li>配置Java参数，包括JVM堆内存的最大最小方式、GC方式、参数，JMX监控开启等</li>
+<li>考虑操作系统参数，比较常见的一个配置时Linux的文件句柄数，如果应用对网络环境有一些特殊要求的话，还需要调整系统的TCP参数等配置</li>
+</ol>
+<p>经过上面4步，一个简单的运行时环境的配置就算时完成了，可以开始运行一个程序了。</p>
+<p>但我们不光要考虑单个实例初始化配置，还要考虑每次JDK、Tomcat等基础软件的版本升级引起的运行时配置的变更，而且这些变更都需要清晰的记录下来，从而保证扩容出新的服务器时能取到正确的、最新的配置。</p>
+<p>另外，对于一个集群的服务器组来说，还需要强制保证它们的运行时配置是一致的。</p>
+</li>
+<li><p>以一个环境为整体目标的独立环境配置</p>
+<p>独立环境配置的主要目的是，保证一个环境能够完整运作的同时，又保证足够的隔离性，使其成为一个内聚的整体。</p>
+<p>所以，要让一个环境能够符合需求的正常运作，你需要考虑的内容包括：</p>
+<ol>
+<li>这个环境所依赖的数据库该如何配置，缓存服务器又该如何配置</li>
+<li>如果是分布式系统，或者SOA结构的话，就需要考虑服务中心、配置中心等一系列中间件的配置问题</li>
+</ol>
+<p>其中，最为重要的是配置中心的配置。</p>
+<p>只有先访问到正确的配置中心，才能获取到其他相关的环境配置或者应用配置信息。也就是说，如果配置中心的配置错了，那么环境就会陷入混乱状态。</p>
+<ol>
+<li>要考虑访问入口问题。这套环境的入口在哪里？是一个站点还是一个服务入口？如果是一个站点的话，那这个站点的访问域名就需要被特殊配置。如果这是一个内部环境的话，那么这个内部域名的DNS解析也需要被配置。如果这套环境中有多个Web应用，那么你就要考虑7层路由的配置问题了</li>
+<li>还要配置环境对应的基础服务，比如监控、短信、搜索等</li>
+</ol>
+</li>
+</ul>
+<p>再如果你的环境要承载多种语言栈，各类应用依赖的基础软件也不同，环境和环境之间有各种关联设置，数据库的连接分配，环境中负载均衡的设置等等</p>
+<p>虽然环境配置有这么多的待处理事项，但是环境本身也是一个非常强大的工具，本身包含非常多的信息，如果这些糟心的事情环境能和你一起来解决，那就简单了，也就是说要让环境之间来说话。怎么做到呢？</p>
+<h3 id="环境一定要标准化"><a href="#环境一定要标准化" class="headerlink" title="环境一定要标准化"></a>环境一定要标准化</h3><p>解决复杂问题的办法，无非是先将其分解，再将其简单化，对环境配置这个难题来说也是同样的道理。想要解决它，首先得要想办法分解、简化它。</p>
+<p>最好的简化方法，莫过于标准化了。</p>
+<p>所谓标准化，就是为了在一定范围内获得最佳秩序，对实际的或潜在的问题制定共同、可重复使用的规则。</p>
+<p>标准化也就是让环境学会了一门统一的语言，是自己说话的前提。</p>
+<p>按照这个思路，我们首先可以实现对语言栈的使用、运行时配置模板、独立环境配置的方法等的标准化：、</p>
+<ul>
+<li>规定公司的主流语言栈</li>
+<li>统一服务器安装镜像</li>
+<li>提供默认的运行时配置模板</li>
+<li>统一基础软件的版本，以及更新方式</li>
+<li>在架构层面统一解决环境路由问题</li>
+<li>自动化环境产生过程</li>
+</ul>
+<p>在实施持续交付的同时，推动形成以下几个方面的规范：</p>
+<ul>
+<li>代码及依赖规范</li>
+<li>命名规范</li>
+<li>开发规范</li>
+<li>配置规范</li>
+<li>部署规范</li>
+<li>安全规范</li>
+<li>测试规范</li>
+</ul>
+<p>其实，不管是持续交付还是架构改造，标准先行都是技术实施的前提条件。</p>
+<h3 id="约定大于配置"><a href="#约定大于配置" class="headerlink" title="约定大于配置"></a>约定大于配置</h3><p>像代码的部署路径，每个环境的域名定义，FAT、UAT来表示环境的作用，单机单应用，所有服务端端口是8080等等</p>
+<p>约定大于配置的好处是，除了简化配置工作外，还可以提高沟通效率。</p>
+<p>相当于赋予了环境天生的本能，进一步加强了环境的自我描述能力。</p>
+<h3 id="让环境自己能开口说话"><a href="#让环境自己能开口说话" class="headerlink" title="让环境自己能开口说话"></a>让环境自己能开口说话</h3><p>有了环境标准化，以及约定大于配置的基础，你就可以顺利地让环境自己开口说话了。</p>
+<p>也就是，通过环境的自描述文件，让环境能讲清楚自己的作用、依赖，以及状态，而不是由外部配置来解释这些内容。</p>
+<p>以一台服务器为例，一旦生成，除了不能控制自己的生死外，其他运行过程中的配置，都应该根据它自身的描述来决定。</p>
+<p>那么，如何让服务器自己说话呢？</p>
+<ul>
+<li>首先，需要定义Server Spec：在这个文件中，记录了这台服务器的所有身份信息，包括：IDC、型号、归属环境、作用、所属应用、服务类型、访问路径等</li>
+<li>解决配置中心寻址：中间件根据Server Spec的描述，寻找到它所在环境对应的配置中心，从而进一步获取其他配置，如数据库连接字符串、短信服务地址等</li>
+<li>完成服务自发现：根据服务类型、访问路径等，还可以自动生成对应的路由配置、负载均衡配置等</li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="http://yoursite.com">Javfa</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="http://yoursite.com/2017/02/23/持续交付/">http://yoursite.com/2017/02/23/持续交付/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/运维/">运维</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2019/02/17/Nginx-modules/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Nginx modules</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/02/21/运维体系管理/">
+        <span class="next-text nav-default">运维体系管理</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/ahonn" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    
+      
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Javfa</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+
+
+
+    
+  
+
+
+
+  
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/pjax/jquery.pjax.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/nprogress/nprogress.min.js"></script>
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.10.2"></script>
+
+  </body>
+</html>

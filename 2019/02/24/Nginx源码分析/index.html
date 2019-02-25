@@ -1,4 +1,184 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Nginx源码分析 | javfa's blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Nginx源码分析</h1><a id="logo" href="/.">javfa's blog</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Nginx源码分析</h1><div class="post-meta">Feb 24, 2019</div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#内存池管理"><span class="toc-number">1.</span> <span class="toc-text">内存池管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-number">1.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内存池基本结构"><span class="toc-number">1.2.</span> <span class="toc-text">内存池基本结构</span></a></li></ol></li></ol></div></div><div class="post-content"><h1 id="内存池管理"><a href="#内存池管理" class="headerlink" title="内存池管理"></a>内存池管理</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Nginx使用内存池管理内存，把内存分配归结为大内存分配和小内存分配。</p>
+<!DOCTYPE html>
+<html lang>
+  <head><meta name="generator" content="Hexo 3.8.0">
+    
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="Nginx源码的全方位分析">
+
+
+
+
+  <meta name="keywords" content="Nginx, javfa's blog">
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="/default" title="javfa's blog">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.10.2">
+
+
+
+<link rel="canonical" href="http://yoursite.com/2019/02/24/Nginx源码分析/">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css">
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/nprogress/nprogress.min.css">
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.10.2">
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":true};
+</script>
+
+    <title> Nginx源码分析 - javfa's blog </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">javfa's blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            首页
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">javfa's blog</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Nginx源码分析
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-02-24
+        </span>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#内存池管理"><span class="toc-text">内存池管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内存池基本结构"><span class="toc-text">内存池基本结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内存池操作"><span class="toc-text">内存池操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建内存池"><span class="toc-text">创建内存池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#销毁内存池"><span class="toc-text">销毁内存池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重置内存池"><span class="toc-text">重置内存池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内存分配"><span class="toc-text">内存分配</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#小块内存分配"><span class="toc-text">小块内存分配</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#大块内存分配"><span class="toc-text">大块内存分配</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cleanup资源"><span class="toc-text">cleanup资源</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#理解Event模块的实现"><span class="toc-text">理解Event模块的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#事件驱动"><span class="toc-text">事件驱动</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+
+    <div class="post-content">
+      
+        <h1 id="内存池管理"><a href="#内存池管理" class="headerlink" title="内存池管理"></a>内存池管理</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Nginx使用内存池管理内存，把内存分配归结为大内存分配和小内存分配。</p>
 <ul>
 <li>不会直接在内存池上分配内存来满足大块内存的分配请求，而是直接向系统申请一块内存（直接使用malloc分配），然后将这块内存挂到内存池头部的large字段下。</li>
 <li>小块内存的分配，则是从已有的内存池数据区中去分配。</li>
@@ -23,4 +203,218 @@
 <p>Nginx内存分配流程图如下：（其中size为用户请求分配内存的大小，pool是现有内存池）</p>
 <p><img src="assets/1551024279337.png" alt="1551024279337"></p>
 <h2 id="内存池基本结构"><a href="#内存池基本结构" class="headerlink" title="内存池基本结构"></a>内存池基本结构</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 内存池结构 */</span></span><br><span class="line"><span class="comment">/* 文件 core/ngx_palloc.h */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span><span class="comment">/* 内存池数据结构模块 */</span></span><br><span class="line">    u_char               *last; <span class="comment">/* 当前内存分配的结束位置，即下一段可分配内存的起始位置 */</span></span><br><span class="line">    u_char               *end;  <span class="comment">/* 内存池的结束位置 */</span></span><br><span class="line">    <span class="keyword">ngx_pool_t</span>           *next; <span class="comment">/* 指向下一个内存池 */</span></span><br><span class="line">    <span class="keyword">ngx_uint_t</span>            failed;<span class="comment">/* 记录内存池内存分配失败的次数 */</span></span><br><span class="line">&#125; <span class="keyword">ngx_pool_data_t</span>;  <span class="comment">/* 维护内存池的数据块 */</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ngx_pool_s</span> &#123;</span><span class="comment">/* 内存池的管理模块，即内存池头部结构 */</span></span><br><span class="line">    <span class="keyword">ngx_pool_data_t</span>       d;    <span class="comment">/* 内存池的数据块 */</span></span><br><span class="line">    <span class="keyword">size_t</span>                max;  <span class="comment">/* 内存池数据块的最大值 */</span></span><br><span class="line">    <span class="keyword">ngx_pool_t</span>           *current;<span class="comment">/* 指向当前内存池 */</span></span><br><span class="line">    <span class="keyword">ngx_chain_t</span>          *chain;<span class="comment">/* 指向一个 ngx_chain_t 结构 */</span></span><br><span class="line">    <span class="keyword">ngx_pool_large_t</span>     *large;<span class="comment">/* 大块内存链表，即分配空间超过 max 的内存 */</span></span><br><span class="line">    <span class="keyword">ngx_pool_cleanup_t</span>   *cleanup;<span class="comment">/* 析构函数，释放内存池 */</span></span><br><span class="line">    <span class="keyword">ngx_log_t</span>            *<span class="built_in">log</span>;<span class="comment">/* 内存分配相关的日志信息 */</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">/* 文件 core/ngx_core.h */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ngx_pool_s</span>   <span class="title">ngx_pool_t</span>;</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ngx_chain_s</span>  <span class="title">ngx_chain_t</span>;</span></span><br></pre></td></tr></table></figure>
-</div><div class="tags"><a href="/tags/Nginx/">Nginx</a></div><div class="post-nav"><a class="next" href="/2019/02/21/Nginx的配置/">Nginx的配置</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://yoursite.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/Web/" style="font-size: 15px;">Web</a> <a href="/tags/运维/" style="font-size: 15px;">运维</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/02/24/Nginx源码分析/">Nginx源码分析</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/21/Nginx的配置/">Nginx的配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/21/Web性能基础/">Web性能基础</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/20/Linux性能优化/">Linux性能优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/20/Linux-Kernel/">Linux Kernel</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/17/Nginx-modules/">Nginx modules</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/23/持续交付/">持续交付</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/21/运维体系管理/">运维体系管理</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/02/24/Linux内核设计/">Linux内核设计</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="https://www.ibm.com/developerworks/cn/topics/" title="ibm developerworks" target="_blank">ibm developerworks</a><ul></ul><a href="https://github.com/tufu9441/maupassant-hexo" title="maupassant-hexo" target="_blank">maupassant-hexo</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">javfa's blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
+<p>大块内存分配的数据结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ngx_pool_large_s</span> <span class="title">ngx_pool_large_t</span>;</span>  </span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ngx_pool_large_s</span>&#123;</span>  </span><br><span class="line">          <span class="keyword">ngx_pool_large_t</span>  *next;    <span class="comment">//指向下一块大块内存  </span></span><br><span class="line">          <span class="keyword">void</span>    *alloc;             <span class="comment">//指向分配的大块内存  </span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>其他数据结构如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*ngx_pool_cleanup_pt)</span><span class="params">(<span class="keyword">void</span> *data)</span></span>;    <span class="comment">//cleanup的callback类型  </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ngx_pool_cleanup_s</span> <span class="title">ngx_pool_cleanup_t</span>;</span>  </span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ngx_pool_cleanup_s</span>&#123;</span>  </span><br><span class="line">    ngx_pool_cleanup_pt handler;  </span><br><span class="line">    <span class="keyword">void</span>    *data;              <span class="comment">//指向要清除的数据  </span></span><br><span class="line">    <span class="keyword">ngx_pool_cleanup_t</span> *next;   <span class="comment">//下一个cleanup callback  </span></span><br><span class="line">&#125;;  </span><br><span class="line">  </span><br><span class="line"> </span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span>  </span><br><span class="line">    <span class="keyword">ngx_fd_t</span>   fd;  </span><br><span class="line">    u_char    *name;  </span><br><span class="line">    <span class="keyword">ngx_log_t</span> *<span class="built_in">log</span>;  </span><br><span class="line">&#125; <span class="keyword">ngx_pool_cleanup_file_t</span>;</span><br></pre></td></tr></table></figure>
+<p>内存池基本结构之间的关系如下图所示：</p>
+<p><img src="assets/1551028372193.png" alt="1551028372193"></p>
+<p><img src="assets/1551028537439.png" alt="1551028537439"></p>
+<h2 id="内存池操作"><a href="#内存池操作" class="headerlink" title="内存池操作"></a>内存池操作</h2><h3 id="创建内存池"><a href="#创建内存池" class="headerlink" title="创建内存池"></a>创建内存池</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 创建内存池，该函数定义于 src/core/ngx_palloc.c 文件中 */</span></span><br><span class="line"><span class="keyword">ngx_pool_t</span> *</span><br><span class="line">ngx_create_pool(<span class="keyword">size_t</span> size, <span class="keyword">ngx_log_t</span> *<span class="built_in">log</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span>  *p; <span class="comment">/* 执行内存池头部 */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 分配大小为 size 的内存 */</span></span><br><span class="line">    <span class="comment">/* ngx_memalign 函数实现于 src/os/unix/ngx_alloc.c 文件中 */</span></span><br><span class="line">    p = ngx_memalign(NGX_POOL_ALIGNMENT, size, <span class="built_in">log</span>);</span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 以下是初始化 ngx_pool_t 结构信息 */</span></span><br><span class="line"></span><br><span class="line">    p-&gt;d.last = (u_char *) p + <span class="keyword">sizeof</span>(<span class="keyword">ngx_pool_t</span>);</span><br><span class="line">    p-&gt;d.end = (u_char *) p + size;</span><br><span class="line">    p-&gt;d.next = <span class="literal">NULL</span>;</span><br><span class="line">    p-&gt;d.failed = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    size = size - <span class="keyword">sizeof</span>(<span class="keyword">ngx_pool_t</span>);   <span class="comment">/* 可供分配的空间大小 */</span></span><br><span class="line">    <span class="comment">/* 不能超过最大的限定值 4096B */</span></span><br><span class="line">    p-&gt;max = (size &lt; NGX_MAX_ALLOC_FROM_POOL) ? size : NGX_MAX_ALLOC_FROM_POOL;</span><br><span class="line"></span><br><span class="line">    p-&gt;current = p; <span class="comment">/* 指向当前的内存池 */</span></span><br><span class="line">    p-&gt;chain = <span class="literal">NULL</span>;</span><br><span class="line">    p-&gt;large = <span class="literal">NULL</span>;</span><br><span class="line">    p-&gt;cleanup = <span class="literal">NULL</span>;</span><br><span class="line">    p-&gt;<span class="built_in">log</span> = <span class="built_in">log</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> *  </span><br><span class="line">ngx_memalign(<span class="keyword">size_t</span> alignment, <span class="keyword">size_t</span> size, <span class="keyword">ngx_log_t</span> *<span class="built_in">log</span>)  </span><br><span class="line">&#123;  </span><br><span class="line">    <span class="keyword">void</span>  *p;  </span><br><span class="line">    <span class="keyword">int</span>    err;  </span><br><span class="line">      </span><br><span class="line">    err = posix_memalign(&amp;p, alignment, size);  </span><br><span class="line">    <span class="comment">//该函数分配以alignment为对齐的size字节的内存大小，其中p指向分配的内存块。  </span></span><br><span class="line">      </span><br><span class="line">    <span class="keyword">if</span> (err) &#123;  </span><br><span class="line">        ngx_log_error(NGX_LOG_EMERG, <span class="built_in">log</span>, err,  </span><br><span class="line">            <span class="string">"posix_memalign(%uz, %uz) failed"</span>, alignment, size);  </span><br><span class="line">        p = <span class="literal">NULL</span>;  </span><br><span class="line">    &#125;  </span><br><span class="line">      </span><br><span class="line">    ngx_log_debug3(NGX_LOG_DEBUG_ALLOC, <span class="built_in">log</span>, <span class="number">0</span>,  </span><br><span class="line">        <span class="string">"posix_memalign: %p:%uz @%uz"</span>, p, size, alignment);  </span><br><span class="line">      </span><br><span class="line">    <span class="keyword">return</span> p;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="comment">//函数分配以NGX_POOL_ALIGNMENT字节对齐的size字节的内存，在src/core/ngx_palloc.h文件中：  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NGX_POOL_ALIGNMENT       16</span></span><br></pre></td></tr></table></figure>
+<h3 id="销毁内存池"><a href="#销毁内存池" class="headerlink" title="销毁内存池"></a>销毁内存池</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 销毁内存池 */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span></span><br><span class="line">ngx_destroy_pool(<span class="keyword">ngx_pool_t</span> *pool)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span>          *p, *n;</span><br><span class="line">    <span class="keyword">ngx_pool_large_t</span>    *l;</span><br><span class="line">    <span class="keyword">ngx_pool_cleanup_t</span>  *c;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 若注册了cleanup，则遍历该链表结构，依次调用handler函数清理数据 */</span></span><br><span class="line">    <span class="keyword">for</span> (c = pool-&gt;cleanup; c; c = c-&gt;next) &#123;</span><br><span class="line">        <span class="keyword">if</span> (c-&gt;handler) &#123;</span><br><span class="line">            ngx_log_debug1(NGX_LOG_DEBUG_ALLOC, pool-&gt;<span class="built_in">log</span>, <span class="number">0</span>,</span><br><span class="line">                           <span class="string">"run cleanup: %p"</span>, c);</span><br><span class="line">            c-&gt;handler(c-&gt;data);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 遍历 large 链表，释放大块内存 */</span></span><br><span class="line">    <span class="keyword">for</span> (l = pool-&gt;large; l; l = l-&gt;next) &#123;</span><br><span class="line"></span><br><span class="line">        ngx_log_debug1(NGX_LOG_DEBUG_ALLOC, pool-&gt;<span class="built_in">log</span>, <span class="number">0</span>, <span class="string">"free: %p"</span>, l-&gt;alloc);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (l-&gt;alloc) &#123;</span><br><span class="line">            ngx_free(l-&gt;alloc); <span class="comment">/* 释放内存 */</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 在debug模式下执行 if 和 endif 之间的代码；</span></span><br><span class="line"><span class="comment">     * 主要是用于log记录，跟踪函数销毁时日志信息</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> (NGX_DEBUG)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * we could allocate the pool-&gt;log from this pool</span></span><br><span class="line"><span class="comment">     * so we cannot use this log while free()ing the pool</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (p = pool, n = pool-&gt;d.next; <span class="comment">/* void */</span>; p = n, n = n-&gt;d.next) &#123;</span><br><span class="line">        ngx_log_debug2(NGX_LOG_DEBUG_ALLOC, pool-&gt;<span class="built_in">log</span>, <span class="number">0</span>,</span><br><span class="line">                       <span class="string">"free: %p, unused: %uz"</span>, p, p-&gt;d.end - p-&gt;d.last);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (n == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 遍历所有分配的内存池，释放内存池结构 */</span></span><br><span class="line">    <span class="keyword">for</span> (p = pool, n = pool-&gt;d.next; <span class="comment">/* void */</span>; p = n, n = n-&gt;d.next) &#123;</span><br><span class="line">        ngx_free(p);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (n == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="重置内存池"><a href="#重置内存池" class="headerlink" title="重置内存池"></a>重置内存池</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 重置内存池</span></span><br><span class="line"><span class="comment"> * 定义于 src/core/ngx_palloc.c 文件中</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">void</span></span><br><span class="line">ngx_reset_pool(<span class="keyword">ngx_pool_t</span> *pool)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span>        *p;</span><br><span class="line">    <span class="keyword">ngx_pool_large_t</span>  *l;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 遍历大块内存链表，释放大块内存 */</span></span><br><span class="line">    <span class="keyword">for</span> (l = pool-&gt;large; l; l = l-&gt;next) &#123;</span><br><span class="line">        <span class="keyword">if</span> (l-&gt;alloc) &#123;</span><br><span class="line">            ngx_free(l-&gt;alloc);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (p = pool; p; p = p-&gt;d.next) &#123;</span><br><span class="line">        p-&gt;d.last = (u_char *) p + <span class="keyword">sizeof</span>(<span class="keyword">ngx_pool_t</span>);</span><br><span class="line">        p-&gt;d.failed = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    pool-&gt;current = pool;</span><br><span class="line">    pool-&gt;chain = <span class="literal">NULL</span>;</span><br><span class="line">    pool-&gt;large = <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h3><h4 id="小块内存分配"><a href="#小块内存分配" class="headerlink" title="小块内存分配"></a>小块内存分配</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 分配内存 */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> *</span><br><span class="line">ngx_palloc(<span class="keyword">ngx_pool_t</span> *pool, <span class="keyword">size_t</span> size)</span><br><span class="line">&#123;</span><br><span class="line">    u_char      *m;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span>  *p;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 若请求的内存大小size小于内存池最大内存值max，</span></span><br><span class="line"><span class="comment">     * 则进行小内存分配，从current开始遍历pool链表</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (size &lt;= pool-&gt;max) &#123;</span><br><span class="line"></span><br><span class="line">        p = pool-&gt;current;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="comment">/* 执行对齐操作 */</span></span><br><span class="line">            m = ngx_align_ptr(p-&gt;d.last, NGX_ALIGNMENT);</span><br><span class="line"></span><br><span class="line">            <span class="comment">/* 检查现有内存池是否有足够的内存空间，</span></span><br><span class="line"><span class="comment">             * 若有足够的内存空间，则移动last指针位置，</span></span><br><span class="line"><span class="comment">             * 并返回所分配的内存地址的起始地址</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">if</span> ((<span class="keyword">size_t</span>) (p-&gt;d.end - m) &gt;= size) &#123;</span><br><span class="line">                p-&gt;d.last = m + size;   <span class="comment">/* 在该节点指向的内存块中分配size大小的内存 */</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> m;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/* 若不满足，则查找下一个内存池 */</span></span><br><span class="line">            p = p-&gt;d.next;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">while</span> (p);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* 若遍历所有现有内存池链表都没有可用的内存空间，</span></span><br><span class="line"><span class="comment">         * 则分配一个新的内存池，并将该内存池连接到现有内存池链表中</span></span><br><span class="line"><span class="comment">         * 同时，返回分配内存的起始地址</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">return</span> ngx_palloc_block(pool, size);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 若所请求的内存大小size大于max则调用大块内存分配函数 */</span></span><br><span class="line">    <span class="keyword">return</span> ngx_palloc_large(pool, size);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> *</span><br><span class="line">ngx_palloc_block(<span class="keyword">ngx_pool_t</span> *pool, <span class="keyword">size_t</span> size)</span><br><span class="line">&#123;</span><br><span class="line">    u_char      *m;</span><br><span class="line">    <span class="keyword">size_t</span>       psize;</span><br><span class="line">    <span class="keyword">ngx_pool_t</span>  *p, *<span class="keyword">new</span>, *current;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 计算pool的大小，即需要分配新的block的大小 */</span></span><br><span class="line">    psize = (<span class="keyword">size_t</span>) (pool-&gt;d.end - (u_char *) pool);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* NGX_POOL_ALIGNMENT对齐操作 */</span></span><br><span class="line">    m = ngx_memalign(NGX_POOL_ALIGNMENT, psize, pool-&gt;<span class="built_in">log</span>);</span><br><span class="line">    <span class="keyword">if</span> (m == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* 计算需要分配的block的大小 */</span></span><br><span class="line">    <span class="keyword">new</span> = (<span class="keyword">ngx_pool_t</span> *) m;</span><br><span class="line">    <span class="keyword">new</span>-&gt;d.end = m + psize;</span><br><span class="line">    <span class="keyword">new</span>-&gt;d.next = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">new</span>-&gt;d.failed = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">/* 初始化新的内存池 */</span></span><br><span class="line">    <span class="comment">/* 让m指向该块内存ngx_pool_data_t结构体之后数据区起始位置 */</span></span><br><span class="line">    m += <span class="keyword">sizeof</span>(<span class="keyword">ngx_pool_data_t</span>);</span><br><span class="line">    <span class="comment">/* 在数据区分配size大小的内存并设置last指针 */</span></span><br><span class="line">    m = ngx_align_ptr(m, NGX_ALIGNMENT);</span><br><span class="line">    <span class="keyword">new</span>-&gt;d.last = m + size;</span><br><span class="line"></span><br><span class="line">    current = pool-&gt;current;</span><br><span class="line">    <span class="keyword">for</span> (p = current; p-&gt;d.next; p = p-&gt;d.next) &#123;</span><br><span class="line">        <span class="keyword">if</span> (p-&gt;d.failed++ &gt; <span class="number">4</span>) &#123;</span><br><span class="line">            <span class="comment">/* 失败4次以上移动current指针 */</span></span><br><span class="line">            current = p-&gt;d.next;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 将分配的block连接到现有的内存池  */</span></span><br><span class="line">    p-&gt;d.next = <span class="keyword">new</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 如果是第一次为内存池分配block，这current将指向新分配的block */</span></span><br><span class="line">    pool-&gt;current = current ? current : <span class="keyword">new</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="assets/1551029604394.png" alt="1551029604394"></p>
+<h4 id="大块内存分配"><a href="#大块内存分配" class="headerlink" title="大块内存分配"></a>大块内存分配</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 分配大块内存 */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> *</span><br><span class="line">ngx_palloc_large(<span class="keyword">ngx_pool_t</span> *pool, <span class="keyword">size_t</span> size)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">void</span>              *p;</span><br><span class="line">    <span class="keyword">ngx_uint_t</span>         n;</span><br><span class="line">    <span class="keyword">ngx_pool_large_t</span>  *large;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 分配内存 */</span></span><br><span class="line">    p = ngx_alloc(size, pool-&gt;<span class="built_in">log</span>);</span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    n = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 若在该pool之前已经分配了large字段，</span></span><br><span class="line"><span class="comment">     * 则将所分配的大块内存挂载到内存池的large字段中</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">for</span> (large = pool-&gt;large; large; large = large-&gt;next) &#123;</span><br><span class="line">        <span class="keyword">if</span> (large-&gt;alloc == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            large-&gt;alloc = p;</span><br><span class="line">            <span class="keyword">return</span> p;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (n++ &gt; <span class="number">3</span>) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 若在该pool之前并未分配large字段，</span></span><br><span class="line"><span class="comment">     * 则执行分配ngx_pool_large_t 结构体，分配large字段内存，</span></span><br><span class="line"><span class="comment">     * 再将大块内存挂载到pool的large字段中</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    large = ngx_palloc(pool, <span class="keyword">sizeof</span>(<span class="keyword">ngx_pool_large_t</span>));</span><br><span class="line">    <span class="keyword">if</span> (large == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ngx_free(p);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    large-&gt;alloc = p;</span><br><span class="line">    large-&gt;next = pool-&gt;large;</span><br><span class="line">    pool-&gt;large = large;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> *</span><br><span class="line">ngx_alloc(<span class="keyword">size_t</span> size, <span class="keyword">ngx_log_t</span> *<span class="built_in">log</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">void</span>  *p;</span><br><span class="line"></span><br><span class="line">    p = <span class="built_in">malloc</span>(size);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ngx_log_error(NGX_LOG_EMERG, <span class="built_in">log</span>, ngx_errno,</span><br><span class="line">            <span class="string">"malloc() %uz bytes failed"</span>, size);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ngx_log_debug2(NGX_LOG_DEBUG_ALLOC, <span class="built_in">log</span>, <span class="number">0</span>, <span class="string">"malloc: %p:%uz"</span>, p, size);</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 释放大块内存 */</span></span><br><span class="line"><span class="keyword">ngx_int_t</span></span><br><span class="line">ngx_pfree(<span class="keyword">ngx_pool_t</span> *pool, <span class="keyword">void</span> *p)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_large_t</span>  *l;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (l = pool-&gt;large; l; l = l-&gt;next) &#123;</span><br><span class="line">        <span class="keyword">if</span> (p == l-&gt;alloc) &#123;</span><br><span class="line">            ngx_log_debug1(NGX_LOG_DEBUG_ALLOC, pool-&gt;<span class="built_in">log</span>, <span class="number">0</span>,</span><br><span class="line">                           <span class="string">"free: %p"</span>, l-&gt;alloc);</span><br><span class="line">            ngx_free(l-&gt;alloc);</span><br><span class="line">            l-&gt;alloc = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> NGX_OK;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> NGX_DECLINED;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="assets/1551029658571.png" alt="1551029658571"></p>
+<h3 id="cleanup资源"><a href="#cleanup资源" class="headerlink" title="cleanup资源"></a>cleanup资源</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 注册cleanup；</span></span><br><span class="line"><span class="comment"> * size 是 data 字段所指向的资源的大小；</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">ngx_pool_cleanup_t</span> * ngx_pool_cleanup_add(<span class="keyword">ngx_pool_t</span> *p, <span class="keyword">size_t</span> size);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 对内存池进行文件清理操作,即执行handler,此时handler==ngx_pool_cleanup_file */</span></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">ngx_pool_run_cleanup_file</span><span class="params">(<span class="keyword">ngx_pool_t</span> *p, <span class="keyword">ngx_fd_t</span> fd)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 关闭data指定的文件句柄 */</span></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">ngx_pool_cleanup_file</span><span class="params">(<span class="keyword">void</span> *data)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 删除data指定的文件 */</span></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">ngx_pool_delete_file</span><span class="params">(<span class="keyword">void</span> *data)</span></span>;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/* 注册cleanup */</span></span><br><span class="line"><span class="keyword">ngx_pool_cleanup_t</span> *</span><br><span class="line">ngx_pool_cleanup_add(<span class="keyword">ngx_pool_t</span> *p, <span class="keyword">size_t</span> size)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_cleanup_t</span>  *c;</span><br><span class="line"></span><br><span class="line">    c = ngx_palloc(p, <span class="keyword">sizeof</span>(<span class="keyword">ngx_pool_cleanup_t</span>));</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (size) &#123;</span><br><span class="line">        c-&gt;data = ngx_palloc(p, size);</span><br><span class="line">        <span class="keyword">if</span> (c-&gt;data == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        c-&gt;data = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    c-&gt;handler = <span class="literal">NULL</span>;</span><br><span class="line">    c-&gt;next = p-&gt;cleanup;</span><br><span class="line"></span><br><span class="line">    p-&gt;cleanup = c;</span><br><span class="line"></span><br><span class="line">    ngx_log_debug1(NGX_LOG_DEBUG_ALLOC, p-&gt;<span class="built_in">log</span>, <span class="number">0</span>, <span class="string">"add cleanup: %p"</span>, c);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 清理内存池的文件 */</span></span><br><span class="line"><span class="keyword">void</span></span><br><span class="line">ngx_pool_run_cleanup_file(<span class="keyword">ngx_pool_t</span> *p, <span class="keyword">ngx_fd_t</span> fd)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_cleanup_t</span>       *c;</span><br><span class="line">    <span class="keyword">ngx_pool_cleanup_file_t</span>  *cf;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 遍历cleanup结构链表，并执行handler */</span></span><br><span class="line">    <span class="keyword">for</span> (c = p-&gt;cleanup; c; c = c-&gt;next) &#123;</span><br><span class="line">        <span class="keyword">if</span> (c-&gt;handler == ngx_pool_cleanup_file) &#123;</span><br><span class="line"></span><br><span class="line">            cf = c-&gt;data;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (cf-&gt;fd == fd) &#123;</span><br><span class="line">                c-&gt;handler(cf);</span><br><span class="line">                c-&gt;handler = <span class="literal">NULL</span>;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 关闭data指定的文件句柄 */</span></span><br><span class="line"><span class="keyword">void</span></span><br><span class="line">ngx_pool_cleanup_file(<span class="keyword">void</span> *data)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_cleanup_file_t</span>  *c = data; <span class="comment">/* 指向data所指向的文件句柄 */</span></span><br><span class="line"></span><br><span class="line">    ngx_log_debug1(NGX_LOG_DEBUG_ALLOC, c-&gt;<span class="built_in">log</span>, <span class="number">0</span>, <span class="string">"file cleanup: fd:%d"</span>,</span><br><span class="line">                   c-&gt;fd);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 关闭指定文件 */</span></span><br><span class="line">    <span class="keyword">if</span> (ngx_close_file(c-&gt;fd) == NGX_FILE_ERROR) &#123;</span><br><span class="line">        ngx_log_error(NGX_LOG_ALERT, c-&gt;<span class="built_in">log</span>, ngx_errno,</span><br><span class="line">                      ngx_close_file_n <span class="string">" \"%s\" failed"</span>, c-&gt;name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 删除data所指向的文件 */</span></span><br><span class="line"><span class="keyword">void</span></span><br><span class="line">ngx_pool_delete_file(<span class="keyword">void</span> *data)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">ngx_pool_cleanup_file_t</span>  *c = data;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">ngx_err_t</span>  err;</span><br><span class="line"></span><br><span class="line">    ngx_log_debug2(NGX_LOG_DEBUG_ALLOC, c-&gt;<span class="built_in">log</span>, <span class="number">0</span>, <span class="string">"file cleanup: fd:%d %s"</span>,</span><br><span class="line">                   c-&gt;fd, c-&gt;name);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 删除data所指向的文件 */</span></span><br><span class="line">    <span class="keyword">if</span> (ngx_delete_file(c-&gt;name) == NGX_FILE_ERROR) &#123;</span><br><span class="line">        err = ngx_errno;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (err != NGX_ENOENT) &#123;</span><br><span class="line">            ngx_log_error(NGX_LOG_CRIT, c-&gt;<span class="built_in">log</span>, err,</span><br><span class="line">                          ngx_delete_file_n <span class="string">" \"%s\" failed"</span>, c-&gt;name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 关闭文件句柄 */</span></span><br><span class="line">    <span class="keyword">if</span> (ngx_close_file(c-&gt;fd) == NGX_FILE_ERROR) &#123;</span><br><span class="line">        ngx_log_error(NGX_LOG_ALERT, c-&gt;<span class="built_in">log</span>, ngx_errno,</span><br><span class="line">                      ngx_close_file_n <span class="string">" \"%s\" failed"</span>, c-&gt;name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="理解Event模块的实现"><a href="#理解Event模块的实现" class="headerlink" title="理解Event模块的实现"></a>理解Event模块的实现</h1><h2 id="事件驱动"><a href="#事件驱动" class="headerlink" title="事件驱动"></a>事件驱动</h2>
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="http://yoursite.com">Javfa</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="http://yoursite.com/2019/02/24/Nginx源码分析/">http://yoursite.com/2019/02/24/Nginx源码分析/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Nginx/">Nginx</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2019/02/25/亿级流量详情页开发/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">亿级流量详情页开发</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2019/02/21/Nginx的配置/">
+        <span class="next-text nav-default">Nginx的配置</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/ahonn" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+    
+      
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Javfa</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+
+
+
+    
+  
+
+
+
+  
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/pjax/jquery.pjax.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/nprogress/nprogress.min.js"></script>
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.10.2"></script>
+
+  </body>
+</html>
