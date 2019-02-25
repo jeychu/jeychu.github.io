@@ -9,7 +9,9 @@
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
 <meta name="description" content="本文详细剖析了Linux 0.11的源代码，以此来阐述Linux内核的设计思想和实现细节。
-从开机加电到执行mai...">
+
+
+从开机加电到执行m...">
 <meta name="keywords" content>
 
 <link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml">
@@ -21,7 +23,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?24413605">
+<link rel="stylesheet" href="/css/journal.css?3391044">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -62,10 +64,10 @@
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                Home
+                ホーム
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                Archive
+                記事一覧
             </a>
 
             
@@ -113,7 +115,7 @@
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            Archive
+            記事一覧
         </a>
 
         
@@ -173,6 +175,145 @@
             <div class="post-body-wrapper">
                 <div class="post-body">
                     <p>本文详细剖析了Linux 0.11的源代码，以此来阐述Linux内核的设计思想和实现细节。<br><a id="more"></a></p>
+<!-- toc -->
+<ul>
+<li><a href="#从开机加电到执行main函数之前的过程">从开机加电到执行main函数之前的过程</a><ul>
+<li><a href="#第一步启动bios准备实模式下的中断向量表和中断服务程序">第一步，启动BIOS，准备<em>实模式</em>下的中断向量表和中断服务程序</a><ul>
+<li><a href="#bios启动原理">BIOS启动原理</a></li>
+<li><a href="#bios在内存中加载中断向量表和中断服务程序">BIOS在内存中加载中断向量表和中断服务程序</a></li>
+</ul>
+</li>
+<li><a href="#第二步利用第一步中准备的中断服务程序来实现从启动盘加载操作系统程序到内存">第二步，利用第一步中准备的中断服务程序来实现：从启动盘加载操作系统程序到内存</a></li>
+<li><a href="#第三步为执行32位的main函数做过渡工作">第三步，为执行32位的main函数做过渡工作</a><ul>
+<li><a href="#关中断并将system移动到内存地址起始位置0x00000">关中断，并将system移动到内存地址起始位置0x00000</a></li>
+<li><a href="#设置中断描述符表和全局描述符表">设置中断描述符表和全局描述符表</a></li>
+<li><a href="#打开a20实现32位寻址">打开A20，实现32位寻址</a></li>
+<li><a href="#为在保护模式下执行heads做准备">为在保护模式下执行head.s做准备</a></li>
+<li><a href="#heads开始执行">head.s开始执行</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#从main到怠速">从main到怠速</a><ul>
+<li><a href="#开中断之前的准备工作">开中断之前的准备工作</a><ul>
+<li><a href="#复制根设备号和硬盘参数表">复制根设备号和硬盘参数表</a></li>
+<li><a href="#物理内存规划格局">物理内存规划格局</a></li>
+<li><a href="#虚拟盘设置与初始化">虚拟盘设置与初始化</a></li>
+<li><a href="#内存管理结构mem_map初始化">内存管理结构mem_map初始化</a></li>
+<li><a href="#异常处理类中断服务程序挂接">异常处理类中断服务程序挂接</a></li>
+<li><a href="#初始化块设备请求项结构">初始化块设备请求项结构</a></li>
+<li><a href="#与建立人机交互界面相关的外设的中断服务程序挂接">与建立人机交互界面相关的外设的中断服务程序挂接</a></li>
+<li><a href="#开机启动时间设置">开机启动时间设置</a></li>
+<li><a href="#系统开始激活进程0">系统开始激活进程0</a></li>
+<li><a href="#进程相关事务初始化设置">进程相关事务初始化设置</a></li>
+<li><a href="#时钟中断设置">时钟中断设置</a></li>
+<li><a href="#系统调用服务程序挂接">系统调用服务程序挂接</a></li>
+<li><a href="#初始化缓冲区管理结构">初始化缓冲区管理结构</a></li>
+<li><a href="#初始化硬盘">初始化硬盘</a></li>
+<li><a href="#初始化软盘">初始化软盘</a></li>
+<li><a href="#开中断">开中断</a></li>
+</ul>
+</li>
+<li><a href="#进程创建的最基本动作">进程创建的最基本动作</a><ul>
+<li><a href="#操作系统为进程0创建进程1做准备">操作系统为进程0创建进程1做准备</a></li>
+<li><a href="#在进程槽中为进程1申请一个空闲位置并获取进程号">在进程槽中为进程1申请一个空闲位置并获取进程号</a></li>
+<li><a href="#复制进程信息之前先将以下数据压栈">复制进程信息之前，先将以下数据压栈</a></li>
+<li><a href="#初步设置进程1管理结构">初步设置进程1管理结构</a></li>
+<li><a href="#进程0创建进程1的过程中发生时钟中断">进程0创建进程1的过程中发生时钟中断</a></li>
+<li><a href="#从时钟中断返回">从时钟中断返回</a></li>
+<li><a href="#调整进程1管理结构">调整进程1管理结构</a></li>
+<li><a href="#设置进程1的线性地址空间及物理页面">设置进程1的线性地址空间及物理页面</a></li>
+<li><a href="#继续调整进程1管理结构">继续调整进程1管理结构</a></li>
+</ul>
+</li>
+<li><a href="#加载根文件系统">加载根文件系统</a><ul>
+<li><a href="#进程1如何开始执行">进程1如何开始执行</a></li>
+<li><a href="#进程1开始执行">进程1开始执行</a></li>
+<li><a href="#进程1开始以数据块的形式操作硬盘">进程1开始以数据块的形式操作硬盘</a></li>
+<li><a href="#将找到的缓冲块与请求项挂接">将找到的缓冲块与请求项挂接</a></li>
+<li><a href="#将请求项与硬盘处理函数挂接">将请求项与硬盘处理函数挂接</a></li>
+<li><a href="#进行硬盘读盘前的准备工作">进行硬盘读盘前的准备工作</a></li>
+<li><a href="#给硬盘下达读盘指令">给硬盘下达读盘指令</a></li>
+<li><a href="#进程1由于等待读盘操作挂起">进程1由于等待读盘操作挂起</a></li>
+<li><a href="#系统切换到进程0执行">系统切换到进程0执行</a></li>
+<li><a href="#进程0的执行过程">进程0的执行过程</a></li>
+<li><a href="#进程0执行过程中发生硬盘中断">进程0执行过程中发生硬盘中断</a></li>
+<li><a href="#硬盘中断服务程序响应后进程0继续执行">硬盘中断服务程序响应后，进程0继续执行</a></li>
+<li><a href="#再次响应硬盘中断并唤醒进程1">再次响应硬盘中断并唤醒进程1</a></li>
+<li><a href="#读盘操作完成后进程1继续执行">读盘操作完成后，进程1继续执行</a></li>
+<li><a href="#进程1继续设置硬盘管理结构">进程1继续设置硬盘管理结构</a></li>
+<li><a href="#进程1获取软盘超级块为加载根文件系统做准备">进程1获取软盘超级块，为加载根文件系统做准备</a></li>
+<li><a href="#进程1备份超级块数据">进程1备份超级块数据</a></li>
+<li><a href="#进程1将根文件系统从软盘拷贝到虚拟盘">进程1将根文件系统从软盘拷贝到虚拟盘</a></li>
+<li><a href="#进程1开始加载根文件系统">进程1开始加载根文件系统</a></li>
+<li><a href="#进程1准备加载根文件系统超级块">进程1准备加载根文件系统超级块</a></li>
+<li><a href="#进程1加载根文件系统超级块">进程1加载根文件系统超级块</a></li>
+<li><a href="#进程1继续加载根文件系统">进程1继续加载根文件系统</a></li>
+<li><a href="#进程1准备读取根目录i节点">进程1准备读取根目录i节点</a></li>
+<li><a href="#进程1加载根目录i节点">进程1加载根目录i节点</a></li>
+<li><a href="#进程1结束加载根文件系统的过程">进程1结束加载根文件系统的过程</a></li>
+</ul>
+</li>
+<li><a href="#打开终端设备文件及复制文件句柄">打开终端设备文件及复制文件句柄</a><ul>
+<li><a href="#进程1与内核文件表挂接为打开文件做准备">进程1与内核文件表挂接，为打开文件做准备</a></li>
+<li><a href="#确定打开操作的起点">确定打开操作的起点</a></li>
+<li><a href="#获得枝梢i节点-dev目录文件的i节点">获得枝梢i节点-dev目录文件的i节点</a></li>
+<li><a href="#确定dev目录文件i节点为枝梢i节点">确定dev目录文件i节点为枝梢i节点</a></li>
+<li><a href="#继续返回枝梢i节点">继续返回枝梢i节点</a></li>
+<li><a href="#查找tty0文件的i节点">查找tty0文件的i节点</a></li>
+<li><a href="#将tty0设备文件的i节点返回给sys_open系统调用">将tty0设备文件的i节点返回给sys_open系统调用</a></li>
+<li><a href="#分析tty0文件i节点">分析tty0文件i节点</a></li>
+<li><a href="#设置文件管理结构并返回给用户进程">设置文件管理结构并返回给用户进程</a></li>
+<li><a href="#进程1复制tty0文件句柄">进程1复制tty0文件句柄</a></li>
+<li><a href="#进程1继续复制tty0文件句柄">进程1继续复制tty0文件句柄</a></li>
+</ul>
+</li>
+<li><a href="#创建进程2">创建进程2</a></li>
+<li><a href="#进程1等待进程2退出">进程1等待进程2退出</a></li>
+<li><a href="#shell程序的加载">shell程序的加载</a></li>
+<li><a href="#系统实现怠速">系统实现怠速</a></li>
+</ul>
+</li>
+<li><a href="#安装文件系统">安装文件系统</a><ul>
+<li><a href="#获取硬盘设备号">获取硬盘设备号</a></li>
+<li><a href="#获取虚拟盘上的挂接点">获取虚拟盘上的挂接点</a></li>
+<li><a href="#得到hd1设备文件的超级块">得到hd1设备文件的超级块</a></li>
+<li><a href="#将hd1设备文件与mnt目录文件的i节点挂接">将hd1设备文件与mnt目录文件的i节点挂接</a></li>
+</ul>
+</li>
+<li><a href="#文件操作">文件操作</a><ul>
+<li><a href="#打开文件">打开文件</a></li>
+<li><a href="#读文件">读文件</a></li>
+<li><a href="#新建文件">新建文件</a></li>
+<li><a href="#写文件">写文件</a></li>
+<li><a href="#修改文件">修改文件</a></li>
+<li><a href="#关闭文件">关闭文件</a></li>
+<li><a href="#删除文件">删除文件</a></li>
+</ul>
+</li>
+<li><a href="#用户进程与内存管理">用户进程与内存管理</a><ul>
+<li><a href="#用户进程的创建">用户进程的创建</a></li>
+<li><a href="#为用户进程str1的加载做准备">为用户进程str1的加载做准备</a></li>
+<li><a href="#对缺页中断的处理">对缺页中断的处理</a></li>
+<li><a href="#str1用户进程的退出">str1用户进程的退出</a></li>
+<li><a href="#多个用户进程同时运行">多个用户进程同时运行</a></li>
+<li><a href="#进程的调度与切换">进程的调度与切换</a></li>
+<li><a href="#内核的分页">内核的分页</a></li>
+<li><a href="#页写保护">页写保护</a></li>
+</ul>
+</li>
+<li><a href="#多个进程同时操作一个文件">多个进程同时操作一个文件</a><ul>
+<li><a href="#三个进程操作同一个文件">三个进程操作同一个文件</a></li>
+<li><a href="#缓冲区与外设的数据同步">缓冲区与外设的数据同步</a></li>
+</ul>
+</li>
+<li><a href="#ipc问题">IPC问题</a><ul>
+<li><a href="#管道机制">管道机制</a></li>
+<li><a href="#信号机制">信号机制</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
 <h1><span id="从开机加电到执行main函数之前的过程">从开机加电到执行main函数之前的过程</span></h1><p>从开机到main函数的执行分三步完成，其目的是实现从启动盘加载操作系统程序，完成执行main函数所需要的准备工作。</p>
 <h2><span id="第一步启动bios准备实模式下的中断向量表和中断服务程序">第一步，启动BIOS，准备<em>实模式</em>下的中断向量表和中断服务程序</span></h2><p>加电的一瞬间，计算机的RAM中，空空如也，什么程序也没有。而CPU的逻辑电路被设计为只能运行内存中的程序。如果要运行软盘中的操作系统，必须将软盘中操作系统程序加载到RAM中。<br>在RAM中什么程序都没有的时候，要由BIOS来完成加载软盘中操作系统到RAM中的任务。</p>
 <h3><span id="bios启动原理">BIOS启动原理</span></h3><p>此时RAM中无程序，所以通过软件方法不可能执行BIOS，只能靠<strong>硬件方法</strong>完成。<br>从硬件角度看，Intel 80x86系列的cpu可以分别在16位实模式和32位保护模式下运行。</p>
@@ -352,7 +493,7 @@
             <nav class="post-pagination">
     
     <a class="newer-posts" href="/2017/02/21/运维体系管理/">
-        Previous post<br>运维体系管理
+        前の記事<br>运维体系管理
     </a>
     
     <span class="page-number"></span>
@@ -380,7 +521,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?60962579"></script>
+<script src="/js/journal.js?57733343"></script>
 
 
 
