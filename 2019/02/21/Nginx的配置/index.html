@@ -20,7 +20,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?11715473">
+<link rel="stylesheet" href="/css/journal.css?52021036">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -171,13 +171,13 @@
     
             <div class="post-body-wrapper">
                 <div class="post-body">
-                    <h1 id="运行中的Nginx进程间的关系"><a href="#运行中的Nginx进程间的关系" class="headerlink" title="运行中的Nginx进程间的关系"></a>运行中的Nginx进程间的关系</h1><p>在正式提供服务的产品环境中，部署Nginx时都是使用一个master进程来管理多个worker进程，一般情况下，worker进程的数量与服务器上的CPU核心数相等。每一个worker进程都时繁忙的，它们在真正地提供互联网服务，master进程则很“清闲”，只负责监控管理worker进程。worker之间通过共享内存、原子操作等一些进程间通信机制来实现负载均衡等功能。</p>
+                    <h1><span id="运行中的nginx进程间的关系">运行中的Nginx进程间的关系</span></h1><p>在正式提供服务的产品环境中，部署Nginx时都是使用一个master进程来管理多个worker进程，一般情况下，worker进程的数量与服务器上的CPU核心数相等。每一个worker进程都时繁忙的，它们在真正地提供互联网服务，master进程则很“清闲”，只负责监控管理worker进程。worker之间通过共享内存、原子操作等一些进程间通信机制来实现负载均衡等功能。</p>
 <p>Nginx是支持单进程（master进程）提供服务的，那么为什么产品环境下要按照master、worker方式配置同时启动多个进程呢？这样做的好处主要有一下两点：</p>
 <ul>
 <li>由于master进程不会对用户请求提供服务，只用于管理真正提供服务的worker进程，所以master进程可以是唯一的，它仅专注于自己的纯管理工作，为管理员提供命令行服务，包括诸如启动服务、停止服务、重新配置文件、平滑升级程序等。master进程需要拥有较大的权限，例如，通常会使用root用户启动master进程。worker进程的权限要小于或者等于master进程，这样master进程才可以完全地管理worker进程。当任意一个worker进程出现错误从而导致coredump时，master进程会立刻启动新的worker进程继续服务。</li>
 <li>多个worker进程处理互联网请求不但可以提高服务的健壮性，最重要的是，这样可以充分利用现在常见的SMP多核架构，从而实现微观上真正的多核并发处理。为什么要把worker进程数量设置得跟CPU核心数量一致呢？对于Nginx，一个worker进程可以同时处理的请求数只受限于内存大小，而且在架构上，<strong>不同的worker进程之间处理并发请求时几乎没有同步锁的限制</strong>，worker进程通常不会进入睡眠状态，因此，当Nginx上的进程数与CPU核心数相等时（最好每一个worker进程都绑定特定的CPU核心【使用taskset命令来设置进程的CPU亲和性（affinity），将进程绑定到某个或某组CPU核心上】），进程间的切换的代价是最小的。</li>
 </ul>
-<h1 id="Nginx服务的基本配置"><a href="#Nginx服务的基本配置" class="headerlink" title="Nginx服务的基本配置"></a>Nginx服务的基本配置</h1><h2 id="用于调试进程和定位问题的配置项"><a href="#用于调试进程和定位问题的配置项" class="headerlink" title="用于调试进程和定位问题的配置项"></a>用于调试进程和定位问题的配置项</h2><ol>
+<h1><span id="nginx服务的基本配置">Nginx服务的基本配置</span></h1><h2><span id="用于调试进程和定位问题的配置项">用于调试进程和定位问题的配置项</span></h2><ol>
 <li><p>是否以守护进程方式运行Nginx</p>
 <p>语法：daemon on|off;</p>
 <p>默认：daemon on;</p>
@@ -218,7 +218,7 @@
 <p>语法：working_directory path;</p>
 </li>
 </ol>
-<h2 id="正常运行的配置项"><a href="#正常运行的配置项" class="headerlink" title="正常运行的配置项"></a>正常运行的配置项</h2><ol>
+<h2><span id="正常运行的配置项">正常运行的配置项</span></h2><ol>
 <li><p>定义环境变量</p>
 <p>语法：env VAR|VAR=VALUE;</p>
 <p>这个配置项可以让用户直接设置操作系统上的环境变量。</p>
@@ -242,7 +242,7 @@
 <p>设置每个用户发往Nginx的信号队列的大小。也就是说，当某个用户的信号队列满了，这个用户再发送的信号量就会被丢掉。</p>
 </li>
 </ol>
-<h2 id="优化性能的配置项"><a href="#优化性能的配置项" class="headerlink" title="优化性能的配置项"></a>优化性能的配置项</h2><ol>
+<h2><span id="优化性能的配置项">优化性能的配置项</span></h2><ol>
 <li><p>Nginx worker进程个数</p>
 <p>语法：worker_processes number;</p>
 <p>默认：worker_processes 1;</p>
@@ -271,7 +271,7 @@
 <p>这样，优先级高的进程会占有更多的系统资源。</p>
 </li>
 </ol>
-<h2 id="事件类配置项"><a href="#事件类配置项" class="headerlink" title="事件类配置项"></a>事件类配置项</h2><ol>
+<h2><span id="事件类配置项">事件类配置项</span></h2><ol>
 <li><p>是否打开accept锁</p>
 <p>语法：accept_mutex [on|off];</p>
 <p>默认：accept_mutex on;</p>
@@ -310,7 +310,7 @@
 <p>定义每个worker进程可以同时处理的最大连接数。</p>
 </li>
 </ol>
-<h1 id="使用HTTP核心模块配置一个静态Web服务器"><a href="#使用HTTP核心模块配置一个静态Web服务器" class="headerlink" title="使用HTTP核心模块配置一个静态Web服务器"></a>使用HTTP核心模块配置一个静态Web服务器</h1>
+<h1><span id="使用http核心模块配置一个静态web服务器">使用HTTP核心模块配置一个静态Web服务器</span></h1>
                 </div>
             </div>
     
@@ -349,7 +349,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?88960825"></script>
+<script src="/js/journal.js?80922301"></script>
 
 
 
