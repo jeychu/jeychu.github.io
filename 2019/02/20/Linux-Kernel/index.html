@@ -4,7 +4,7 @@
 <html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
 
 <head><meta name="generator" content="Hexo 3.8.0">
-    <title>Linux Kernel - javfa&#39;s blog</title>
+    <title>Discover the Secrets of Linux Kernel - javfa&#39;s blog</title>
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
@@ -21,7 +21,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?88138011">
+<link rel="stylesheet" href="/css/journal.css?57253492">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -144,7 +144,7 @@
         <div class="post">
             <div class="post-head-wrapper-text-only" style="background-image: url('')">
                 <div class="post-title">
-                    Linux Kernel
+                    Discover the Secrets of Linux Kernel
                     <div class="post-meta">
                         <time datetime="2019-02-20T08:47:55.000Z" itemprop="datePublished">
                             2019-02-20 16:47
@@ -171,7 +171,7 @@
 <li>需要不断的更新和学习，因为内核的策略和方法一直在不断的变化着</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">勿贪大求全，聚焦关键应用</span><br><span class="line">奠定基础，循序渐进</span><br><span class="line">兴趣是第一驱动力</span><br></pre></td></tr></table></figure>
-<h2><span id="内核基础层">内核基础层</span></h2><blockquote>
+<h2><span id="将内核划分成两层减少内核阅读的难度">将内核划分成两层，减少内核阅读的难度</span></h2><h3><span id="内核基础层">内核基础层</span></h3><blockquote>
 <p>内核中提供基础服务的部分</p>
 </blockquote>
 <ul>
@@ -186,7 +186,7 @@
 </ul>
 </li>
 </ul>
-<h2><span id="内核应用层">内核应用层</span></h2><blockquote>
+<h3><span id="内核应用层">内核应用层</span></h3><blockquote>
 <p>建立在基础层之上，提供应用服务的部分</p>
 </blockquote>
 <ul>
@@ -203,20 +203,74 @@
 </ul>
 </li>
 </ul>
-<h2><span id="最终目的">最终目的：</span></h2><ul>
-<li>独立思考，独立学习，成为在该领域有影响力的专家</li>
-<li>在代码中寻找答案</li>
-<li>这个课程就是要形成一个起点，从这个起点出发，不断的学习、思考、实践、分享</li>
+<h2><span id="内核学习最终目的">内核学习最终目的：</span></h2><ul>
+<li>独立思考，独立学习，，不断分享成为在该领域有影响力的专家</li>
 </ul>
-<h2><span id="内核编译">内核编译：</span></h2><ul>
-<li>编译的实质：<ul>
-<li>基于头文件和c文件产生对象文件</li>
-<li>将所有的对象文件链接起来，生成可执行文件</li>
-</ul>
+<h1><span id="内核的基础层和应用层">内核的基础层和应用层</span></h1><h2><span id="内核基础层提供的服务">内核基础层提供的服务</span></h2><p>内核通常提供的服务是内存管理、进程管理、设备管理和文件系统。</p>
+<h3><span id="内核中使用内存">内核中使用内存</span></h3><p>内核中提供了两个层次的内存分配接口：</p>
+<ul>
+<li><p>从伙伴系统分配：是最底层的内存管理机制，提供页式的内存管理。</p>
+<p>伙伴系统分配内存调用的是alloc_pages，得到的是页面地址，如果要获得能使用的内存地址，还需要用page_address。</p>
+<p>如果要直接获得内存地址，需要使用_get_free_pages。它封装了alloc_pages和page_address两个函数。</p>
 </li>
-<li>内核编译的核心问题：make文件和配置文件</li>
+<li><p>从slab系统分配：是伙伴系统之上的内存管理，提供基于对象的内存管理。</p>
+<p>alloc_pages申请的内存是以页为单元的，最少是一个页。如果只是申请一小块内存，一个页就很浪费，而且内核中很多应用也希望一种对象化的内存管理，希望内存管理能自动地构造和析构对象，这就是slab内存管理。</p>
+<p>使用kmem_cache_create创建slab对象来从slab申请内存。kmem_cache_create可以提供对象的名字和大小、构造函数和析构函数等，然后通过kmem_cache_alloc和kmem_cache_free来申请和释放内存。</p>
+<p>内核中常用的kmalloc其实也是slab提供的对象管理，只不过内核已经构建了一些固定大小的对象，用户通过kmalloc申请的时候，就直接使用了这些对象。</p>
+<p>一个内核中创建slab对象的例子如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bh_cachep = kmem_cache_create(<span class="string">"buffer_head"</span>,</span><br><span class="line">                              <span class="keyword">sizeof</span>(struct buffer_head), <span class="number">0</span>,</span><br><span class="line">                              (SLAB_RECLAIM_ACCOUNT|SLAB_PANIC|SLAB_MEM_SPREAD),</span><br><span class="line">                              init_buffer_head,</span><br><span class="line">                              <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
+<p>用以下代码申请一个slab对象：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">buffer_head</span> *<span class="title">ret</span> = <span class="title">kmem_cache_alloc</span>(<span class="title">bh_cachep</span>, <span class="title">gfp_flags</span>);</span></span><br></pre></td></tr></table></figure>
+<p>内核中另一个内存分配调用vmalloc的作用是把物理内存不连续的内存页面拼凑为逻辑地址连续的内存区间。</p>
+</li>
 </ul>
-
+<h3><span id="内核中的任务调度">内核中的任务调度</span></h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> wait_event(wq, condition)</span></span><br><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (condition)</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    __wait_event(wq, condition);</span><br><span class="line">&#125; <span class="keyword">while</span> (<span class="number">0</span>)</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __wait_event(wq, condition)</span></span><br><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">    DEFINE_WAIT(__wait);</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        prepare_to_wait(&amp;wq, &amp;__wait, TASK_UNINTERRUPTIBLE);</span><br><span class="line">        <span class="keyword">if</span> (condition)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        schedule();</span><br><span class="line">    &#125;</span><br><span class="line">    finish_wait(&amp;wq, &amp;__wait);</span><br><span class="line">&#125;<span class="keyword">while</span> (<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<p>上文定义了一个wait结构，然后设置进程睡眠。如果其他进程唤醒这个进程后，判断条件是否满足，如果满足，删除wait对象，否则进程继续睡眠。</p>
+<h3><span id="软中断和tasklet">软中断和tasklet</span></h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DECLARE_TASKLET_DISABLED(hil_mlcs_tasklet, hil_mlcs_process, <span class="number">0</span>);</span><br><span class="line">tasklet_schedule(&amp;hil_mlcs_tasklet);</span><br></pre></td></tr></table></figure>
+<h3><span id="工作队列">工作队列</span></h3><p>和tasklet类似，都是一种延缓执行的机制。</p>
+<p>不同之处是工作队列有自己的进程上下文，所以工作队列可以睡眠，也可以被调度，而tasklet不可睡眠。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">INIT_WORK(&amp;ioc-&gt;sas_persist_task,</span><br><span class="line">         mptsas_persist_clear_table,</span><br><span class="line">         (<span class="keyword">void</span> *)ioc);</span><br><span class="line">schedule_work(&amp;ioc-&gt;sas_persist_task);</span><br></pre></td></tr></table></figure>
+<h3><span id="自旋锁">自旋锁</span></h3><p>用来在多处理器的环境下保护数据。</p>
+<p>如果内核发现数据未锁，就获取锁并运行；如果数据被锁，就一直旋转（其实是一直反复执行一条指令）。之所以说自旋锁用在多处理器环境，是因为在单处理器环境（非抢占式内核）下，自旋锁其实不起作用。在单处理器抢占式内核的情况下，自旋锁起到禁止抢占的作用。</p>
+<p>因为被自旋锁锁着的进程一直旋转，而不是睡眠，所以自旋锁可以用在中断等禁止睡眠的场景。</p>
+<p>自旋锁的使用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">spin_lock(shost-&gt;host_lock);</span><br><span class="line">shost-&gt;host_busy++;</span><br><span class="line">spin_unlock(shost-&gt;host_lock);</span><br></pre></td></tr></table></figure>
+<h3><span id="内核信号量">内核信号量</span></h3><p>和自旋锁类似，作用是保护数据。</p>
+<p>不同之处在于，进程获取内核信号量的时候，如果不能获取，则进程进入睡眠状态。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">down(&amp;dev-&gt;sem);</span><br><span class="line">up(&amp;dev-&gt;sem);</span><br></pre></td></tr></table></figure>
+<h3><span id="原子变量">原子变量</span></h3><p>提供了一种原子的、不可中断的操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">atomic_t mapped;</span><br></pre></td></tr></table></figure>
+<p>内核提供了一系列的原子变量操作函数，如下所示</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>atomic_add</td>
+<td>加一个整数到原子变量</td>
+</tr>
+<tr>
+<td>atomic_sub</td>
+<td>从原子变量减一个整数</td>
+</tr>
+<tr>
+<td>atomic_read</td>
+<td>读原子变量的数值</td>
+</tr>
+<tr>
+<td>atomic_set</td>
+<td>设置原子变量的数值</td>
+</tr>
+</tbody>
+</table>
+<h2><span id="内核基础层的数据结构">内核基础层的数据结构</span></h2><p>container是Linux中很重要的一个概念，使用container能实现对象的封装。代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> container_of(ptr, type, member) (&#123;</span></span><br><span class="line">  <span class="function"><span class="keyword">const</span> <span class="title">typeof</span><span class="params">(((type *)<span class="number">0</span>)-&gt;member)</span> *__mptr </span>= (ptr);</span><br><span class="line">  (type *)((<span class="keyword">char</span> *)__mptr - offsetof(type, member));&#125;)</span><br></pre></td></tr></table></figure>
+<p>这个方法可以实现通过结构的一个成员找到整个结构的地址。内核中大量使用了这个方法。</p>
+<h3><span id="双向链表">双向链表</span></h3><h3><span id="hash链表">hash链表</span></h3><h3><span id="单向链表">单向链表</span></h3><h3><span id="红黑树">红黑树</span></h3><h3><span id="radix树">radix树</span></h3>
                 </div>
             </div>
     
@@ -255,7 +309,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?7054044"></script>
+<script src="/js/journal.js?40532460"></script>
 
 
 

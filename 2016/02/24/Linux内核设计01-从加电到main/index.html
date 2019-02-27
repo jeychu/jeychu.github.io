@@ -22,7 +22,7 @@ BIOS...">
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?28107986">
+<link rel="stylesheet" href="/css/journal.css?34921752">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -212,7 +212,16 @@ BIOS...">
 </li>
 <li><a href="#ipc问题">IPC问题</a><ul>
 <li><a href="#管道机制">管道机制</a></li>
-<li><a href="#信号机制">信号机制</a></li>
+<li><a href="#信号机制">信号机制</a><ul>
+<li><a href="#processing进程开始执行">processing进程开始执行</a></li>
+<li><a href="#processig进程进入可中断等待状态">processig进程进入可中断等待状态</a></li>
+<li><a href="#sendsig进程开始执行并向processig进程发信号">sendsig进程开始执行并向processig进程发信号</a></li>
+<li><a href="#系统检测当前进程接收到信号并准备处理">系统检测当前进程接收到信号并准备处理</a></li>
+<li><a href="#系统检测信号处理函数指针是否正常">系统检测信号处理函数指针是否正常</a></li>
+<li><a href="#调整processig进程的内核栈结构使之先执行信号处理函数">调整processig进程的内核栈结构，使之先执行信号处理函数</a></li>
+<li><a href="#信号对进程执行状态的影响">信号对进程执行状态的影响</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -396,7 +405,8 @@ BIOS...">
 <p>在执行完setup_paging的ret之后，将先前入栈的、在栈顶的_main函数的地址弹出给CS：EIP，即等价于CPU开始执行main函数程序。</p>
 <p>## </p>
 <p>## </p>
-<h1><span id="文件操作">文件操作</span></h1><h2><span id="打开文件">打开文件</span></h2><h2><span id="读文件">读文件</span></h2><h2><span id="新建文件">新建文件</span></h2><h2><span id="写文件">写文件</span></h2><h2><span id="修改文件">修改文件</span></h2><h2><span id="关闭文件">关闭文件</span></h2><h2><span id="删除文件">删除文件</span></h2><h1><span id="用户进程与内存管理">用户进程与内存管理</span></h1><h2><span id="用户进程的创建">用户进程的创建</span></h2><h2><span id="为用户进程str1的加载做准备">为用户进程str1的加载做准备</span></h2><h2><span id="对缺页中断的处理">对缺页中断的处理</span></h2><h2><span id="str1用户进程的退出">str1用户进程的退出</span></h2><h2><span id="多个用户进程同时运行">多个用户进程同时运行</span></h2><h2><span id="进程的调度与切换">进程的调度与切换</span></h2><h2><span id="内核的分页">内核的分页</span></h2><h2><span id="页写保护">页写保护</span></h2><h1><span id="多个进程同时操作一个文件">多个进程同时操作一个文件</span></h1><h2><span id="三个进程操作同一个文件">三个进程操作同一个文件</span></h2><h2><span id="缓冲区与外设的数据同步">缓冲区与外设的数据同步</span></h2><h1><span id="ipc问题">IPC问题</span></h1><h2><span id="管道机制">管道机制</span></h2><h2><span id="信号机制">信号机制</span></h2>
+<h1><span id="文件操作">文件操作</span></h1><h2><span id="打开文件">打开文件</span></h2><h2><span id="读文件">读文件</span></h2><h2><span id="新建文件">新建文件</span></h2><h2><span id="写文件">写文件</span></h2><h2><span id="修改文件">修改文件</span></h2><h2><span id="关闭文件">关闭文件</span></h2><h2><span id="删除文件">删除文件</span></h2><h1><span id="用户进程与内存管理">用户进程与内存管理</span></h1><h2><span id="用户进程的创建">用户进程的创建</span></h2><h2><span id="为用户进程str1的加载做准备">为用户进程str1的加载做准备</span></h2><h2><span id="对缺页中断的处理">对缺页中断的处理</span></h2><h2><span id="str1用户进程的退出">str1用户进程的退出</span></h2><h2><span id="多个用户进程同时运行">多个用户进程同时运行</span></h2><h2><span id="进程的调度与切换">进程的调度与切换</span></h2><h2><span id="内核的分页">内核的分页</span></h2><h2><span id="页写保护">页写保护</span></h2><h1><span id="多个进程同时操作一个文件">多个进程同时操作一个文件</span></h1><h2><span id="三个进程操作同一个文件">三个进程操作同一个文件</span></h2><h2><span id="缓冲区与外设的数据同步">缓冲区与外设的数据同步</span></h2><h1><span id="ipc问题">IPC问题</span></h1><h2><span id="管道机制">管道机制</span></h2><h2><span id="信号机制">信号机制</span></h2><p>信号机制是Linux 0.11为进程提供的一套“局部的类中断机制”，即在进程执行过程中，如果系统发现该进程接收到了信号，就暂时打断该进程的执行，转而去执行该进程的信号处理程序，处理完毕后，再从该进程“被打断”处继续执行。</p>
+<h3><span id="processing进程开始执行">processing进程开始执行</span></h3><h3><span id="processig进程进入可中断等待状态">processig进程进入可中断等待状态</span></h3><h3><span id="sendsig进程开始执行并向processig进程发信号">sendsig进程开始执行并向processig进程发信号</span></h3><h3><span id="系统检测当前进程接收到信号并准备处理">系统检测当前进程接收到信号并准备处理</span></h3><h3><span id="系统检测信号处理函数指针是否正常">系统检测信号处理函数指针是否正常</span></h3><h3><span id="调整processig进程的内核栈结构使之先执行信号处理函数">调整processig进程的内核栈结构，使之先执行信号处理函数</span></h3><h3><span id="信号对进程执行状态的影响">信号对进程执行状态的影响</span></h3>
                 </div>
             </div>
     
@@ -431,7 +441,7 @@ BIOS...">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?677635"></script>
+<script src="/js/journal.js?89018838"></script>
 
 
 
