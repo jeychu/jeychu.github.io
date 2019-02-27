@@ -24,7 +24,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?4891565">
+<link rel="stylesheet" href="/css/journal.css?30285079">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -254,6 +254,8 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">[root@geek ~]# cat ngsym</span><br><span class="line"># code for ngx_http_upstream_free_ro</span><br><span class="line">b *0x0000000000480aea</span><br><span class="line">commands</span><br><span class="line">silent</span><br><span class="line">bt 1</span><br><span class="line">c</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># code for ngx_http_test_content_typ</span><br><span class="line">b *0x0000000000452bb8</span><br><span class="line">commands</span><br><span class="line">silent</span><br><span class="line">bt 1</span><br><span class="line">c</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># code for ngx_libc_crypt</span><br><span class="line">b *0x00000000004485b4</span><br><span class="line">commands</span><br><span class="line">silent</span><br><span class="line">bt 1</span><br><span class="line">c</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># code for ngx_timezone_update</span><br><span class="line">b *0x00000000004438f2</span><br><span class="line">commands</span><br><span class="line">silent</span><br><span class="line">bt 1</span><br><span class="line">c</span><br><span class="line">end</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@geek ~]# gdb --command=ngsym nginx-1.14.2/objs/nginx -q</span><br></pre></td></tr></table></figure>
 <p>进入gdb交互界面，输入r，执行命令，就可以获得Nginx完整的执行流程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@geek ~]# gdb --command=ngsym nginx-1.14.2/objs/nginx -q | tee nginx_flow</span><br></pre></td></tr></table></figure>
+<p>可将输出重定向到<a href="https://github.com/jeychu/nginx-deepin" target="_blank" rel="noopener">nginx_flow</a>文件中。</p>
 <h2><span id="加桩调试">加桩调试</span></h2><p>为了让一个模块执行起来，额外添加一些支撑的代码，称为加桩。</p>
 <p>Nginx很多的基础实现（比如slab机制、红黑树、chain链、array数组等）都比较独立，要调试它们需提供少量的桩代码进行加桩测试。</p>
 <p>以slab为例。</p>
@@ -299,7 +301,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?68106335"></script>
+<script src="/js/journal.js?90869898"></script>
 
 
 
