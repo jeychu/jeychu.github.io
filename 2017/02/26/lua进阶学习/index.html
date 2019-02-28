@@ -8,7 +8,18 @@
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content>
+<meta name="description" content="
+
+Lua简介
+Lua是什么？
+Lua和LuaJIT的区别
+
+
+入门
+基础数据结构
+nil
+boolean
+num...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -18,7 +29,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?43398887">
+<link rel="stylesheet" href="/css/journal.css?29859458">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -161,7 +172,227 @@
     
             <div class="post-body-wrapper">
                 <div class="post-body">
-                    
+                    <!-- toc -->
+<ul>
+<li><a href="#lua简介">Lua简介</a><ul>
+<li><a href="#lua是什么">Lua是什么？</a></li>
+<li><a href="#lua和luajit的区别">Lua和LuaJIT的区别</a></li>
+</ul>
+</li>
+<li><a href="#入门">入门</a><ul>
+<li><a href="#基础数据结构">基础数据结构</a><ul>
+<li><a href="#nil">nil</a></li>
+<li><a href="#boolean">boolean</a></li>
+<li><a href="#number">number</a></li>
+<li><a href="#string">string</a></li>
+<li><a href="#table">table</a></li>
+<li><a href="#function">function</a></li>
+</ul>
+</li>
+<li><a href="#表达式">表达式</a><ul>
+<li><a href="#算术运算符">算术运算符</a></li>
+<li><a href="#关系运算符">关系运算符</a></li>
+<li><a href="#逻辑运算符">逻辑运算符</a></li>
+<li><a href="#字符串连接">字符串连接</a></li>
+<li><a href="#优先级">优先级</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h1><span id="lua简介">Lua简介</span></h1><h2><span id="lua是什么">Lua是什么？</span></h2><p>1993年Lua诞生于巴西里约热内卢天主教大学。浪漫的名字Lua所代表的意思是美丽的月亮。</p>
+<p>正如它的名字，Lua极为简洁、优雅且富有乐趣。</p>
+<p>从一开始，Lua就是作为一门方便嵌入到其他应用程序，并可扩展的轻量级脚本语言来设计的，因此她一直遵循着简单、小巧、可移植、快速的原则，官方实现完全采用ANSI C编写，能以C程序库的形式嵌入到宿主程序中。</p>
+<p>在游戏开发、机器人控制、分布式应用、图像处理、生物信息学等领域得到了广泛应用。其中，尤以游戏开发为最，用Lua可以快捷高效地配合游戏引擎完成数据描述、配置管理和逻辑控制等任务。</p>
+<p>Lua是一门过程型动态语言，有如下特性：</p>
+<ul>
+<li>变量名没有类型，值才有类型，变量名在运行时可与任何类型的值绑定；</li>
+<li>只提供唯一一种数据结构，称为表（table），它混合了数组、哈希，可以用任何类型的值作为key和value。一致且富有表达力的表构造语法，使得Lua很适合描述复杂的数据；</li>
+<li>支持匿名函数和正则尾递归；</li>
+<li>支持词法定界和闭包；</li>
+<li>提供thread和coroutine机制，实现协作式多任务；</li>
+<li>运行期能编译字符串形式的程序文本并载入虚拟机执行；</li>
+<li>通过metatable和metamethod提供dynamic metamechanism，从而允许程序运行时根据需要改变或扩充语法设施的内定语义；</li>
+<li>能方便的利用表和dynamic metamechanism实现prototype-based的面向对象模型；</li>
+<li>提供完善的模块机制，从而更好地支持开发大型的应用程序；</li>
+</ul>
+<h2><span id="lua和luajit的区别">Lua和LuaJIT的区别</span></h2><p>Lua非常高效，通过第三方的独立评测也证实，它运行得比Perl、Python、Ruby等其他脚本都快。但是，还不够快。LuaJIT（Lua Just-in Time）则尝试利用即时编译技术把Lua代码编译成本地机器码后交给CPU直接执行，又显著的加速了Lua。</p>
+<p>LuaJIT是一个更为高效的Lua实现。支持更多的基本原语和特性，因此功能上也要更为强大。</p>
+<p>以下内容都是基于<a href="http://luajit.org" target="_blank" rel="noopener">LuaJIT</a>进行介绍的。</p>
+<h1><span id="入门">入门</span></h1><h2><span id="基础数据结构">基础数据结构</span></h2><h3><span id="nil">nil</span></h3><p>nil是一种类型，表示“无效值”。一个变量在第一次赋值前的默认值是nil，将nil赋值给一个全局变量就等同于删除它。</p>
+<p>如果一个变量被设置为nil，就等于说该变量未定义，与无穷无尽的其他为定义的变量是一样的。也就是表示该变量不存在。</p>
+<p>OpenResty的lua接口还提供了一种特殊的空值，即ngx.null，用来表示不同于nil的空值。</p>
+<p><a href="https://pureage.info/2013/09/02/125.html" target="_blank" rel="noopener">二者的区别</a>是：</p>
+<p>nil是Lua的一种类型，该类型只有nil一个值，作用只有一个，表示一个变量不存在，未定义。</p>
+<p>ngx.null则是一个userdata类型的值，表示查询为空。</p>
+<h3><span id="boolean">boolean</span></h3><p>Lua中nil和false为“假”，其他所有值均为“真”。</p>
+<p>比如0和空字符串都是“真”。</p>
+<h3><span id="number">number</span></h3><p>表示实数，和C/C++里面的double类型类似。</p>
+<p>可用math.floor(向下取整)和math.ceil(向上取整)进行取整操作。</p>
+<h3><span id="string">string</span></h3><p>有三种方式表示字符串：</p>
+<ul>
+<li><p>单引号</p>
+</li>
+<li><p>双引号</p>
+</li>
+<li><p>长括号（即[[]]）:</p>
+<p>在两个正的方括号之间插入n个等号定义为第n级正长括号。也就是说，[[是0级正长括号，[=[是1级，以此类推。反的长括号也作此类似定义。</p>
+<p>则在n级正反长括号之间的字符串，不受分行限制，不处理任何转义符，忽略掉任何不同级别的长括号，即可以包含除本级别反长括号之外的任何东西。</p>
+<p>例如：[=[abc\nbca]=]，里面的“\n”不会被转义。</p>
+</li>
+</ul>
+<p>Lua的字符串是不可改变的值，不能像在C语言中那样直接修改字符串的某个字符，而是根据修改要求来创建一个新的字符串。</p>
+<p>Lua也不能通过下标来访问字符串的某个字符。</p>
+<p>Lua字符串一般都会经历一个内化的过程，即两个完全一样的Lua字符串在Lua虚拟机中只会存储一份。每一个Lua字符串在创建时都会插入到Lua虚拟机内部的一个全局的哈希表中。这意味着：</p>
+<ul>
+<li>创建相同的Lua字符串并不会引入新的动态内存分配操作，所以相对节省开销（但仍有全局哈希表查询的开销）</li>
+<li>内容相同的Lua字符串不会占用多份存储空间</li>
+<li>已经创建好的Lua字符串之间进行相等性比较时是<code>O(1)</code>时间度的开销，而不是通常所见的<code>O(n)</code></li>
+</ul>
+<h3><span id="table">table</span></h3><p>一种抽象的关联数组。是一种具有特殊索引方式的数组，索引通常是字符串或number类型，也可以是除nil以外的任意类型的值。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> corp = &#123;</span><br><span class="line">    web = <span class="string">"www.google.com"</span>,   <span class="comment">--索引为字符串，key = "web",</span></span><br><span class="line">                              <span class="comment">--            value = "www.google.com"</span></span><br><span class="line">    telephone = <span class="string">"12345678"</span>,   <span class="comment">--索引为字符串</span></span><br><span class="line">    staff = &#123;<span class="string">"Jack"</span>, <span class="string">"Scott"</span>, <span class="string">"Gary"</span>&#125;, <span class="comment">--索引为字符串，值也是一个表</span></span><br><span class="line">    <span class="number">100876</span>,              <span class="comment">--相当于 [1] = 100876，此时索引为数字</span></span><br><span class="line">                         <span class="comment">--      key = 1, value = 100876</span></span><br><span class="line">    <span class="number">100191</span>,              <span class="comment">--相当于 [2] = 100191，此时索引为数字</span></span><br><span class="line">    [<span class="number">10</span>] = <span class="number">360</span>,          <span class="comment">--直接把数字索引给出</span></span><br><span class="line">    [<span class="string">"city"</span>] = <span class="string">"Beijing"</span> <span class="comment">--索引为字符串</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(corp.web)               <span class="comment">--&gt;output:www.google.com</span></span><br><span class="line"><span class="built_in">print</span>(corp[<span class="string">"telephone"</span>])      <span class="comment">--&gt;output:12345678</span></span><br><span class="line"><span class="built_in">print</span>(corp[<span class="number">2</span>])                <span class="comment">--&gt;output:100191</span></span><br><span class="line"><span class="built_in">print</span>(corp[<span class="string">"city"</span>])           <span class="comment">--&gt;output:"Beijing"</span></span><br><span class="line"><span class="built_in">print</span>(corp.staff[<span class="number">1</span>])          <span class="comment">--&gt;output:Jack</span></span><br><span class="line"><span class="built_in">print</span>(corp[<span class="number">10</span>])               <span class="comment">--&gt;output:360</span></span><br></pre></td></tr></table></figure>
+<p>在内部实现上，table通常实现为一个哈希表、一个数组或者两者的混合。</p>
+<h3><span id="function">function</span></h3><p>Lua的函数也是一种数据类型，函数可以存储在变量中，可以通过参数传递给其他函数，还可以作为其他函数的返回值。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">foo</span><span class="params">()</span></span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"in the function"</span>)</span><br><span class="line">    <span class="comment">--dosomething()</span></span><br><span class="line">    <span class="keyword">local</span> x = <span class="number">10</span></span><br><span class="line">    <span class="keyword">local</span> y = <span class="number">20</span></span><br><span class="line">    <span class="keyword">return</span> x + y</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> a = foo    <span class="comment">--把函数赋给变量</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(a())</span><br><span class="line"></span><br><span class="line"><span class="comment">--output:</span></span><br><span class="line"><span class="keyword">in</span> the <span class="function"><span class="keyword">function</span></span></span><br><span class="line"><span class="function">30</span></span><br></pre></td></tr></table></figure>
+<p>有名函数的定义实质上是匿名函数对变量的赋值。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span><span class="params">()</span></span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>等价于</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">foo = <span class="function"><span class="keyword">function</span> <span class="params">()</span></span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h2><span id="表达式">表达式</span></h2><h3><span id="算术运算符">算术运算符</span></h3><table>
+<thead>
+<tr>
+<th>算术运算符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>+</td>
+<td>加法</td>
+</tr>
+<tr>
+<td>-</td>
+<td>减法</td>
+</tr>
+<tr>
+<td>*</td>
+<td>乘法</td>
+</tr>
+<tr>
+<td>/</td>
+<td>除法</td>
+</tr>
+<tr>
+<td>^</td>
+<td>指数</td>
+</tr>
+<tr>
+<td>%</td>
+<td>取模</td>
+</tr>
+</tbody>
+</table>
+<h3><span id="关系运算符">关系运算符</span></h3><table>
+<thead>
+<tr>
+<th>关系运算符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&lt;</td>
+<td>小于</td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>大于</td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>小于等于</td>
+</tr>
+<tr>
+<td>&gt;=</td>
+<td>大于等于</td>
+</tr>
+<tr>
+<td>==</td>
+<td>等于</td>
+</tr>
+<tr>
+<td>~=</td>
+<td>不等于</td>
+</tr>
+</tbody>
+</table>
+<p>在使用“==”做等于判断时，要注意对于 table, userdate 和函数， Lua 是作引用比较的。也就是说，只有当两个变量引用同一个对象时，才认为它们相等。</p>
+<h3><span id="逻辑运算符">逻辑运算符</span></h3><table>
+<thead>
+<tr>
+<th>逻辑运算符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>and</td>
+<td>逻辑与</td>
+</tr>
+<tr>
+<td>or</td>
+<td>逻辑或</td>
+</tr>
+<tr>
+<td>not</td>
+<td>逻辑非</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>a and b</code> 如果 a 为 nil，则返回 a，否则返回 b;</li>
+<li><code>a or b</code> 如果 a 为 nil，则返回 b，否则返回 a。</li>
+</ul>
+<h3><span id="字符串连接">字符串连接</span></h3><p>使用“..”来连接两个字符串。数字会转换为字符串，然后做连接。</p>
+<p>连接只会创建一个新字符串，而不会改变原操作数。</p>
+<p>也可以使用string.format连接字符串。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">"Hello "</span> .. <span class="string">"World"</span>)    <span class="comment">--&gt;打印 Hello World</span></span><br><span class="line"><span class="built_in">print</span>(<span class="number">0</span> .. <span class="number">1</span>)                 <span class="comment">--&gt;打印 01</span></span><br><span class="line"></span><br><span class="line">str1 = <span class="built_in">string</span>.<span class="built_in">format</span>(<span class="string">"%s-%s"</span>,<span class="string">"hello"</span>,<span class="string">"world"</span>)</span><br><span class="line"><span class="built_in">print</span>(str1)              <span class="comment">--&gt;打印 hello-world</span></span><br><span class="line"></span><br><span class="line">str2 = <span class="built_in">string</span>.<span class="built_in">format</span>(<span class="string">"%d-%s-%.2f"</span>,<span class="number">123</span>,<span class="string">"world"</span>,<span class="number">1.21</span>)</span><br><span class="line"><span class="built_in">print</span>(str2)              <span class="comment">--&gt;打印 123-world-1.21</span></span><br></pre></td></tr></table></figure>
+<p>table和table.concat()可进行很多字符串的拼接。</p>
+<h3><span id="优先级">优先级</span></h3><table>
+<thead>
+<tr>
+<th style="text-align:center">优先级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">^</td>
+</tr>
+<tr>
+<td style="text-align:center">not   # -</td>
+</tr>
+<tr>
+<td style="text-align:center">*   /   %</td>
+</tr>
+<tr>
+<td style="text-align:center">+   -</td>
+</tr>
+<tr>
+<td style="text-align:center">..</td>
+</tr>
+<tr>
+<td style="text-align:center">&lt; &gt; &lt;=  &gt;=  ==  ~=</td>
+</tr>
+<tr>
+<td style="text-align:center">and</td>
+</tr>
+<tr>
+<td style="text-align:center">or</td>
+</tr>
+</tbody>
+</table>
+
                 </div>
             </div>
     
@@ -200,7 +431,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?45421450"></script>
+<script src="/js/journal.js?42364947"></script>
 
 
 
