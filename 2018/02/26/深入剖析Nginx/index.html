@@ -1,0 +1,310 @@
+
+
+<!DOCTYPE html>
+<html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <title>深入剖析Nginx - javfa&#39;s blog</title>
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Javfa">
+<meta name="description" content="
+
+跟踪和调试
+利用gdb调试
+利用strace/pstack调试Nginx
+获得Nginx完整执行流程
+加桩调试...">
+<meta name="keywords" content>
+
+    <meta charset="utf-8">
+    <meta name="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta content="telephone=no" name="format-detection">
+    <meta name="renderer" content="webkit">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/journal.css?74159642">
+<script src="/js/loadCSS.js"></script>
+<script>
+    loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
+    (function (d) {
+        var config = {
+                kitId: 'dwg1tuc',
+                scriptTimeout: 3000,
+                async: true
+            },
+            h = d.documentElement, t = setTimeout(function () {
+                h.className = h.className.replace(/\bwf-loading\b/g, "") + " wf-inactive";
+            }, config.scriptTimeout), tk = d.createElement("script"), f = false,
+            s = d.getElementsByTagName("script")[0], a;
+        h.className += " wf-loading";
+        tk.src = 'https://use.typekit.net/' + config.kitId + '.js';
+        tk.async = true;
+        tk.onload = tk.onreadystatechange = function () {
+            a = this.readyState;
+            if (f || a && a != "complete" && a != "loaded") return;
+            f = true;
+            clearTimeout(t);
+            try {
+                Typekit.load(config)
+            } catch (e) {
+            }
+        };
+        s.parentNode.insertBefore(tk, s)
+    })(document);
+</script>
+<noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora|Montserrat|Anonymous+Pro:400|Material+Icons">
+</noscript>
+</head>
+<body>
+<div id="top"></div>
+<div id="app">
+<div class="single-column-drawer-container" ref="drawer" v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            <a class="a-block drawer-menu-item false" href="http://yoursite.com">
+                Home
+            </a>
+            <a class="a-block drawer-menu-item false" href="/archives">
+                Archive
+            </a>
+
+            
+            
+
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav ref="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div ref="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a ref="navTitle" class="navbar-brand" href="/">
+            javfa&#39;s blog
+        </a>
+    </div>
+</nav>
+<div class="single-column-header-container" ref="pageHead" v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="/">
+        <div class="single-column-header-title">javfa&#39;s blog</div>
+        <div class="single-column-header-subtitle"></div>
+    </a>
+</div>
+<div ref="sideContainer" class="side-container">
+    <a class="a-block nav-head false" href="/">
+        <div class="nav-title">
+            {博客@家發}
+        </div>
+        <div class="nav-subtitle">
+            隻言片語<br>於此匯聚
+        </div>
+    </a>
+
+    <div class="nav-link-list">
+        <a class="a-block no-tint nav-link-item false" href="/archives">
+            Archive
+        </a>
+
+        
+        
+
+        
+    </div>
+
+    
+    <div class="nav-footer">
+        Proudly published with Hexo<br>
+        
+        Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+        
+        &copy; 2019 <a href="http://yoursite.com">javfa&#39;s blog</a>
+    </div>
+</div>
+<div ref="extraContainer" class="extra-container">
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+
+        
+    </div>
+</div>
+
+<div ref="streamContainer" class="stream-container">
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            <div class="post-head-wrapper-text-only" style="background-image: url('')">
+                <div class="post-title">
+                    深入剖析Nginx
+                    <div class="post-meta">
+                        <time datetime="2018-02-26T08:29:57.000Z" itemprop="datePublished">
+                            2018-02-26 16:29
+                        </time>&nbsp;
+                        
+    
+                        
+                        
+                        <i class="material-icons" style>label</i>
+                        
+                        <a href="/tags/Nginx/">Nginx</a>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+    
+            <div class="post-body-wrapper">
+                <div class="post-body">
+                    <!-- toc -->
+<ul>
+<li><a href="#跟踪和调试">跟踪和调试</a><ul>
+<li><a href="#利用gdb调试">利用gdb调试</a></li>
+<li><a href="#利用stracepstack调试nginx">利用strace/pstack调试Nginx</a></li>
+<li><a href="#获得nginx完整执行流程">获得Nginx完整执行流程</a></li>
+<li><a href="#加桩调试">加桩调试</a></li>
+<li><a href="#特殊应用逻辑的调试">特殊应用逻辑的调试</a></li>
+</ul>
+</li>
+<li><a href="#进程模型">进程模型</a><ul>
+<li><a href="#整体架构">整体架构</a></li>
+<li><a href="#核心进程模型">核心进程模型</a><ul>
+<li><a href="#master进程">master进程</a></li>
+<li><a href="#工作进程">工作进程</a></li>
+<li><a href="#cache进程模型">Cache进程模型</a></li>
+<li><a href="#cache管理进程">Cache管理进程</a></li>
+<li><a href="#cache加载进程">Cache加载进程</a></li>
+</ul>
+</li>
+<li><a href="#进程通信">进程通信</a></li>
+<li><a href="#共享内存">共享内存</a></li>
+<li><a href="#slab机制">slab机制</a></li>
+<li><a href="#信号处理">信号处理</a></li>
+<li><a href="#准备工作">准备工作</a></li>
+<li><a href="#设置生效">设置生效</a></li>
+<li><a href="#处理实例">处理实例</a></li>
+</ul>
+</li>
+<li><a href="#数据结构">数据结构</a><ul>
+<li><a href="#内存池">内存池</a></li>
+<li><a href="#hash">Hash</a></li>
+<li><a href="#radix-tree">Radix tree</a></li>
+</ul>
+</li>
+<li><a href="#配置解析">配置解析</a><ul>
+<li><a href="#配置文件格式">配置文件格式</a></li>
+<li><a href="#配置项目解析准备">配置项目解析准备</a></li>
+<li><a href="#配置文件解析流程">配置文件解析流程</a></li>
+<li><a href="#配置信息组织结构">配置信息组织结构</a></li>
+<li><a href="#配置信息的继承">配置信息的继承</a></li>
+</ul>
+</li>
+<li><a href="#模块综述">模块综述</a><ul>
+<li><a href="#handler模块">Handler模块</a></li>
+<li><a href="#filter模块">Filter模块</a></li>
+<li><a href="#upstream模块">Upstream模块</a></li>
+<li><a href="#load-balance模块">Load balance模块</a></li>
+</ul>
+</li>
+<li><a href="#事件管理机制">事件管理机制</a><ul>
+<li><a href="#io多路复用模型">IO多路复用模型</a></li>
+<li><a href="#epoll模型">epoll模型</a></li>
+<li><a href="#事件处理">事件处理</a></li>
+<li><a href="#负载均衡">负载均衡</a></li>
+<li><a href="#客户端请求均衡">客户端请求均衡</a></li>
+<li><a href="#多核绑定">多核绑定</a></li>
+<li><a href="#超时管理">超时管理</a></li>
+</ul>
+</li>
+<li><a href="#变量机制">变量机制</a></li>
+<li><a href="#请求处理与响应">请求处理与响应</a></li>
+<li><a href="#请求定位">请求定位</a></li>
+<li><a href="#动态页面请求处理">动态页面请求处理</a></li>
+<li><a href="#过滤模块负载均衡访问控制">过滤模块负载均衡访问控制</a></li>
+</ul>
+<!-- tocstop -->
+<h1><span id="跟踪和调试">跟踪和调试</span></h1><h2><span id="利用gdb调试">利用gdb调试</span></h2><ul>
+<li><p>绑定Nginx到gdb</p>
+<p><code>./configure --with-cc-opt=&#39;-g -O0&#39;</code></p>
+<p>or</p>
+<p><code>CFLAGS=&quot;-g -O0&quot; ./configure</code></p>
+</li>
+</ul>
+<h2><span id="利用stracepstack调试nginx">利用strace/pstack调试Nginx</span></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@geek example]# ps -ef | grep nginx</span><br><span class="line">root      8971     1  0 2月26 ?       00:00:00 nginx: master process objs</span><br><span class="line">nobody    8972  8971  0 2月26 ?       00:00:00 nginx: worker process</span><br><span class="line">root     14396 12063  0 01:12 pts/1    00:00:00 grep --color=auto nginx</span><br><span class="line">[root@geek example]# strace -p 8972</span><br><span class="line">strace: Process 8972 attached</span><br><span class="line">epoll_wait(8,</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@geek example]# wget 127.0.0.1:8080</span><br><span class="line">--2019-02-27 01:12:54--  http://127.0.0.1:8080/</span><br><span class="line">正在连接 127.0.0.1:8080... 已连接。</span><br><span class="line">已发出 HTTP 请求，正在等待回应... 200 OK</span><br><span class="line">长度：612 [text/html]</span><br><span class="line">正在保存至: “index.html”</span><br><span class="line"></span><br><span class="line">100%[===============================&gt;] 612         --.-K/s 用时 0.004s</span><br><span class="line"></span><br><span class="line">2019-02-27 01:12:54 (167 KB/s) - 已保存 “index.html” [612/612])</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">[root@geek example]<span class="meta"># strace -p 8972</span></span><br><span class="line">strace: Process <span class="number">8972</span> attached</span><br><span class="line">epoll_wait(<span class="number">8</span>, [&#123;EPOLLIN, &#123;u32=<span class="number">1462673424</span>, u64=<span class="number">139776878354448</span>&#125;&#125;], <span class="number">512</span>, <span class="number">-1</span>) = <span class="number">1</span></span><br><span class="line">    <span class="comment">// 返回值为1，表示有1个描述符存在可读/写事件，这里是可读事件</span></span><br><span class="line">accept4(<span class="number">6</span>, &#123;sa_family=AF_INET, sin_port=htons(<span class="number">44738</span>), </span><br><span class="line">sin_addr=inet_addr(<span class="string">"127.0.0.1"</span>)&#125;, [<span class="number">16</span>], SOCK_NONBLOCK) = <span class="number">3</span></span><br><span class="line">    <span class="comment">// 接受该请求，返回的数字3表示socket的文件描述符</span></span><br><span class="line">epoll_ctl(<span class="number">8</span>, EPOLL_CTL_ADD, <span class="number">3</span>, &#123;EPOLLIN|EPOLLRDHUP|EPOLLET, &#123;u32=<span class="number">1462673872</span>, u64=<span class="number">139776878354896</span>&#125;&#125;) = <span class="number">0</span></span><br><span class="line">    <span class="comment">// 把accept4建立的socket套接字（参数3）加入到事件监听机制里</span></span><br><span class="line">epoll_wait(<span class="number">8</span>, [&#123;EPOLLIN, &#123;u32=<span class="number">1462673872</span>, u64=<span class="number">139776878354896</span>&#125;&#125;], <span class="number">512</span>, <span class="number">60000</span>) = <span class="number">1</span></span><br><span class="line">recvfrom(<span class="number">3</span>, <span class="string">"GET / HTTP/1.1\r\nUser-Agent: Wget"</span>..., <span class="number">1024</span>, <span class="number">0</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>) = <span class="number">112</span></span><br><span class="line">    <span class="comment">// 从发生可读事件的socket文件描述符内读取数据，读取的数据存在第二个参数内，读取了112个字节</span></span><br><span class="line">stat(<span class="string">"/usr/local/nginx/html/index.html"</span>, &#123;st_mode=S_IFREG|<span class="number">0644</span>, st_size=<span class="number">612</span>, ...&#125;) = <span class="number">0</span></span><br><span class="line">    <span class="comment">// 判断客户端请求的html文件是否存在，返回值0表示存在</span></span><br><span class="line">open(<span class="string">"/usr/local/nginx/html/index.html"</span>, O_RDONLY|O_NONBLOCK) = <span class="number">10</span></span><br><span class="line">fstat(<span class="number">10</span>, &#123;st_mode=S_IFREG|<span class="number">0644</span>, st_size=<span class="number">612</span>, ...&#125;) = <span class="number">0</span></span><br><span class="line">    <span class="comment">// 打开并获取文件状态信息</span></span><br><span class="line">writev(<span class="number">3</span>, [&#123;<span class="string">"HTTP/1.1 200 OK\r\nServer: nginx/1"</span>..., <span class="number">238</span>&#125;], <span class="number">1</span>) = <span class="number">238</span></span><br><span class="line">    <span class="comment">// 把响应头通过文件描述符3代表的socket套接字发给客户端</span></span><br><span class="line">sendfile(<span class="number">3</span>, <span class="number">10</span>, [<span class="number">0</span>] =&gt; [<span class="number">612</span>], <span class="number">612</span>)      = <span class="number">612</span></span><br><span class="line">    <span class="comment">// 把文件描述符10代表的响应体通过文件描述符3代表的socket套接字发给客户端</span></span><br><span class="line">write(<span class="number">4</span>, <span class="string">"127.0.0.1 - - [27/Feb/2019:01:12"</span>..., <span class="number">104</span>) = <span class="number">104</span></span><br><span class="line">    <span class="comment">// 往文件描述符4代表的日志文件内write一条日志信息</span></span><br><span class="line">close(<span class="number">10</span>)                               = <span class="number">0</span></span><br><span class="line">setsockopt(<span class="number">3</span>, SOL_TCP, TCP_NODELAY, [<span class="number">1</span>], <span class="number">4</span>) = <span class="number">0</span></span><br><span class="line">epoll_wait(<span class="number">8</span>, [&#123;EPOLLIN|EPOLLRDHUP, &#123;u32=<span class="number">1462673872</span>, u64=<span class="number">139776878354896</span>&#125;&#125;], <span class="number">512</span>, <span class="number">65000</span>) = <span class="number">1</span></span><br><span class="line">recvfrom(<span class="number">3</span>, <span class="string">""</span>, <span class="number">1024</span>, <span class="number">0</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>)    = <span class="number">0</span></span><br><span class="line">close(<span class="number">3</span>)                                = <span class="number">0</span></span><br><span class="line">    <span class="comment">// 最后，关闭文件描述符3代表的socket套接字</span></span><br><span class="line">epoll_wait(<span class="number">8</span>,</span><br></pre></td></tr></table></figure>
+<p>由于strace能够提供Nginx执行过程中的这些内部信息，所以在出现一些奇怪现象时，比如Nginx启动失败、响应的文件数据和预期不一致、莫名其妙的Segmentation Fault段错误、存在性能瓶颈（利用-T选项跟踪各个函数的消耗时间），利用strace也许能提供一些相关帮助。</p>
+<p>想知道Nginx当前内部到底在执行什么函数，可使用pstack。</p>
+<p>比如在无客户端请求的情况下，Nginx阻塞在epoll_wait系统调用处，此时利用pstack查看Nginx函数调用栈关系，如下所示：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@geek example]<span class="meta"># pstack 8972</span></span><br><span class="line">#<span class="number">0</span>  <span class="number">0x00007f205637d463</span> in __epoll_wait_nocancel () from /lib64/libc.so<span class="number">.6</span></span><br><span class="line">#<span class="number">1</span>  <span class="number">0x000000000044c1eb</span> <span class="function">in <span class="title">ngx_epoll_process_events</span> <span class="params">(cycle=<span class="number">0x1eaf0c0</span>,</span></span></span><br><span class="line">    timer=18446744073709551615, flags=1) at src/event/modules/ngx_epoll_module.c:800</span><br><span class="line">#<span class="number">2</span>  <span class="number">0x000000000043ddb6</span> in ngx_process_events_and_timers </span><br><span class="line">        (cycle=<span class="number">0x1eaf0c0</span>) at src/event/ngx_event.c:<span class="number">242</span></span><br><span class="line">#<span class="number">3</span>  <span class="number">0x000000000044a0b8</span> <span class="function">in <span class="title">ngx_worker_process_cycle</span> <span class="params">(cycle=<span class="number">0x1eaf0c0</span>, </span></span></span><br><span class="line">        data=0x0) at src/os/unix/ngx_process_cycle.c:750</span><br><span class="line">#<span class="number">4</span>  <span class="number">0x0000000000446f87</span> <span class="function">in <span class="title">ngx_spawn_process</span> <span class="params">(cycle=<span class="number">0x1eaf0c0</span>, </span></span></span><br><span class="line"><span class="function"><span class="params">            proc=<span class="number">0x44a00a</span> &lt;ngx_worker_process_cycle&gt;, data=<span class="number">0x0</span>, name=<span class="number">0x4cacd0</span></span></span></span><br><span class="line">            "worker process", respawn=-3) at src/os/unix/ngx_process.c:199</span><br><span class="line">#<span class="number">5</span>  <span class="number">0x00000000004492e9</span> in ngx_start_worker_processes </span><br><span class="line">     (cycle=<span class="number">0x1eaf0c0</span>, n=<span class="number">1</span>, type=<span class="number">-3</span>) at src/os/unix/ngx_process_cycle.c:<span class="number">359</span></span><br><span class="line">#<span class="number">6</span>  <span class="number">0x0000000000448a49</span> in ngx_master_process_cycle </span><br><span class="line">                (cycle=<span class="number">0x1eaf0c0</span>) at src/os/unix/ngx_process_cycle.c:<span class="number">131</span></span><br><span class="line">#<span class="number">7</span>  <span class="number">0x000000000040ba0a</span> <span class="function">in <span class="title">main</span> <span class="params">(argc=<span class="number">1</span>, argv=<span class="number">0x7ffdcc4edf68</span>)</span> at</span></span><br><span class="line">           src/core/nginx.c:382</span><br></pre></td></tr></table></figure>
+<p>从main()函数到epoll_wait()函数的调用关系一目了然。</p>
+<h2><span id="获得nginx完整执行流程">获得Nginx完整执行流程</span></h2><p>参照<a href="https://jeychu.github.io/2019/02/27/如何追踪函数的完整调用过程/" target="_blank" rel="noopener">如何追踪函数的完整调用过程</a>中使用gdb的方法，来获取Nginx完整的执行流程。如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@geek ~]# readelf -s /root/nginx-1.14.2/objs/nginx  | gawk &apos; &#123;    </span><br><span class="line">if($4 == &quot;FUNC&quot; &amp;&amp; $2 != 0) &#123; </span><br><span class="line">  print &quot;# code for &quot; $NF;</span><br><span class="line">  print &quot;b *0x&quot; $2;</span><br><span class="line">  print &quot;commands&quot;;</span><br><span class="line">  print &quot;silent&quot;;   </span><br><span class="line">  print &quot;bt 1&quot;;</span><br><span class="line">  print &quot;c&quot;;</span><br><span class="line">  print &quot;end&quot;;     </span><br><span class="line">  print &quot;&quot;;    </span><br><span class="line">&#125;  </span><br><span class="line">&#125;&apos; &gt; ngsym;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">[root@geek ~]# cat ngsym</span><br><span class="line"># code for ngx_http_upstream_free_ro</span><br><span class="line">b *0x0000000000480aea</span><br><span class="line">commands</span><br><span class="line">silent</span><br><span class="line">bt 1</span><br><span class="line">c</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># code for ngx_http_test_content_typ</span><br><span class="line">b *0x0000000000452bb8</span><br><span class="line">commands</span><br><span class="line">silent</span><br><span class="line">bt 1</span><br><span class="line">c</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># code for ngx_libc_crypt</span><br><span class="line">b *0x00000000004485b4</span><br><span class="line">commands</span><br><span class="line">silent</span><br><span class="line">bt 1</span><br><span class="line">c</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># code for ngx_timezone_update</span><br><span class="line">b *0x00000000004438f2</span><br><span class="line">commands</span><br><span class="line">silent</span><br><span class="line">bt 1</span><br><span class="line">c</span><br><span class="line">end</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@geek ~]# gdb --command=ngsym nginx-1.14.2/objs/nginx -q</span><br></pre></td></tr></table></figure>
+<p>进入gdb交互界面，输入r，执行命令，就可以获得Nginx完整的执行流程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@geek ~]# gdb --command=ngsym nginx-1.14.2/objs/nginx -q | tee nginx_flow</span><br></pre></td></tr></table></figure>
+<p>可将输出重定向到<a href="https://github.com/jeychu/nginx-deepin" target="_blank" rel="noopener">nginx_flow</a>文件中。</p>
+<h2><span id="加桩调试">加桩调试</span></h2><p>为了让一个模块执行起来，额外添加一些支撑的代码，称为加桩。</p>
+<p>Nginx很多的基础实现（比如slab机制、红黑树、chain链、array数组等）都比较独立，要调试它们需提供少量的桩代码进行加桩测试。</p>
+<p>以slab为例。</p>
+<h2><span id="特殊应用逻辑的调试">特殊应用逻辑的调试</span></h2><h1><span id="进程模型">进程模型</span></h1><h2><span id="整体架构">整体架构</span></h2><p><img src="/2018/02/26/深入剖析Nginx/1551226860880.png" alt="1551226860880"></p>
+<h2><span id="核心进程模型">核心进程模型</span></h2><p><img src="/2018/02/26/深入剖析Nginx/1551227609447.png" alt="1551227609447"></p>
+<h3><span id="master进程">master进程</span></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// src/os/unix/ngx_process_cycle.c</span><br><span class="line">void</span><br><span class="line">ngx_master_process_cycle(ngx_cycle_t *cycle)&#123;</span><br><span class="line">    ...</span><br><span class="line">    for (;;) &#123;</span><br><span class="line">        ...</span><br><span class="line">        sigsuspend(&amp;set);</span><br><span class="line">        ...</span><br><span class="line">        if (ngx_reap)&#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">        if (!live &amp;&amp; (ngx_terminate || ngx_quit)) &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">        if (ngx_terminate) &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">        if (ngx_quit) &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>master进程的无限for(;;)循环内有一个关键的四个suspend()函数调用，该函数使得master大部分时间处于挂起等待状态，直到master接收到信号为止。</p>
+<h3><span id="工作进程">工作进程</span></h3><h3><span id="cache进程模型">Cache进程模型</span></h3><h3><span id="cache管理进程">Cache管理进程</span></h3><h3><span id="cache加载进程">Cache加载进程</span></h3><h2><span id="进程通信">进程通信</span></h2><h2><span id="共享内存">共享内存</span></h2><h2><span id="slab机制">slab机制</span></h2><h2><span id="信号处理">信号处理</span></h2><h2><span id="准备工作">准备工作</span></h2><h2><span id="设置生效">设置生效</span></h2><h2><span id="处理实例">处理实例</span></h2><h1><span id="数据结构">数据结构</span></h1><h2><span id="内存池">内存池</span></h2><h2><span id="hash">Hash</span></h2><h2><span id="radix-tree">Radix tree</span></h2><h1><span id="配置解析">配置解析</span></h1><h2><span id="配置文件格式">配置文件格式</span></h2><h2><span id="配置项目解析准备">配置项目解析准备</span></h2><h2><span id="配置文件解析流程">配置文件解析流程</span></h2><h2><span id="配置信息组织结构">配置信息组织结构</span></h2><h2><span id="配置信息的继承">配置信息的继承</span></h2><h1><span id="模块综述">模块综述</span></h1><h2><span id="handler模块">Handler模块</span></h2><h2><span id="filter模块">Filter模块</span></h2><h2><span id="upstream模块">Upstream模块</span></h2><h2><span id="load-balance模块">Load balance模块</span></h2><h1><span id="事件管理机制">事件管理机制</span></h1><h2><span id="io多路复用模型">IO多路复用模型</span></h2><h2><span id="epoll模型">epoll模型</span></h2><h2><span id="事件处理">事件处理</span></h2><h2><span id="负载均衡">负载均衡</span></h2><h2><span id="客户端请求均衡">客户端请求均衡</span></h2><h2><span id="多核绑定">多核绑定</span></h2><h2><span id="超时管理">超时管理</span></h2><h1><span id="变量机制">变量机制</span></h1><h1><span id="请求处理与响应">请求处理与响应</span></h1><h1><span id="请求定位">请求定位</span></h1><h1><span id="动态页面请求处理">动态页面请求处理</span></h1><h1><span id="过滤模块负载均衡访问控制">过滤模块负载均衡访问控制</span></h1>
+                </div>
+            </div>
+    
+            <nav class="post-pagination">
+    
+    <a class="newer-posts" href="/2019/02/20/Linux-Kernel/">
+        Previous post<br>Discover the Secrets of Linux Kernel
+    </a>
+    
+    <span class="page-number"></span>
+    
+    <a class="older-posts" href="/2018/02/25/亿级流量详情页开发/">
+        Next post<br>亿级流量详情页开发
+    </a>
+    
+</nav>
+
+    
+            
+
+
+        </div>
+    </div>
+    <div class="single-column-footer">
+    Proudly published with Hexo<br>
+    
+    Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+    
+    &copy; 2018 <a href="http://yoursite.com">javfa&#39;s blog</a>
+</div>
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js" integrity="sha256-EGs9T1xMHdvM1geM8jPpoo8EZ1V1VRsmcJz8OByENLA=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
+<script src="/js/journal.js?35472391"></script>
+
+
+
+</body>
+</html>

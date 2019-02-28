@@ -8,10 +8,18 @@
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content="如何学习内核：
-以应用为目的来学习，边学边用，学以致用
-以培养内核的阅读能力为主要目标
-阅读和修改真实的代码，而非...">
+<meta name="description" content="
+
+如何学习内核：
+将内核划分成两层，减少内核阅读的难度
+内核基础层
+内核应用层
+
+
+内核学习最终目的：
+
+
+内核...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -21,7 +29,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?57253492">
+<link rel="stylesheet" href="/css/journal.css?83264717">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -164,7 +172,41 @@
     
             <div class="post-body-wrapper">
                 <div class="post-body">
-                    <h1><span id="如何学习内核">如何学习内核：</span></h1><ul>
+                    <!-- toc -->
+<ul>
+<li><a href="#如何学习内核">如何学习内核：</a><ul>
+<li><a href="#将内核划分成两层减少内核阅读的难度">将内核划分成两层，减少内核阅读的难度</a><ul>
+<li><a href="#内核基础层">内核基础层</a></li>
+<li><a href="#内核应用层">内核应用层</a></li>
+</ul>
+</li>
+<li><a href="#内核学习最终目的">内核学习最终目的：</a></li>
+</ul>
+</li>
+<li><a href="#内核的基础层和应用层">内核的基础层和应用层</a><ul>
+<li><a href="#内核基础层提供的服务">内核基础层提供的服务</a><ul>
+<li><a href="#内核中使用内存">内核中使用内存</a></li>
+<li><a href="#内核中的任务调度">内核中的任务调度</a></li>
+<li><a href="#软中断和tasklet">软中断和tasklet</a></li>
+<li><a href="#工作队列">工作队列</a></li>
+<li><a href="#自旋锁">自旋锁</a></li>
+<li><a href="#内核信号量">内核信号量</a></li>
+<li><a href="#原子变量">原子变量</a></li>
+</ul>
+</li>
+<li><a href="#内核基础层的数据结构">内核基础层的数据结构</a><ul>
+<li><a href="#双向链表">双向链表</a></li>
+<li><a href="#hash链表">hash链表</a></li>
+<li><a href="#单向链表">单向链表</a></li>
+<li><a href="#红黑树">红黑树</a></li>
+<li><a href="#radix树">radix树</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h1><span id="如何学习内核">如何学习内核：</span></h1><ul>
 <li>以应用为目的来学习，边学边用，学以致用</li>
 <li>以培养内核的阅读能力为主要目标</li>
 <li>阅读和修改真实的代码，而非只是阅读书籍</li>
@@ -204,7 +246,7 @@
 </li>
 </ul>
 <h2><span id="内核学习最终目的">内核学习最终目的：</span></h2><ul>
-<li>独立思考，独立学习，，不断分享成为在该领域有影响力的专家</li>
+<li>独立思考，独立学习，不断分享成为在该领域有影响力的专家</li>
 </ul>
 <h1><span id="内核的基础层和应用层">内核的基础层和应用层</span></h1><h2><span id="内核基础层提供的服务">内核基础层提供的服务</span></h2><p>内核通常提供的服务是内存管理、进程管理、设备管理和文件系统。</p>
 <h3><span id="内核中使用内存">内核中使用内存</span></h3><p>内核中提供了两个层次的内存分配接口：</p>
@@ -269,21 +311,65 @@
 </table>
 <h2><span id="内核基础层的数据结构">内核基础层的数据结构</span></h2><p>container是Linux中很重要的一个概念，使用container能实现对象的封装。代码如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> container_of(ptr, type, member) (&#123;</span></span><br><span class="line">  <span class="function"><span class="keyword">const</span> <span class="title">typeof</span><span class="params">(((type *)<span class="number">0</span>)-&gt;member)</span> *__mptr </span>= (ptr);</span><br><span class="line">  (type *)((<span class="keyword">char</span> *)__mptr - offsetof(type, member));&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> offsetof(type, member) (size_t)&amp;(((type*)0)-&gt;member)</span></span><br></pre></td></tr></table></figure>
 <p>这个方法可以实现通过结构的一个成员找到整个结构的地址。内核中大量使用了这个方法。</p>
-<h3><span id="双向链表">双向链表</span></h3><h3><span id="hash链表">hash链表</span></h3><h3><span id="单向链表">单向链表</span></h3><h3><span id="红黑树">红黑树</span></h3><h3><span id="radix树">radix树</span></h3>
+<h3><span id="双向链表">双向链表</span></h3><p>list是双向链表的一个抽象，定义在/include/linux目录下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> *<span class="title">next</span>, *<span class="title">prev</span>;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> list_entry(ptr, type, member)</span></span><br><span class="line">container_of(ptr, type, member)</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>内联函数和宏</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LIST_HEAD</td>
+<td>定义并初始化一个list链表</td>
+</tr>
+<tr>
+<td>list_add_tail</td>
+<td>加一个成员到链表尾</td>
+</tr>
+<tr>
+<td>list_del</td>
+<td>删除一个list成员</td>
+</tr>
+<tr>
+<td>list_empty</td>
+<td>检测链表是否为空</td>
+</tr>
+<tr>
+<td>list_for_each</td>
+<td>遍历链表</td>
+</tr>
+<tr>
+<td>list_for_each_safe</td>
+<td>遍历链表（可以删除遍历的成员）</td>
+</tr>
+<tr>
+<td>list_for_each_entry</td>
+<td>遍历链表（通过container方法返回结构指针）</td>
+</tr>
+</tbody>
+</table>
+<h3><span id="hash链表">hash链表</span></h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">hlist_head</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">hlist_node</span> *<span class="title">first</span>;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3><span id="单向链表">单向链表</span></h3><h3><span id="红黑树">红黑树</span></h3><p>红黑树是一种自平衡的二叉树，代码位于/lib/rbtree.c文件。</p>
+<h3><span id="radix树">radix树</span></h3>
                 </div>
             </div>
     
             <nav class="post-pagination">
     
-    <a class="newer-posts" href="/2019/02/20/Linux性能优化/">
-        Previous post<br>Linux性能优化
+    <a class="newer-posts" href="/2019/02/21/Web性能基础/">
+        Previous post<br>Web性能基础
     </a>
     
     <span class="page-number"></span>
     
-    <a class="older-posts" href="/2019/02/17/Nginx-modules/">
-        Next post<br>Nginx modules
+    <a class="older-posts" href="/2018/02/26/深入剖析Nginx/">
+        Next post<br>深入剖析Nginx
     </a>
     
 </nav>
@@ -309,7 +395,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?40532460"></script>
+<script src="/js/journal.js?44379884"></script>
 
 
 

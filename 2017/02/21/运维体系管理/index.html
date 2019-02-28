@@ -26,7 +26,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?45382673">
+<link rel="stylesheet" href="/css/journal.css?89508394">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -230,7 +230,10 @@
 <li><a href="#面向应用层的云架构解决方案">面向应用层的云架构解决方案</a></li>
 <li><a href="#cdn和云存储-云生态">CDN和云存储 云生态</a></li>
 <li><a href="#页面静态化架构和二级cdn建设">页面静态化架构和二级CDN建设</a></li>
-<li><a href="#弹性伸缩">弹性伸缩</a></li>
+<li><a href="#弹性伸缩">弹性伸缩</a><ul>
+<li><a href="#弹性伸缩的主体是谁">弹性伸缩的主体是谁？</a></li>
+</ul>
+</li>
 <li><a href="#稳定性保障">稳定性保障</a></li>
 <li><a href="#容量规划">容量规划</a></li>
 <li><a href="#限流降级">限流降级</a></li>
@@ -547,7 +550,18 @@
 <h1><span id="面向应用层的云架构解决方案">面向应用层的云架构解决方案</span></h1><p>spring Cloud如何解决应用层的云架构问题。</p>
 <p>Spring Boot可以快速开发单个微服务应用，SpringCloud则提供一系列的服务治理框架，比如服务注册、服务发现、动态路由、负载均衡以及熔断等等能力，可以将一个个独立的微服务作为一个整体，进行很好的管理和维护。</p>
 <p>Spring Cloud框架中云的影子</p>
-<h1><span id="cdn和云存储-云生态">CDN和云存储 云生态</span></h1><h1><span id="页面静态化架构和二级cdn建设">页面静态化架构和二级CDN建设</span></h1><h1><span id="弹性伸缩">弹性伸缩</span></h1><h1><span id="稳定性保障">稳定性保障</span></h1><h1><span id="容量规划">容量规划</span></h1><h1><span id="限流降级">限流降级</span></h1><h1><span id="开关预案">开关预案</span></h1><h1><span id="全链路跟踪">全链路跟踪</span></h1><h1><span id="故障">故障</span></h1><h1><span id="安全">安全</span></h1>
+<h1><span id="cdn和云存储-云生态">CDN和云存储 云生态</span></h1><h1><span id="页面静态化架构和二级cdn建设">页面静态化架构和二级CDN建设</span></h1><h1><span id="弹性伸缩">弹性伸缩</span></h1><h2><span id="弹性伸缩的主体是谁">弹性伸缩的主体是谁？</span></h2><p>做运维和做架构的思路是相通的，我们碰到问题后，一定要找到问题的主体是什么，通过问题找主体，通过主体的特性制定问题的解决方案。</p>
+<p>对于运维，一定要准确识别出日常运维过程中不同的运维对象，然后再进一步去分析这个对象所对应的运维场景是什么，进而才是针对运维场景的分解和开发。</p>
+<p>弹性伸缩其实是一个运维场景，但是我们并没有定义这个场景的主体是谁。我们来假定以下几种主体：</p>
+<ul>
+<li><p>服务器的弹性伸缩。针对这个场景，假设业务是运行在私有云或公有云上，那我们只要能够通过云平台的API申请和释放资源，申请时初始化我们的操作系统，释放是销毁资源就可以。不过，在私有云资源下，为了能够保障弹性，我们必须自己提取采购、上架、装机、配置然后交付资源，需要大量的准备工作，公有云上就省去这些步骤，可以即拿即用。</p>
+</li>
+<li><p>应用的弹性伸缩。这个场景下其实是默认包含第一步的，就是我们首先必须要拿到应用运行的服务器资源才可以，这一步做到了，下面就是应用的部署、启动以及服务上线接入流量。</p>
+</li>
+<li><p>业务的弹性伸缩。我们可以再进一步思考，通常一个业务可能会包括多个应用，所以为了保障整个业务容量充足，这个时候扩容单个的应用是没有意义的，所以这时要做的就是扩容多个应用，但是这里面就会有一个顺序问题，先扩哪个，后扩哪个，哪些又是可以同时扩容而不会影响业务正常运行的，再进一步，业务承载的服务能力提升了，那网络带宽、缓存、DB等等这些基础设施需不需要也同时扩容呢？</p>
+</li>
+</ul>
+<h1><span id="稳定性保障">稳定性保障</span></h1><h1><span id="容量规划">容量规划</span></h1><h1><span id="限流降级">限流降级</span></h1><h1><span id="开关预案">开关预案</span></h1><h1><span id="全链路跟踪">全链路跟踪</span></h1><h1><span id="故障">故障</span></h1><h1><span id="安全">安全</span></h1>
                 </div>
             </div>
     
@@ -559,8 +573,8 @@
     
     <span class="page-number"></span>
     
-    <a class="older-posts" href="/2016/02/26/Linux内核设计02-从main到怠速/">
-        Next post<br>Linux内核设计02-从main到怠速
+    <a class="older-posts" href="/2017/02/17/Nginx-modules/">
+        Next post<br>Nginx modules
     </a>
     
 </nav>
@@ -586,7 +600,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?18433904"></script>
+<script src="/js/journal.js?40240094"></script>
 
 
 
