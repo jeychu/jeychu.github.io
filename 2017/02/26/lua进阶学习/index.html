@@ -29,7 +29,7 @@ num...">
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?2082264">
+<link rel="stylesheet" href="/css/journal.css?47813598">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -70,10 +70,10 @@ num...">
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                首页
+                ホーム
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                归档
+                記事一覧
             </a>
 
             
@@ -117,7 +117,7 @@ num...">
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            归档
+            記事一覧
         </a>
 
         
@@ -256,10 +256,10 @@ num...">
 </li>
 </ul>
 <!-- tocstop -->
-<h1><span id="lua简介">Lua简介</span></h1><h2><span id="lua是什么">Lua是什么？</span></h2><p>1993年Lua诞生于巴西里约热内卢天主教大学。浪漫的名字Lua所代表的意思是美丽的月亮。</p>
-<p>正如它的名字，Lua极为简洁、优雅且富有乐趣。</p>
+<h1><span id="lua简介">Lua简介</span></h1><h2><span id="lua是什么">Lua是什么？</span></h2><p>Lua于1993年诞生于巴西里约热内卢天主教大学。她浪漫的名字代表的意思是“美丽的月亮”。</p>
+<p>正如她的名字，Lua也极为简洁、优雅且富有乐趣。</p>
 <p>从一开始，Lua就是作为一门方便嵌入到其他应用程序，并可扩展的轻量级脚本语言来设计的，因此她一直遵循着简单、小巧、可移植、快速的原则，官方实现完全采用ANSI C编写，能以C程序库的形式嵌入到宿主程序中。</p>
-<p>在游戏开发、机器人控制、分布式应用、图像处理、生物信息学等领域得到了广泛应用。其中，尤以游戏开发为最，用Lua可以快捷高效地配合游戏引擎完成数据描述、配置管理和逻辑控制等任务。</p>
+<p>Lua广泛应用于游戏开发、机器人控制、分布式应用、图像处理、生物信息学等领域。其中，尤以游戏开发为最，用Lua可以快捷高效地配合游戏引擎完成数据描述、配置管理和逻辑控制等任务。</p>
 <p>Lua是一门过程型动态语言，有如下特性：</p>
 <ul>
 <li>变量名没有类型，值才有类型，变量名在运行时可与任何类型的值绑定；</li>
@@ -272,7 +272,7 @@ num...">
 <li>能方便的利用表和dynamic metamechanism实现prototype-based的面向对象模型；</li>
 <li>提供完善的模块机制，从而更好地支持开发大型的应用程序；</li>
 </ul>
-<h2><span id="lua和luajit的区别">Lua和LuaJIT的区别</span></h2><p>Lua非常高效，通过第三方的独立评测也证实，它运行得比Perl、Python、Ruby等其他脚本都快。但是，还不够快。LuaJIT（Lua Just-in Time）则尝试利用即时编译技术把Lua代码编译成本地机器码后交给CPU直接执行，又显著的加速了Lua。</p>
+<h2><span id="lua和luajit的区别">Lua和LuaJIT的区别</span></h2><p>Lua非常高效，通过第三方的独立评测也证实，它运行得比Perl、Python、Ruby等其他脚本都快。但是，还不够快。LuaJIT（Lua Just-in Time）则尝试利用即时编译技术把Lua代码编译成本地机器码后交给CPU直接执行，这样又显著的加速了Lua。</p>
 <p>LuaJIT是一个更为高效的Lua实现。支持更多的基本原语和特性，因此功能上也要更为强大。</p>
 <p>以下内容都是基于<a href="http://luajit.org" target="_blank" rel="noopener">LuaJIT</a>进行介绍的。</p>
 <h1><span id="入门">入门</span></h1><h2><span id="基础数据结构">基础数据结构</span></h2><h3><span id="nil">nil</span></h3><p>nil是一种类型，表示“无效值”。一个变量在第一次赋值前的默认值是nil，将nil赋值给一个全局变量就等同于删除它。</p>
@@ -508,7 +508,7 @@ num...">
 <li><p>若返回值的个数小于参数的个数，从左到右，没有被返回值初始化的变量会被初始化为nil</p>
 </li>
 </ul>
-<p>一个函数有一个以上的返回值，当在列表表达式上对该函数进行调用时，若函数调用不是列表的最后一项，那么，该函数调用只会产生第一个返回值。</p>
+<p>如果一个函数有一个以上的返回值，当在列表表达式上对该函数进行调用时，若该函数调用不是列表的最后一项，那么，该函数调用只返回第一个返回值。</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">()</span></span>       <span class="comment">-- init 函数 返回两个值 1 和 "lua"</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>, <span class="string">"lua"</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> x, y, z = init(), <span class="number">2</span>   <span class="comment">-- init 函数的位置不在最后，此时只返回 1</span></span><br><span class="line"><span class="built_in">print</span>(x, y, z)              <span class="comment">--&gt;output  1  2  nil</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> a, b, c = <span class="number">2</span>, init()   <span class="comment">-- init 函数的位置在最后，此时返回 1 和 "lua"</span></span><br><span class="line"><span class="built_in">print</span>(a, b, c)              <span class="comment">--&gt;output  2  1  lu</span></span><br></pre></td></tr></table></figure>
 <p>函数调用的实参列表也是一个列表表达式，也同样遵循以上规则。</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">()</span></span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>, <span class="string">"lua"</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(init(), <span class="number">2</span>)   <span class="comment">--&gt;output  1  2</span></span><br><span class="line"><span class="built_in">print</span>(<span class="number">2</span>, init())   <span class="comment">--&gt;output  2  1  lua</span></span><br></pre></td></tr></table></figure>
@@ -657,11 +657,12 @@ num...">
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- __index 的元方法不需要非是一个函数，它也可以是一个表</span></span><br><span class="line">t = <span class="built_in">setmetatable</span>(&#123;[<span class="number">1</span>] = <span class="string">"hello"</span>&#125;, &#123;<span class="built_in">__index</span> = &#123;[<span class="number">2</span>] = <span class="string">"world"</span>&#125;&#125;)</span><br><span class="line"><span class="built_in">print</span>(t[<span class="number">1</span>], t[<span class="number">2</span>])   <span class="comment">--&gt;hello world</span></span><br></pre></td></tr></table></figure>
 <h4><span id="__tostring-元方法">__tostring 元方法</span></h4><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">arr = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</span><br><span class="line">arr = <span class="built_in">setmetatable</span>(arr, &#123;<span class="built_in">__tostring</span> = <span class="function"><span class="keyword">function</span> <span class="params">(self)</span></span></span><br><span class="line">    <span class="keyword">local</span> result = <span class="string">'&#123;'</span></span><br><span class="line">    <span class="keyword">local</span> sep = <span class="string">''</span></span><br><span class="line">    <span class="keyword">for</span> _, i <span class="keyword">in</span> <span class="built_in">pairs</span>(self) <span class="keyword">do</span></span><br><span class="line">        result = result ..sep .. i</span><br><span class="line">        sep = <span class="string">', '</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    result = result .. <span class="string">'&#125;'</span></span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"><span class="keyword">end</span>&#125;)</span><br><span class="line"><span class="built_in">print</span>(arr)  <span class="comment">--&gt; &#123;1, 2, 3, 4&#125;</span></span><br></pre></td></tr></table></figure>
 <h4><span id="__call-元方法">__call 元方法</span></h4><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- __call 元方法的功能类似于 C++ 中的仿函数，使得普通的表也可以被调用。</span></span><br><span class="line">functor = &#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">func1</span><span class="params">(self, arg)</span></span></span><br><span class="line">  <span class="built_in">print</span> (<span class="string">"called from"</span>, <span class="built_in">arg</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">setmetatable</span>(functor, &#123;<span class="built_in">__call</span> = func1&#125;)</span><br><span class="line"></span><br><span class="line">functor(<span class="string">"functor"</span>)  <span class="comment">--&gt; called from functor</span></span><br><span class="line"><span class="built_in">print</span>(functor)      <span class="comment">--&gt; output：0x00076fc8 （后面这串数字可能不一样）</span></span><br></pre></td></tr></table></figure>
-<h4><span id="__metatable-元方法">__metatable 元方法</span></h4><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--假如我们想保护我们的对象使其使用者既看不到也不能修改 metatables。我们可以对 metatable 设置了 __metatable 的值，getmetatable 将返回这个域的值，而调用 setmetatable 将会出错</span></span><br><span class="line">Object = <span class="built_in">setmetatable</span>(&#123;&#125;, &#123;<span class="built_in">__metatable</span> = <span class="string">"You cannot access here"</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">getmetatable</span>(Object)) <span class="comment">--&gt; You cannot access here</span></span><br><span class="line"><span class="built_in">setmetatable</span>(Object, &#123;&#125;)    <span class="comment">--&gt; 引发编译器报错</span></span><br></pre></td></tr></table></figure>
+<h4><span id="__metatable-元方法">__metatable 元方法</span></h4><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 假如我们想保护我们的对象使其使用者既看不到也不能修改，</span></span><br><span class="line"><span class="comment">-- 我们可以对 metatable 设置 __metatable 的值，</span></span><br><span class="line"><span class="comment">-- getmetatable 将返回这个域的值，而调用 setmetatable 将会出错</span></span><br><span class="line">Object = <span class="built_in">setmetatable</span>(&#123;&#125;, &#123;<span class="built_in">__metatable</span> = <span class="string">"You cannot access here"</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">getmetatable</span>(Object)) <span class="comment">--&gt; You cannot access here</span></span><br><span class="line"><span class="built_in">setmetatable</span>(Object, &#123;&#125;)    <span class="comment">--&gt; 引发编译器报错</span></span><br></pre></td></tr></table></figure>
 <h2><span id="面向对象编程">面向对象编程</span></h2><h3><span id="类">类</span></h3><p>将函数和相关的数据放置于同一个表中就形成了一个对象。</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- account.lua</span></span><br><span class="line"><span class="keyword">local</span> _M = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> mt = &#123; <span class="built_in">__index</span> = _M &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> _M.deposit <span class="params">(self, v)</span></span></span><br><span class="line">    self.balance = self.balance + v</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> _M.withdraw <span class="params">(self, v)</span></span></span><br><span class="line">    <span class="keyword">if</span> self.balance &gt; v <span class="keyword">then</span></span><br><span class="line">        self.balance = self.balance - v</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">error</span>(<span class="string">"insufficient funds"</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> _M.new <span class="params">(self, balance)</span></span></span><br><span class="line">    balance = balance <span class="keyword">or</span> <span class="number">0</span></span><br><span class="line">    <span class="comment">-- 将_M作为新建表的原型，在自己的表中找不到'deposit'、'withdraw'时，</span></span><br><span class="line">    <span class="comment">-- 便会到__index所指定的_M类型中去寻找</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">setmetatable</span>(&#123;balance = balance&#125;, mt)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> _M</span><br></pre></td></tr></table></figure>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 引用代码</span></span><br><span class="line"><span class="keyword">local</span> account = <span class="built_in">require</span>(<span class="string">"account"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> a = account:new()</span><br><span class="line">a:deposit(<span class="number">100</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> b = account:new()</span><br><span class="line">b:deposit(<span class="number">50</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(a.balance)  <span class="comment">--&gt; output: 100</span></span><br><span class="line"><span class="built_in">print</span>(b.balance)  <span class="comment">--&gt; output: 50</span></span><br></pre></td></tr></table></figure>
 <h2><span id="局部变量">局部变量</span></h2><p>局部变量的生命周期是有限的，它的作用域仅限于声明它的块（block）。一个块是一个控制结构的执行体、或者是一个函数的执行体再或是一个程序块（chunk）。</p>
+<p>以下代码展示各种作用域中的局部变量：</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="number">10</span></span><br><span class="line"><span class="keyword">local</span> i = <span class="number">1</span>         <span class="comment">-- 程序块中的局部变量 i</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> i &lt;=x <span class="keyword">do</span></span><br><span class="line">  <span class="keyword">local</span> x = i * <span class="number">2</span>   <span class="comment">-- while 循环体中的局部变量 x</span></span><br><span class="line">  <span class="built_in">print</span>(x)          <span class="comment">-- output： 2, 4, 6, 8, ...</span></span><br><span class="line">  i = i + <span class="number">1</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> i &gt; <span class="number">20</span> <span class="keyword">then</span></span><br><span class="line">  <span class="keyword">local</span> x           <span class="comment">-- then 中的局部变量 x</span></span><br><span class="line">  x = <span class="number">20</span></span><br><span class="line">  <span class="built_in">print</span>(x + <span class="number">2</span>)      <span class="comment">-- 如果i &gt; 20 将会打印 22，此处的 x 是局部变量</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">print</span>(x)          <span class="comment">-- 打印 10，这里 x 是全局变量</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(x)            <span class="comment">-- 打印 10</span></span><br></pre></td></tr></table></figure>
 <p>使用局部变量的好处：</p>
 <ol>
@@ -681,13 +682,13 @@ num...">
             <nav class="post-pagination">
     
     <a class="newer-posts" href="/2017/02/26/Nginx源码分析之内存池管理/">
-        上一篇<br>Nginx源码分析之内存池管理
+        前の記事<br>Nginx源码分析之内存池管理
     </a>
     
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2017/02/23/持续交付/">
-        下一篇<br>持续交付
+        次の記事<br>持续交付
     </a>
     
 </nav>
@@ -713,7 +714,7 @@ num...">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?12481274"></script>
+<script src="/js/journal.js?18258461"></script>
 
 
 
