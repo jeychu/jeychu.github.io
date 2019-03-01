@@ -8,7 +8,7 @@
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content>
+<meta name="description" content="openresty应用场景理论上可以使用ngx_lua开发各种复杂的web应用，不过lua是一种脚本/动态语言，不...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -18,7 +18,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?6534550">
+<link rel="stylesheet" href="/css/journal.css?3149059">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -161,7 +161,21 @@
     
             <div class="post-body-wrapper">
                 <div class="post-body">
-                    
+                    <h1><span id="openresty">openresty</span></h1><h2><span id="应用场景">应用场景</span></h2><p>理论上可以使用ngx_lua开发各种复杂的web应用，不过lua是一种脚本/动态语言，不适合业务逻辑比较重的场景，适合小巧的应用场景，代码行数保持在几十行到几千行。目前见到的一些应用场景有：</p>
+<ul>
+<li>web应用：进行一些业务逻辑的处理，模板渲染，一般流程：mysql/redis/http获取数据-&gt;业务处理-&gt;产生JSON/XML/模板渲染内容，比如京东的列表页/商品详情页；</li>
+<li>接入网关：实现如数据校验前置、缓存前置、数据过滤、API请求聚合、AB测试、灰度发布、降级、监控等功能，比如京东的交易大Nginx节点、无线网关、实时价格、动态服务；</li>
+<li>Web防火墙：可以进行IP/URL/UserAgent/Referer黑名单、限流功能；</li>
+<li>缓存服务器：可以对响应内容进行缓存，减少到后端的请求，从而提高性能；</li>
+<li>其他：如静态资源服务器、消息推送服务、缩略图裁剪等</li>
+</ul>
+<h2><span id="location">location</span></h2><h3><span id="内部调用">内部调用</span></h3><p>对数据库、内部公共函数的统一接口，可以把它们放到统一的location中。</p>
+<p>为了保护这些内部接口，都会把这些接口设置为internal。这么做的好处是可以让这个内部接口相对独立，不受外界干扰。</p>
+<p><em>ngx.say()是怎么调用的？</em></p>
+<p><em>这是个API，供lua调用。那这个api的定义和实现都在哪里呢？</em></p>
+<p>示例代码：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">location = /sum &#123;</span><br><span class="line">    # 只允许内部调用</span><br><span class="line">    internal;</span><br><span class="line"></span><br><span class="line">    # 这里做了一个求和运算只是一个例子，可以在这里完成一些数据库、</span><br><span class="line">    # 缓存服务器的操作，达到基础模块和业务逻辑分离目的</span><br><span class="line">    content_by_lua_block &#123;</span><br><span class="line">        <span class="keyword">local</span> args = ngx.req.get_uri_args()</span><br><span class="line">        # ngx.say 打印到response body并换行</span><br><span class="line">        ngx.say(<span class="built_in">tonumber</span>(args.a) + <span class="built_in">tonumber</span>(args.b))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location = /app/test &#123;</span><br><span class="line">    content_by_lua_block &#123;</span><br><span class="line">        <span class="keyword">local</span> res = ngx.location.capture(</span><br><span class="line">                        <span class="string">"/sum"</span>, &#123;args=&#123;a=<span class="number">3</span>, b=<span class="number">8</span>&#125;&#125;</span><br><span class="line">                        )</span><br><span class="line">        ngx.say(<span class="string">"status:"</span>, res.<span class="built_in">status</span>, <span class="string">" response:"</span>, res.body)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
                 </div>
             </div>
     
@@ -200,7 +214,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?65319909"></script>
+<script src="/js/journal.js?58221631"></script>
 
 
 
