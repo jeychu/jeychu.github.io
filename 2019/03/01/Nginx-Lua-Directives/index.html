@@ -8,7 +8,11 @@
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content="The basic building blocks of scripting Nginx with Lua are...">
+<meta name="description" content="
+
+Nginx Directives For Lua
+lua_capture_error_log
+lua_use_...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -18,7 +22,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?78736024">
+<link rel="stylesheet" href="/css/journal.css?76379186">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -59,10 +63,10 @@
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                Home
+                首頁
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                Archive
+                歸檔
             </a>
 
             
@@ -106,7 +110,7 @@
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            Archive
+            歸檔
         </a>
 
         
@@ -161,7 +165,80 @@
     
             <div class="post-body-wrapper">
                 <div class="post-body">
-                    <p>The basic building blocks of scripting Nginx with Lua are directives. Directives are used to specify when the user Lua code is run and how the result will be used. Below is a diagram showing the order in which directives are executed.</p>
+                    <!-- toc -->
+<ul>
+<li><a href="#nginx-directives-for-lua">Nginx Directives For Lua</a><ul>
+<li><a href="#lua_capture_error_log">lua_capture_error_log</a></li>
+<li><a href="#lua_use_default_type">lua_use_default_type</a></li>
+<li><a href="#lua_malloc_trim">lua_malloc_trim</a></li>
+<li><a href="#lua_code_cache">lua_code_cache</a></li>
+<li><a href="#lua_regex_cache_max_entries">lua_regex_cache_max_entries</a></li>
+<li><a href="#lua_regex_match_limit">lua_regex_match_limit</a></li>
+<li><a href="#lua_package_path">lua_package_path</a></li>
+<li><a href="#lua_package_cpath">lua_package_cpath</a></li>
+<li><a href="#init_by_lua">init_by_lua</a></li>
+<li><a href="#init_by_lua_block">init_by_lua_block</a></li>
+<li><a href="#init_by_lua_file">init_by_lua_file</a></li>
+<li><a href="#init_worker_by_lua">init_worker_by_lua</a></li>
+<li><a href="#init_worker_by_lua_block">init_worker_by_lua_block</a></li>
+<li><a href="#init_worker_by_lua_file">init_worker_by_lua_file</a></li>
+<li><a href="#set_by_lua">set_by_lua</a></li>
+<li><a href="#set_by_lua_block">set_by_lua_block</a></li>
+<li><a href="#set_by_lua_file">set_by_lua_file</a></li>
+<li><a href="#content_by_lua">content_by_lua</a></li>
+<li><a href="#content_by_lua_block">content_by_lua_block</a></li>
+<li><a href="#content_by_lua_file">content_by_lua_file</a></li>
+<li><a href="#rewrite_by_lua">rewrite_by_lua</a></li>
+<li><a href="#rewrite_by_lua_block">rewrite_by_lua_block</a></li>
+<li><a href="#rewrite_by_lua_file">rewrite_by_lua_file</a></li>
+<li><a href="#access_by_lua">access_by_lua</a></li>
+<li><a href="#access_by_lua_block">access_by_lua_block</a></li>
+<li><a href="#access_by_lua_file">access_by_lua_file</a></li>
+<li><a href="#header_filter_by_lua">header_filter_by_lua</a></li>
+<li><a href="#header_filter_by_lua_block">header_filter_by_lua_block</a></li>
+<li><a href="#header_filter_by_lua_file">header_filter_by_lua_file</a></li>
+<li><a href="#body_filter_by_lua">body_filter_by_lua</a></li>
+<li><a href="#body_filter_by_lua_block">body_filter_by_lua_block</a></li>
+<li><a href="#body_filter_by_lua_file">body_filter_by_lua_file</a></li>
+<li><a href="#log_by_lua">log_by_lua</a></li>
+<li><a href="#log_by_lua_block">log_by_lua_block</a></li>
+<li><a href="#log_by_lua_file">log_by_lua_file</a></li>
+<li><a href="#balancer_by_lua_block">balancer_by_lua_block</a></li>
+<li><a href="#balancer_by_lua_file">balancer_by_lua_file</a></li>
+<li><a href="#lua_need_request_body">lua_need_request_body</a></li>
+<li><a href="#ssl_certificate_by_lua_block">ssl_certificate_by_lua_block</a></li>
+<li><a href="#ssl_certificate_by_lua_file">ssl_certificate_by_lua_file</a></li>
+<li><a href="#ssl_session_fetch_by_lua_block">ssl_session_fetch_by_lua_block</a></li>
+<li><a href="#ssl_session_fetch_by_lua_file">ssl_session_fetch_by_lua_file</a></li>
+<li><a href="#ssl_session_store_by_lua_block">ssl_session_store_by_lua_block</a></li>
+<li><a href="#ssl_session_store_by_lua_file">ssl_session_store_by_lua_file</a></li>
+<li><a href="#lua_shared_dict">lua_shared_dict</a></li>
+<li><a href="#lua_socket_connect_timeout">lua_socket_connect_timeout</a></li>
+<li><a href="#lua_socket_send_timeout">lua_socket_send_timeout</a></li>
+<li><a href="#lua_socket_send_lowat">lua_socket_send_lowat</a></li>
+<li><a href="#lua_socket_read_timeout">lua_socket_read_timeout</a></li>
+<li><a href="#lua_socket_buffer_size">lua_socket_buffer_size</a></li>
+<li><a href="#lua_socket_pool_size">lua_socket_pool_size</a></li>
+<li><a href="#lua_socket_keepalive_timeout">lua_socket_keepalive_timeout</a></li>
+<li><a href="#lua_socket_log_errors">lua_socket_log_errors</a></li>
+<li><a href="#lua_ssl_ciphers">lua_ssl_ciphers</a></li>
+<li><a href="#lua_ssl_crl">lua_ssl_crl</a></li>
+<li><a href="#lua_ssl_protocols">lua_ssl_protocols</a></li>
+<li><a href="#lua_ssl_trusted_certificate">lua_ssl_trusted_certificate</a></li>
+<li><a href="#lua_ssl_verify_depth">lua_ssl_verify_depth</a></li>
+<li><a href="#lua_http10_buffering">lua_http10_buffering</a></li>
+<li><a href="#rewrite_by_lua_no_postpone">rewrite_by_lua_no_postpone</a></li>
+<li><a href="#access_by_lua_no_postpone">access_by_lua_no_postpone</a></li>
+<li><a href="#lua_transform_underscores_in_response_headers">lua_transform_underscores_in_response_headers</a></li>
+<li><a href="#lua_check_client_abort">lua_check_client_abort</a></li>
+<li><a href="#lua_max_pending_timers">lua_max_pending_timers</a></li>
+<li><a href="#lua_max_running_timers">lua_max_running_timers</a></li>
+<li><a href="#lua_sa_restart">lua_sa_restart</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h1><span id="nginx-directives-for-lua">Nginx Directives For Lua</span></h1><p>The basic building blocks of scripting Nginx with Lua are directives. Directives are used to specify when the user Lua code is run and how the result will be used. Below is a diagram showing the order in which directives are executed.</p>
 <p><a href="https://cloud.githubusercontent.com/assets/2137369/15272097/77d1c09e-1a37-11e6-97ef-d9767035fc3e.png" target="_blank" rel="noopener"><img src="https://cloud.githubusercontent.com/assets/2137369/15272097/77d1c09e-1a37-11e6-97ef-d9767035fc3e.png" alt="Lua Nginx Modules Directives"></a></p>
 <h2><span id="lua_capture_error_log">lua_capture_error_log</span></h2><p><strong>syntax:</strong> <em>lua_capture_error_log size</em></p>
 <p><strong>default:</strong> <em>none</em></p>
@@ -766,7 +843,7 @@
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2019/03/01/nginx-lua-API/">
-        Next post<br>nginx-lua-API
+        下一篇<br>nginx-lua-API
     </a>
     
 </nav>
@@ -792,7 +869,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?39664237"></script>
+<script src="/js/journal.js?24591076"></script>
 
 
 
