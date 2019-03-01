@@ -1,0 +1,225 @@
+
+
+<!DOCTYPE html>
+<html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <title>Nginx+Lua=OpenResty - javfa&#39;s blog</title>
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Javfa">
+<meta name="description" content="openresty应用场景理论上可以使用ngx_lua开发各种复杂的web应用，不过lua是一种脚本/动态语言，不...">
+<meta name="keywords" content>
+
+    <meta charset="utf-8">
+    <meta name="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta content="telephone=no" name="format-detection">
+    <meta name="renderer" content="webkit">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/journal.css?46268567">
+<script src="/js/loadCSS.js"></script>
+<script>
+    loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
+    (function (d) {
+        var config = {
+                kitId: 'dwg1tuc',
+                scriptTimeout: 3000,
+                async: true
+            },
+            h = d.documentElement, t = setTimeout(function () {
+                h.className = h.className.replace(/\bwf-loading\b/g, "") + " wf-inactive";
+            }, config.scriptTimeout), tk = d.createElement("script"), f = false,
+            s = d.getElementsByTagName("script")[0], a;
+        h.className += " wf-loading";
+        tk.src = 'https://use.typekit.net/' + config.kitId + '.js';
+        tk.async = true;
+        tk.onload = tk.onreadystatechange = function () {
+            a = this.readyState;
+            if (f || a && a != "complete" && a != "loaded") return;
+            f = true;
+            clearTimeout(t);
+            try {
+                Typekit.load(config)
+            } catch (e) {
+            }
+        };
+        s.parentNode.insertBefore(tk, s)
+    })(document);
+</script>
+<noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora|Montserrat|Anonymous+Pro:400|Material+Icons">
+</noscript>
+</head>
+<body>
+<div id="top"></div>
+<div id="app">
+<div class="single-column-drawer-container" ref="drawer" v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            <a class="a-block drawer-menu-item false" href="http://yoursite.com">
+                Home
+            </a>
+            <a class="a-block drawer-menu-item false" href="/archives">
+                Archive
+            </a>
+
+            
+            
+
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav ref="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div ref="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a ref="navTitle" class="navbar-brand" href="/">
+            javfa&#39;s blog
+        </a>
+    </div>
+</nav>
+<div class="single-column-header-container" ref="pageHead" v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="/">
+        <div class="single-column-header-title">javfa&#39;s blog</div>
+        <div class="single-column-header-subtitle"></div>
+    </a>
+</div>
+<div ref="sideContainer" class="side-container">
+    <a class="a-block nav-head false" href="/">
+        <div class="nav-title">
+            {博客@家發}
+        </div>
+        <div class="nav-subtitle">
+            隻言片語<br>於此匯聚
+        </div>
+    </a>
+
+    <div class="nav-link-list">
+        <a class="a-block no-tint nav-link-item false" href="/archives">
+            Archive
+        </a>
+
+        
+        
+
+        
+    </div>
+
+    
+    <div class="nav-footer">
+        Proudly published with Hexo<br>
+        
+        Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+        
+        &copy; 2019 <a href="http://yoursite.com">javfa&#39;s blog</a>
+    </div>
+</div>
+<div ref="extraContainer" class="extra-container">
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+
+        
+    </div>
+</div>
+
+<div ref="streamContainer" class="stream-container">
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            <div class="post-head-wrapper-text-only" style="background-image: url('')">
+                <div class="post-title">
+                    Nginx+Lua=OpenResty
+                    <div class="post-meta">
+                        <time datetime="2018-02-28T08:23:27.000Z" itemprop="datePublished">
+                            2018-02-28 16:23
+                        </time>&nbsp;
+                        
+    
+                        
+                        
+                        <i class="material-icons" style>label</i>
+                        
+                        <a href="/tags/Nginx/">Nginx</a>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+    
+            <div class="post-body-wrapper">
+                <div class="post-body">
+                    <h1><span id="openresty">openresty</span></h1><h2><span id="应用场景">应用场景</span></h2><p>理论上可以使用ngx_lua开发各种复杂的web应用，不过lua是一种脚本/动态语言，不适合业务逻辑比较重的场景，适合小巧的应用场景，代码行数保持在几十行到几千行。目前见到的一些应用场景有：</p>
+<ul>
+<li>web应用：进行一些业务逻辑的处理，模板渲染，一般流程：mysql/redis/http获取数据-&gt;业务处理-&gt;产生JSON/XML/模板渲染内容，比如京东的列表页/商品详情页；</li>
+<li>接入网关：实现如数据校验前置、缓存前置、数据过滤、API请求聚合、AB测试、灰度发布、降级、监控等功能，比如京东的交易大Nginx节点、无线网关、实时价格、动态服务；</li>
+<li>Web防火墙：可以进行IP/URL/UserAgent/Referer黑名单、限流功能；</li>
+<li>缓存服务器：可以对响应内容进行缓存，减少到后端的请求，从而提高性能；</li>
+<li>其他：如静态资源服务器、消息推送服务、缩略图裁剪等</li>
+</ul>
+<h2><span id="location">location</span></h2><h3><span id="内部调用">内部调用</span></h3><p>对数据库、内部公共函数的统一接口，可以把它们放到统一的location中。</p>
+<p>为了保护这些内部接口，都会把这些接口设置为internal。这么做的好处是可以让这个内部接口相对独立，不受外界干扰。</p>
+<p><em>ngx.say()是怎么调用的？</em></p>
+<p><em>这是个API，供lua调用。那这个api的定义和实现都在哪里呢？</em></p>
+<p>示例代码：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">location = /sum &#123;</span><br><span class="line">    # 只允许内部调用</span><br><span class="line">    internal;</span><br><span class="line"></span><br><span class="line">    # 这里做了一个求和运算只是一个例子，可以在这里完成一些数据库、</span><br><span class="line">    # 缓存服务器的操作，达到基础模块和业务逻辑分离目的</span><br><span class="line">    content_by_lua_block &#123;</span><br><span class="line">        <span class="keyword">local</span> args = ngx.req.get_uri_args()</span><br><span class="line">        # ngx.say 打印到response body并换行</span><br><span class="line">        ngx.say(<span class="built_in">tonumber</span>(args.a) + <span class="built_in">tonumber</span>(args.b))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location = /app/test &#123;</span><br><span class="line">    content_by_lua_block &#123;</span><br><span class="line">        <span class="keyword">local</span> res = ngx.location.capture(</span><br><span class="line">                        <span class="string">"/sum"</span>, &#123;args=&#123;a=<span class="number">3</span>, b=<span class="number">8</span>&#125;&#125;</span><br><span class="line">                        )</span><br><span class="line">        ngx.say(<span class="string">"status:"</span>, res.<span class="built_in">status</span>, <span class="string">" response:"</span>, res.body)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[root@geek work]# curl localhost/app/test</span><br><span class="line"><span class="built_in">status</span>:<span class="number">200</span>response:<span class="number">11</span></span><br></pre></td></tr></table></figure>
+<p>并行请求的效果，示例如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">location = /sum &#123;</span><br><span class="line">    internal;</span><br><span class="line">    content_by_lua_block &#123;</span><br><span class="line">        ngx.sleep(<span class="number">0.1</span>)</span><br><span class="line">        <span class="keyword">local</span> args = ngx.req.get_uri_args()</span><br><span class="line">        ngx.<span class="built_in">print</span>(<span class="built_in">tonumber</span>(args.a) + <span class="built_in">tonumber</span>(args.b))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location = /subduction &#123;</span><br><span class="line">    internal;</span><br><span class="line">    content_by_lua_block &#123;</span><br><span class="line">        ngx.sleep(<span class="number">0.1</span>)</span><br><span class="line">        <span class="keyword">local</span> args = ngx.req.get_uri_args()</span><br><span class="line">        ngx.<span class="built_in">print</span>(<span class="built_in">tonumber</span>(args.a) - <span class="built_in">tonumber</span>(args.b))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location = /app/test_parallels &#123;</span><br><span class="line">    content_by_lua_block &#123;</span><br><span class="line">        <span class="keyword">local</span> start_time = ngx.now()</span><br><span class="line">        <span class="keyword">local</span> res1, res2 = ngx.location.capture_multi( &#123;</span><br><span class="line">                        &#123;<span class="string">"/sum"</span>, &#123;args=&#123;a=<span class="number">3</span>, b=<span class="number">8</span>&#125;&#125;&#125;,</span><br><span class="line">                        &#123;<span class="string">"/subduction"</span>, &#123;args=&#123;a=<span class="number">3</span>, b=<span class="number">8</span>&#125;&#125;&#125;</span><br><span class="line">                    &#125;)</span><br><span class="line">        ngx.say(<span class="string">"status:"</span>, res1.<span class="built_in">status</span>, <span class="string">" response:"</span>, res1.body)</span><br><span class="line">        ngx.say(<span class="string">"status:"</span>, res2.<span class="built_in">status</span>, <span class="string">" response:"</span>, res2.body)</span><br><span class="line">        ngx.say(<span class="string">"time used:"</span>, ngx.now() - start_time)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location = /app/test_queue &#123;</span><br><span class="line">    content_by_lua_block &#123;</span><br><span class="line">        <span class="keyword">local</span> start_time = ngx.now()</span><br><span class="line">        <span class="keyword">local</span> res1 = ngx.location.capture_multi( &#123;</span><br><span class="line">                        &#123;<span class="string">"/sum"</span>, &#123;args=&#123;a=<span class="number">3</span>, b=<span class="number">8</span>&#125;&#125;&#125;</span><br><span class="line">                    &#125;)</span><br><span class="line">        <span class="keyword">local</span> res2 = ngx.location.capture_multi( &#123;</span><br><span class="line">                        &#123;<span class="string">"/subduction"</span>, &#123;args=&#123;a=<span class="number">3</span>, b=<span class="number">8</span>&#125;&#125;&#125;</span><br><span class="line">                    &#125;)</span><br><span class="line">        ngx.say(<span class="string">"status:"</span>, res1.<span class="built_in">status</span>, <span class="string">" response:"</span>, res1.body)</span><br><span class="line">        ngx.say(<span class="string">"status:"</span>, res2.<span class="built_in">status</span>, <span class="string">" response:"</span>, res2.body)</span><br><span class="line">        ngx.say(<span class="string">"time used:"</span>, ngx.now() - start_time)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 测试结果</span><br><span class="line">➜  ~ curl <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>/app/test_parallels</span><br><span class="line"><span class="built_in">status</span>:<span class="number">200</span> response:<span class="number">11</span></span><br><span class="line"><span class="built_in">status</span>:<span class="number">200</span> response:<span class="number">-5</span></span><br><span class="line"><span class="built_in">time</span> used:<span class="number">0.10099983215332</span></span><br><span class="line">➜  ~ curl <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>/app/test_queue</span><br><span class="line"><span class="built_in">status</span>:<span class="number">200</span> response:<span class="number">11</span></span><br><span class="line"><span class="built_in">status</span>:<span class="number">200</span> response:<span class="number">-5</span></span><br><span class="line"><span class="built_in">time</span> used:<span class="number">0.20199990272522</span></span><br></pre></td></tr></table></figure>
+
+                </div>
+            </div>
+    
+            <nav class="post-pagination">
+    
+    <a class="newer-posts" href="/2018/03/01/nginx-lua-API/">
+        Previous post<br>nginx-lua-API
+    </a>
+    
+    <span class="page-number"></span>
+    
+    <a class="older-posts" href="/2018/02/26/深入剖析Nginx/">
+        Next post<br>深入剖析Nginx
+    </a>
+    
+</nav>
+
+    
+            
+
+
+        </div>
+    </div>
+    <div class="single-column-footer">
+    Proudly published with Hexo<br>
+    
+    Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+    
+    &copy; 2018 <a href="http://yoursite.com">javfa&#39;s blog</a>
+</div>
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js" integrity="sha256-EGs9T1xMHdvM1geM8jPpoo8EZ1V1VRsmcJz8OByENLA=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
+<script src="/js/journal.js?91588291"></script>
+
+
+
+</body>
+</html>
