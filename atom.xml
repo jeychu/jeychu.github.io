@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-02-28T15:02:21.320Z</updated>
+  <updated>2019-03-02T12:28:41.927Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Nginx中的位运算</title>
+    <link href="http://yoursite.com/2019/03/02/Nginx%E5%92%8C%E4%BD%8D%E8%BF%90%E7%AE%97/"/>
+    <id>http://yoursite.com/2019/03/02/Nginx和位运算/</id>
+    <published>2019-03-02T10:39:45.000Z</published>
+    <updated>2019-03-02T12:28:41.927Z</updated>
+    
+    <content type="html"><![CDATA[<h1><span id="位运算在nginx的源码处处可见">位运算在Nginx的源码处处可见</span></h1><h2><span id="定义指令的类型">定义指令的类型</span></h2><h2><span id="标记当前请求是否还有未发送完的数据">标记当前请求是否还有未发送完的数据</span></h2><h2><span id="事件模块里用指针的最低位来标记一个事件是否过期">事件模块里用指针的最低位来标记一个事件是否过期</span></h2><h1><span id="经典使用场景">经典使用场景</span></h1><h2><span id="对齐">对齐</span></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/ngx_config.h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ngx_align(d, a)     (((d) + (a - 1)) &amp; ~(a - 1))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ngx_align_ptr(p, a)                                                    \</span></span><br><span class="line">    (u_char *) (((<span class="keyword">uintptr_t</span>) (p) + ((<span class="keyword">uintptr_t</span>) a - <span class="number">1</span>)) &amp; ~((<span class="keyword">uintptr_t</span>) a - <span class="number">1</span>))</span><br></pre></td></tr></table></figure><p>该宏使得d按a对齐<sup>第一个大于等于d的a倍数</sup>，其中a必须是2的幂次。</p><p>此宏就是寻找最小的且大于等于d的a的倍数。</p><p>由于a是2的幂次，因此a的二进制表示为00…1…00这样的形式，即它只有一个1，a-1便是00…01…1这样的形式。</p><p>接着，~(a-1)就会低n为全部置0，n恰为a的低位连续0的个数。</p><p>此时，再将一个数和~（a-1）进行一次按位与，就能把这个数的低n位都清零。</p><p>把这个数的低n位都清零，最多是从这个数减去a-1</p><p>d+（a-1）在经过清零操作之后，最多减去a-1，也就是说，经过低位清零之后，其值最小是d，这样我们就得到了一个大于等于d，且低n位是0的对齐数，第一个大于等于d的a倍数。</p><h2><span id="位图">位图</span></h2><p>位图，用以标记状态，只使用一个比特位来标记事物，节约内存，提升性能。</p><p>Nginx在对uri进行转义时，需要判断一个字符是否是一个保留字符，这样的字符需要被转义。</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">// src/core/ngx_string.c</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">uint32_t</span>   uri_component[] = &#123;</span><br><span class="line">        <span class="number">0xffffffff</span>, <span class="comment">/* 1111 1111 1111 1111  1111 1111 1111 1111 */</span></span><br><span class="line"></span><br><span class="line">                    <span class="comment">/* ?&gt;=&lt; ;:98 7654 3210  /.-, +*)( '&amp;%$ #"!  */</span></span><br><span class="line">        <span class="number">0xfc009fff</span>, <span class="comment">/* 1111 1100 0000 0000  1001 1111 1111 1111 */</span></span><br><span class="line"></span><br><span class="line">                    <span class="comment">/* _^]\ [ZYX WVUT SRQP  ONML KJIH GFED CBA@ */</span></span><br><span class="line">        <span class="number">0x78000001</span>, <span class="comment">/* 0111 1000 0000 0000  0000 0000 0000 0001 */</span></span><br><span class="line"></span><br><span class="line">                    <span class="comment">/*  ~&#125;| &#123;zyx wvut srqp  onml kjih gfed cba` */</span></span><br><span class="line">        <span class="number">0xb8000001</span>, <span class="comment">/* 1011 1000 0000 0000  0000 0000 0000 0001 */</span></span><br><span class="line"></span><br><span class="line">        <span class="number">0xffffffff</span>, <span class="comment">/* 1111 1111 1111 1111  1111 1111 1111 1111 */</span></span><br><span class="line">        <span class="number">0xffffffff</span>, <span class="comment">/* 1111 1111 1111 1111  1111 1111 1111 1111 */</span></span><br><span class="line">        <span class="number">0xffffffff</span>, <span class="comment">/* 1111 1111 1111 1111  1111 1111 1111 1111 */</span></span><br><span class="line">        <span class="number">0xffffffff</span>  <span class="comment">/* 1111 1111 1111 1111  1111 1111 1111 1111 */</span></span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure><p>如上所示，一个数组组成一个位图，共包含8各数字，每个数字表示32个状态，因此这个位图标识出了256个字符的状态。为0的位表示一个通用字符，不需要转义，为1的位代表该字符需要转义。<br>如何使用这个位图呢？Nginx在遍历uri的时候，通过一条简单的语句来进行判断：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uri_component[ch &gt;&gt; <span class="number">5</span>] &amp; (<span class="number">1</span> &lt;&lt; (ch &amp; <span class="number">0x1f</span>))</span><br></pre></td></tr></table></figure><p>如上所示，ch表示当前字符，ch&gt;&gt;5是对ch右移5位，这起到一个除以32的效果，这一步操作确定了ch在uri_component的第几个数字上；</p><p>ch&amp;0x1f，则是取出ch低5位的值，相当于取模32，这个值表示ch在对应数字上的第几位；</p><p>1&lt;&lt;(ch&amp;0x1f)，将1左移ch在对应数字上的所在位数。将该数和对应数字相与，就可以取出对应数字上与ch相对应位置的bit位。</p><p>如：ch是‘0’（即数字48），它存在于位图的第二个数字上（48&gt;&gt;5=1)，又在这个数字（0xfc009fff）的第16位上，所以它的状态就是0xfc009fff &amp; 0x10000 = 0，所以‘0’是个通用字符，不用对它转义。</p><blockquote><p>位运算技巧：对一个2的幂次的数进行取模或者除操作的时候，可以通过位运算来实现。</p></blockquote><h2><span id="寻找最低位1的位置">寻找最低位1的位置</span></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lowbit</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &amp; ~(x - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>~(x-1)使得除了最低位1的那个位置，其他位置和x都是相反的，因此二者进行按位与操作后，结果里只可能有一个1，便是原本x最低位的1。</p><h2><span id="寻找最高位1的位置">寻找最高位1的位置</span></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">size_t</span> bsf(<span class="keyword">size_t</span> input)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">size_t</span> pos;</span><br><span class="line"></span><br><span class="line">    __asm__(<span class="string">"bsfq %1, %0"</span> : <span class="string">"=r"</span> (pos) : <span class="string">"rm"</span> (input));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> pos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">size_t bsf(size_t input)</span><br><span class="line">&#123;</span><br><span class="line">    input |= input &gt;&gt; 1;</span><br><span class="line">    input |= input &gt;&gt; 2;</span><br><span class="line">    input |= input &gt;&gt; 4;</span><br><span class="line">    input |= input &gt;&gt; 8;</span><br><span class="line">    input |= input &gt;&gt; 16;</span><br><span class="line">    input |= input &gt;&gt; 32;</span><br><span class="line"></span><br><span class="line">    return input - (input &gt;&gt; 1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2><span id="计算1的个数">计算1的个数</span></h2>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1&gt;&lt;span id=&quot;位运算在nginx的源码处处可见&quot;&gt;位运算在Nginx的源码处处可见&lt;/span&gt;&lt;/h1&gt;&lt;h2&gt;&lt;span id=&quot;定义指令的类型&quot;&gt;定义指令的类型&lt;/span&gt;&lt;/h2&gt;&lt;h2&gt;&lt;span id=&quot;标记当前请求是否还有未发送完的数据&quot;&gt;标记当前请
+      
+    
+    </summary>
+    
+    
+      <category term="Nginx" scheme="http://yoursite.com/tags/Nginx/"/>
+    
+  </entry>
   
   <entry>
     <title>微服务设计</title>
@@ -429,33 +452,6 @@
     
     </summary>
     
-    
-  </entry>
-  
-  <entry>
-    <title>Linux内核设计03-安装文件系统</title>
-    <link href="http://yoursite.com/2016/02/26/Linux%E5%86%85%E6%A0%B8%E8%AE%BE%E8%AE%A103-%E5%AE%89%E8%A3%85%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/"/>
-    <id>http://yoursite.com/2016/02/26/Linux内核设计03-安装文件系统/</id>
-    <published>2016-02-26T03:20:14.000Z</published>
-    <updated>2019-02-28T00:47:04.218Z</updated>
-    
-    <content type="html"><![CDATA[<!-- toc --><ul><li><a href="#安装文件系统">安装文件系统</a><ul><li><a href="#获取硬盘设备号">获取硬盘设备号</a></li><li><a href="#获取虚拟盘上的挂接点">获取虚拟盘上的挂接点</a></li><li><a href="#得到hd1设备文件的超级块">得到hd1设备文件的超级块</a></li><li><a href="#将hd1设备文件与mnt目录文件的i节点挂接">将hd1设备文件与mnt目录文件的i节点挂接</a></li></ul></li></ul><!-- tocstop --><h1><span id="安装文件系统">安装文件系统</span></h1><h2><span id="获取硬盘设备号">获取硬盘设备号</span></h2><h2><span id="获取虚拟盘上的挂接点">获取虚拟盘上的挂接点</span></h2><h2><span id="得到hd1设备文件的超级块">得到hd1设备文件的超级块</span></h2><h2><span id="将hd1设备文件与mnt目录文件的i节点挂接">将hd1设备文件与mnt目录文件的i节点挂接</span></h2>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;!-- toc --&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;#安装文件系统&quot;&gt;安装文件系统&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;#获取硬盘设备号&quot;&gt;获取硬盘设备号&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#获取虚拟盘上的挂接点&quot;&gt;获取虚拟盘上的挂接点&lt;/a&gt;&lt;/li&gt;
-      
-    
-    </summary>
-    
-    
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
     
   </entry>
   
