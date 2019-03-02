@@ -20,7 +20,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?93106268">
+<link rel="stylesheet" href="/css/journal.css?59267726">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -247,7 +247,42 @@
 <p><img src="/2019/02/20/Linux性能优化/1551439032460.png" alt="1551439032460"></p>
 </li>
 </ul>
-<h2><span id="不可中断进程和僵尸进程的处理方法">不可中断进程和僵尸进程的处理方法</span></h2>
+<h2><span id="不可中断进程和僵尸进程的处理方法">不可中断进程和僵尸进程的处理方法</span></h2><h3><span id="进程状态">进程状态</span></h3><p>top或ps命令输出中，进程状态栏各符号的含义：</p>
+<ul>
+<li><p>R</p>
+<p>Running或Runnable的缩写，表示进程在CPU的就绪队列中，正在运行或者正在等待运行</p>
+</li>
+<li><p>D</p>
+<p>Disk Sleep的缩写，也就是不可中断睡眠，一般表示进程正在和硬件交互，并且交互过程不允许被其他进程或中断打断</p>
+</li>
+<li><p>Z</p>
+<p>Zombie的缩写，表示僵尸进程，也就是进程实际上已经结束了，但是父进程还没有回收它的资源（比如进程的描述符、PID等）</p>
+</li>
+<li><p>S</p>
+<p>Interruptible Sleep的缩写，也就是可中断状态睡眠，表示进程因为等待某个事件而被系统挂起。当进程等待的事件发生时，它会被唤醒并进入R状态。</p>
+</li>
+<li><p>I</p>
+<p>Idle的缩写。也就是空闲状态，用在不可中断睡眠的内核进程上。</p>
+</li>
+<li><p>T或者t</p>
+<p>Stopped或Traced的缩写，表示进程处于暂停或跟踪状态。</p>
+<p>向一个进程发送SIGSTOP信号，它就会响应这个信号变成Stopped，再向它发送SIGCONT信号，进程又会恢复运行。</p>
+<p>当你用调试器调试一个进程时，在使用断点中断进程后，进程就会变成跟踪状态，这其实是一种特殊的暂停状态，只不过你可以用调试器来跟踪并按需要控制进程的运行。</p>
+</li>
+<li><p>X</p>
+<p>Dead的意思。表示进程已经消亡，所以你不会在top或者ps命令输出中看到它。</p>
+</li>
+</ul>
+<p><img src="/2019/02/20/Linux性能优化/1551502558996.png" alt="1551502558996"></p>
+<ul>
+<li><p>s</p>
+<p>session leader的意思。什么是session呢？session指的是相互关联的进程组。</p>
+</li>
+<li><p>+</p>
+<p>表示的是前台进程组</p>
+</li>
+</ul>
+
                 </div>
             </div>
     
@@ -286,7 +321,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?75272817"></script>
+<script src="/js/journal.js?35102722"></script>
 
 
 
