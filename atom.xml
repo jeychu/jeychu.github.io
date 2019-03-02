@@ -81,16 +81,15 @@
     <link href="http://yoursite.com/2019/02/26/JavaScript-In-A-Nutshell/"/>
     <id>http://yoursite.com/2019/02/26/JavaScript-In-A-Nutshell/</id>
     <published>2019-02-25T17:49:28.000Z</published>
-    <updated>2019-02-28T15:03:24.386Z</updated>
+    <updated>2019-03-02T07:54:16.741Z</updated>
     
-    <content type="html"><![CDATA[<h1><span id="基础">基础</span></h1><h2><span id="运行时页面构建过程">运行时页面构建过程</span></h2><h1><span id="理解函数">理解函数</span></h1><p>定义与参数</p><p>理解函数调用</p><p>闭包和作用域</p><p>生成器和promise</p><h1><span id="钻研对象">钻研对象</span></h1><p>面向对象与原型</p><p>控制对象的访问</p><p>处理集合</p><p>正则表达式</p><p>代码模式化</p><h1><span id="洞悉浏览器">洞悉浏览器</span></h1><p>DOM操作</p><p>事件</p><p>跨浏览器的开发技巧</p>]]></content>
+    <content type="html"><![CDATA[<h1><span id="基础">基础</span></h1><h2><span id="运行时页面构建过程">运行时页面构建过程</span></h2><h3><span id="生命周期概览">生命周期概览</span></h3><p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551510836738.png" alt="1551510836738"></p><p>客户端Web应用的周期从用户指定某个网站地址开始，由两个步骤组成：<strong>页面构建和事件处理</strong>。</p><p>来个例子，这个例子展示：每当用户移动鼠标或单击页面就会显示一条消息。</p><p>以下是代码：</p><p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551511209573.png" alt="1551511209573"></p><p>以下是运行和交互结果：</p><p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551512582730.png" alt="1551512582730"></p><h3><span id="页面构建阶段">页面构建阶段</span></h3><p>该阶段的目标是建立web应用的UI，主要包括两个步骤：</p><ul><li>解析HTML代码并构建文档对象模型（DOM）；</li><li>执行JavaScript代码。</li></ul><p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551512933518.png" alt="1551512933518"></p><p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551513184204.png" alt="1551513184204"></p><h3><span id="事件处理">事件处理</span></h3><h1><span id="理解函数">理解函数</span></h1><p>定义与参数</p><p>理解函数调用</p><p>闭包和作用域</p><p>生成器和promise</p><h1><span id="钻研对象">钻研对象</span></h1><p>面向对象与原型</p><p>控制对象的访问</p><p>处理集合</p><p>正则表达式</p><p>代码模式化</p><h1><span id="洞悉浏览器">洞悉浏览器</span></h1><p>DOM操作</p><p>事件</p><p>跨浏览器的开发技巧</p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;h1&gt;&lt;span id=&quot;基础&quot;&gt;基础&lt;/span&gt;&lt;/h1&gt;&lt;h2&gt;&lt;span id=&quot;运行时页面构建过程&quot;&gt;运行时页面构建过程&lt;/span&gt;&lt;/h2&gt;&lt;h1&gt;&lt;span id=&quot;理解函数&quot;&gt;理解函数&lt;/span&gt;&lt;/h1&gt;&lt;p&gt;定义与参数&lt;/p&gt;
-&lt;p&gt;理解函数调用&lt;/p&gt;
+        &lt;h1&gt;&lt;span id=&quot;基础&quot;&gt;基础&lt;/span&gt;&lt;/h1&gt;&lt;h2&gt;&lt;span id=&quot;运行时页面构建过程&quot;&gt;运行时页面构建过程&lt;/span&gt;&lt;/h2&gt;&lt;h3&gt;&lt;span id=&quot;生命周期概览&quot;&gt;生命周期概览&lt;/span&gt;&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/2019/02/
       
     
     </summary>
