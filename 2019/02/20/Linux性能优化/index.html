@@ -10,7 +10,7 @@
 <meta name="author" content="Javfa">
 <meta name="description" content="CPU平均负载什么是平均负载？
 是指一定时间内系统中处于可运行状态和不可中断等待状态的进程数的平均数
-上下文切换C...">
+上下文切换概...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -20,7 +20,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?5318057">
+<link rel="stylesheet" href="/css/journal.css?8781755">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -165,7 +165,60 @@
                 <div class="post-body">
                     <h1><span id="cpu">CPU</span></h1><h2><span id="平均负载">平均负载</span></h2><p>什么是平均负载？</p>
 <p>是指一定时间内系统中处于可运行状态和不可中断等待状态的进程数的平均数</p>
-<h2><span id="上下文切换">上下文切换</span></h2><h2><span id="cpu的使用率">CPU的使用率</span></h2><h3><span id="概述">概述</span></h3><p>Linux是多任务操作系统，它将CPU时间划分为时间片，然后通过调度算法轮流分配给各个任务使用。</p>
+<h2><span id="上下文切换">上下文切换</span></h2><h3><span id="概述">概述</span></h3><p>进程在竞争CPU的时候并没有真正运行，为什么还会导致系统的负载升高呢？这是因为CPU上下文切换。</p>
+<p>在每个任务运行前，CPU都需要知道任务从哪里加载，又从哪里开始运行，需要系统事先帮它设置好CPU寄存器和程序计数器（Program Counter，PC）。</p>
+<p>CPU寄存器，是CPU内置的容量小，但速度极快的内存。而程序计数器，则是用来存储CPU正在执行的指令位置、或者即将执行的下一条指令位置。它们都是CPU在运行任何任务前，必须的依赖环境，因此也被叫做CPU上下文。如下图所示：</p>
+<p><img src="/2019/02/20/Linux性能优化/1551593332821.png" alt="1551593332821"></p>
+<p>CPU上下文切换就是先把前一个任务的CPU上下文保存起来，然后加载新任务的上下文到这些寄存器和程序计数器，最后再跳转到程序计数器所指的新位置，运行新任务。</p>
+<p>根据任务的不同，CPU的上下文切换可以分为：</p>
+<ul>
+<li><p>进程上下文切换</p>
+<p>Linux按照特权等级，把进程的运行空间分为内核空间和用户空间，对应的特权等级分别为Ring 0和Ring 3。</p>
+<ul>
+<li><p>内核空间（Ring 0）具有最高权限，可以直接访问所有资源；</p>
+</li>
+<li><p>用户空间（Ring 3）只能访问受限资源，不能访问内存等硬件设备，必须通过系统调用进入到内核中，才能访问这些特权资源。</p>
+<p><img src="/2019/02/20/Linux性能优化/1551594532880.png" alt="1551594532880"></p>
+</li>
+</ul>
+<p>对于一个进程，从用户态到内核态的转变，需要通过系统调用来完成。一次系统调用的过程，会发生两次CPU上下文切换。</p>
+<p>进程的上下文切换：进程是由内核来管理和调度的，进程的切换只能发生再内核态。进程的上下文不仅包括虚拟内存、栈、全局变量等用户空间的资源，还包括了内核堆栈、寄存器等内核空间的状态。</p>
+<p>因此，进程的上下文切换比系统调用时多了一步：在保存当前进程的内核状态和CPU寄存器之前，需要先把该进程的虚拟内存、栈保存下来；而加载了下一进程的内核态后，还需要刷新进程的虚拟内存和用户栈。</p>
+<p>在进程上下文切换次数较多的情况下，很容易导致CPU将大量实际耗费在寄存器、内核栈以及虚拟内存等资源的保存和恢复上，进而大大缩短了真正运行进程的时间。</p>
+<p>另外，Linux通过TLB（Translation Lookaside Buffer）来管理虚拟内存到物理内存的映射关系。当虚拟内存更新后，TLB也需要更新，内存的访问也会随之变慢。</p>
+</li>
+<li><p>线程上下文切换</p>
+<p>线程是调度的基本单位，而进程是资源拥有的基本单位。</p>
+<p>所谓内核中的任务调度，实际上的调度对象是线程；而进程只是给线程提供了虚拟内存、全局变量等资源。</p>
+<p>所以，对于线程和进程，我们可以这样理解：</p>
+<ul>
+<li>当进程只有一个线程时，可以认为进程就等于线程；</li>
+<li>当进程拥有多个线程时，这些线程会共享相同的虚拟内存和全局变量等资源。这些资源在上下文切换时是不需要修改的。</li>
+<li>线程也有自己的私有数据，比如栈和寄存器等，这些在上下文切换时是需要保存的</li>
+</ul>
+</li>
+<li><p>中断上下文切换</p>
+<p>为了快速响应硬件的事件，中断处理会打断进程的正常调度和执行，转而调用中断处理程序，响应设备事件。</p>
+<p>跟进程上下文不同，中断上下文切换并不涉及到进程的用户态。所以，即便中断过程打断了一个正处在用户态的进程，也不需要保存和恢复这个进程的虚拟内存、全局变量等用户态资源。</p>
+<p>中断上下文，其实只包括内核态中断服务程序执行所必需的状态，包括CPU寄存器、内核堆栈、硬件中断参数等。</p>
+<p>对同一个CPU来说，中断处理比进程拥有更高的优先级，所以中断上下文切换并不会与进程上下文切换同时发生。</p>
+</li>
+</ul>
+<h3><span id="怎么查看系统的上下文切换情况">怎么查看系统的上下文切换情况</span></h3><ol>
+<li>使用vmstat</li>
+</ol>
+<p><img src="/2019/02/20/Linux性能优化/1551598709362.png" alt="1551598709362"></p>
+<ul>
+<li>cs（context switch）是每秒上下文切换的次数</li>
+<li>in（interrupt）是每秒中断的次数</li>
+<li>r（Running or Runnable）是就绪队列的长度，也就是正在运行和等待CPU的进程数</li>
+<li>b（Blocked）则是处于不可中断睡眠状态的进程数</li>
+</ul>
+<ol start="2">
+<li>对于每个进程的详细情况，可使用pidstat</li>
+</ol>
+<p><img src="/2019/02/20/Linux性能优化/1551599003703.png" alt="1551599003703"></p>
+<h2><span id="cpu的使用率">CPU的使用率</span></h2><h3><span id="概述">概述</span></h3><p>Linux是多任务操作系统，它将CPU时间划分为时间片，然后通过调度算法轮流分配给各个任务使用。</p>
 <blockquote>
 <p>调度算法：</p>
 <p>Linux的调度算法一直在更新，最新的调度算法是CFS（完全公平调度器）。</p>
@@ -321,7 +374,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?78080684"></script>
+<script src="/js/journal.js?33680408"></script>
 
 
 
