@@ -25,7 +25,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?29767813">
+<link rel="stylesheet" href="/css/journal.css?45713065">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -66,10 +66,10 @@
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                ホーム
+                Home
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                記事一覧
+                Archive
             </a>
 
             
@@ -113,7 +113,7 @@
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            記事一覧
+            Archive
         </a>
 
         
@@ -675,11 +675,38 @@
 <p>所以，我们需要一套监控系统，及时发现问题，定位问题，帮助我们减少因故障带来的损失。</p>
 <p>监控的分类：</p>
 <ol>
-<li>用户侧监控</li>
-<li>网络监控</li>
-<li>业务监控</li>
-<li>应用监控</li>
-<li>系统监控</li>
+<li><p>用户侧监控</p>
+<p>随着移动互联网的兴起，用户对于MobileApp的体验成了衡量一个系统的重要指标，所以对用户侧的监控也就变得尤为重要。因为，它能够第一时间向我们反馈用户使用系统的直观感受。</p>
+<p>此类监控通常从以下几个维度进行，这些监控数据既可以通过打点的方式，也可以通过定期回收日志的方式收集。</p>
+<ul>
+<li>端到端的监控，主要包括一些访问量、访问成功率、响应时间、发包回包时间等等监控指标。同时，我们可以从不同维度定义这些指标，比如：地区、运营商、App版本、返回码、网络类型等。因此，通过这些指标，我们就可以获得用户全方位的感受。</li>
+<li>移动端的日志。我们除了关注系统运行的日志外，还会关注系统崩溃或系统异常类的日志，以求第一时间监控到系统故障。</li>
+<li>设备表现监控，设备表现监控，主要指对内存、CPU、温度等的监控，以及一些页面级的卡顿或白屏现象；或者是直接的堆栈分析等；</li>
+<li>唯一用户ID的监控。除了以上三种全局的监控维度外，用户侧的监控一定要具备针对唯一用户ID的监控能力，能够获得某一个独立用户的具体情况</li>
+</ul>
+</li>
+<li><p>网络监控</p>
+<ul>
+<li>公网监控。这部分监控，可以利用模拟请求的手段（比如，CDN节点模拟、用户端模拟），获取对CDN、DNS等公网资源，以及网络延时等监控的数据。也可以通过采样的方式获取这部分数据。</li>
+<li>内网监控。这部分监控，主要是对机房内部核心交换机数据和路由数据的监控。如果你能打造全局的视角，形成直观的路由拓扑，可以大幅度提升监控效率。</li>
+</ul>
+</li>
+<li><p>业务监控</p>
+<p>如果你的业务具有连续性，业务量达到一定数量后呈现比较稳定的变化趋势，那么你就可以利用业务指标来进行监控了。</p>
+<p>一般情况下，单位时间内的订单预测线，是最好的业务监控指标。</p>
+<p>如何系统故障和问题，影响最大的就是业务指标，而一般企业最重要的业务指标就是订单和支付。</p>
+<p>监控企业的核心业务指标，能够以最快的速度反应系统是否稳定。</p>
+<p>核心业务指标需要细心挑选。实时、准确、高效的收集这些指标也很重要。</p>
+</li>
+<li><p>应用监控</p>
+<p>通常称之为调用链监控。监控服务与服务之间的调用关系、速度和结果等问题。</p>
+<p>调用链监控一般需要收集应用层全量的数据进行分析，要分析的内容包括：调用量、响应时长、错误量等；面向的系统包括：应用、中间件、缓存、数据库、存储等；同时也支持对JVM等的监控。</p>
+<p>应用日志监控。将应用日志有效地联合，并进行分析，也可以起到同样的应用监控左右，但其粒度和精准度比中间件采集方式要弱得多。</p>
+</li>
+<li><p>系统监控</p>
+<p>指的是对基础设施的监控。我们通常会收集CPU、内存、IO、磁盘、网络连接等作为监控指标。</p>
+<p>采用定期采样的方式进行采集，一般选取1分钟、3分钟或5分钟的时间间隔，但一般不会超过5分钟。</p>
+</li>
 </ol>
 <h1><span id="代码静态检查">代码静态检查</span></h1><h1><span id="破坏性测试">破坏性测试</span></h1><h1><span id="自动化回归">自动化回归</span></h1><p>对于持续交付的测试来说，自动化回归测试是不可或缺的，占了很大的测试比重。</p>
 <p>进行自动化回归测试，就始终会有三个大问题：</p>
@@ -732,13 +759,13 @@
             <nav class="post-pagination">
     
     <a class="newer-posts" href="/2018/02/25/亿级流量详情页开发/">
-        前の記事<br>亿级流量详情页开发
+        Previous post<br>亿级流量详情页开发
     </a>
     
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2018/02/21/运维体系管理/">
-        次の記事<br>运维体系管理
+        Next post<br>运维体系管理
     </a>
     
 </nav>
@@ -764,7 +791,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?64131056"></script>
+<script src="/js/journal.js?376723"></script>
 
 
 

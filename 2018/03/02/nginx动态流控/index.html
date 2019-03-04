@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <title>Nginx和OpenResty的动态流控 - javfa&#39;s blog</title>
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Javfa">
+<meta name="description" content="
+
+Nginx的动态流控
+请求速率限制
+limit_req模块
+
+
+并发连接数限制
+limit_conn模块
+
+
+...">
+<meta name="keywords" content>
+
+    <meta charset="utf-8">
+    <meta name="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta content="telephone=no" name="format-detection">
+    <meta name="renderer" content="webkit">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/journal.css?5232452">
+<script src="/js/loadCSS.js"></script>
+<script>
+    loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
+    (function (d) {
+        var config = {
+                kitId: 'dwg1tuc',
+                scriptTimeout: 3000,
+                async: true
+            },
+            h = d.documentElement, t = setTimeout(function () {
+                h.className = h.className.replace(/\bwf-loading\b/g, "") + " wf-inactive";
+            }, config.scriptTimeout), tk = d.createElement("script"), f = false,
+            s = d.getElementsByTagName("script")[0], a;
+        h.className += " wf-loading";
+        tk.src = 'https://use.typekit.net/' + config.kitId + '.js';
+        tk.async = true;
+        tk.onload = tk.onreadystatechange = function () {
+            a = this.readyState;
+            if (f || a && a != "complete" && a != "loaded") return;
+            f = true;
+            clearTimeout(t);
+            try {
+                Typekit.load(config)
+            } catch (e) {
+            }
+        };
+        s.parentNode.insertBefore(tk, s)
+    })(document);
+</script>
+<noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora|Montserrat|Anonymous+Pro:400|Material+Icons">
+</noscript>
+</head>
+<body>
+<div id="top"></div>
+<div id="app">
+<div class="single-column-drawer-container" ref="drawer" v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            <a class="a-block drawer-menu-item false" href="http://yoursite.com">
+                Home
+            </a>
+            <a class="a-block drawer-menu-item false" href="/archives">
+                Archive
+            </a>
+
+            
+            
+
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav ref="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div ref="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a ref="navTitle" class="navbar-brand" href="/">
+            javfa&#39;s blog
+        </a>
+    </div>
+</nav>
+<div class="single-column-header-container" ref="pageHead" v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="/">
+        <div class="single-column-header-title">javfa&#39;s blog</div>
+        <div class="single-column-header-subtitle"></div>
+    </a>
+</div>
+<div ref="sideContainer" class="side-container">
+    <a class="a-block nav-head false" href="/">
+        <div class="nav-title">
+            {博客@家發}
+        </div>
+        <div class="nav-subtitle">
+            隻言片語<br>於此匯聚
+        </div>
+    </a>
+
+    <div class="nav-link-list">
+        <a class="a-block no-tint nav-link-item false" href="/archives">
+            Archive
+        </a>
+
+        
+        
+
+        
+    </div>
+
+    
+    <div class="nav-footer">
+        Proudly published with Hexo<br>
+        
+        Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+        
+        &copy; 2019 <a href="http://yoursite.com">javfa&#39;s blog</a>
+    </div>
+</div>
+<div ref="extraContainer" class="extra-container">
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+
+        
+    </div>
+</div>
+
+<div ref="streamContainer" class="stream-container">
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            <div class="post-head-wrapper-text-only" style="background-image: url('')">
+                <div class="post-title">
+                    Nginx和OpenResty的动态流控
+                    <div class="post-meta">
+                        <time datetime="2018-03-02T12:59:10.000Z" itemprop="datePublished">
+                            2018-03-02 20:59
+                        </time>&nbsp;
+                        
+    
+                        
+                        
+                        <i class="material-icons" style>label</i>
+                        
+                        <a href="/tags/Nginx/">Nginx</a>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+    
+            <div class="post-body-wrapper">
+                <div class="post-body">
+                    <!-- toc -->
+<ul>
+<li><a href="#nginx的动态流控">Nginx的动态流控</a><ul>
+<li><a href="#请求速率限制">请求速率限制</a><ul>
+<li><a href="#limit_req模块">limit_req模块</a></li>
+</ul>
+</li>
+<li><a href="#并发连接数限制">并发连接数限制</a><ul>
+<li><a href="#limit_conn模块">limit_conn模块</a></li>
+</ul>
+</li>
+<li><a href="#下载带宽限制">下载带宽限制</a></li>
+</ul>
+</li>
+<li><a href="#openresty的动态流控">OpenResty的动态流控</a><ul>
+<li><a href="#请求速率限制并发连接数限制">请求速率限制/并发连接数限制</a><ul>
+<li><a href="#restylimitreq模块">resty.limit.req模块</a></li>
+<li><a href="#restylimitconn模块">resty.limit.conn模块</a></li>
+<li><a href="#restylimitcount模块">resty.limit.count模块</a></li>
+</ul>
+</li>
+<li><a href="#跨机器速率限制">跨机器速率限制</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h1><span id="nginx的动态流控">Nginx的动态流控</span></h1><h2><span id="请求速率限制">请求速率限制</span></h2><h3><span id="limit_req模块">limit_req模块</span></h3><ol>
+<li>limit_req_zone</li>
+</ol>
+<ul>
+<li><p>语法: limit_req_zone $variable zone=name:size rate=rate;</p>
+</li>
+<li><p>默认值: none</p>
+</li>
+<li><p>配置段: http<br>设置一块共享内存限制域用来保存键值的状态参数。 特别是保存了当前超出请求的数量。 键的值就是指定的变量（空值不会被计算）。如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;</span><br></pre></td></tr></table></figure>
+<p>说明：</p>
+<p>区域名称为one，大小为10m，平均处理的请求频率不能超过每秒一次。<br>键值是客户端IP。</p>
+<p>使用$binary_remote_addr（client address in a binary form, value’s length is always 4 bytes for IPv4 addresses or 16 bytes for IPv6 addresses）变量， 可以将每条状态记录的大小减少到64个字节，这样1M的内存可以保存大约1万6千个64字节的记录。<br>如果限制域的存储空间耗尽了，对于后续所有请求，服务器都会返回 503 (Service Temporarily Unavailable)错误。</p>
+</li>
+</ul>
+<ol start="2">
+<li>limit_req</li>
+</ol>
+<ul>
+<li><p>语法: limit_req zone=name [burst=number] [nodelay] [delay=number];</p>
+</li>
+<li><p>默认值: —</p>
+</li>
+<li><p>配置段: http, server, location<br>设置对应的共享内存限制域和允许突发数（burst）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">limit_req_zone $binary_remote_addr zone=javfa_com:10m rate=1r/s;</span><br><span class="line">server &#123;</span><br><span class="line">    location /www.javfa.com/ &#123;</span><br><span class="line">        limit_req zone=javfa_com burst=5;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果不带burst参数，则对于超过频率限制的请求，Nginx直接帮你拒绝掉。</p>
+<p>但在实际业务中，偶尔突增也是正常的。针对这些偶尔突增的情况，Nginx引入burst参数。</p>
+<p>功能参数burst（突发），使得请求频率限制允许一定程度的突发请求。此时：</p>
+<ul>
+<li><p>若无nodelay参数，则将指定个数以内的突发请求排队等候依次处理。</p>
+</li>
+<li><p>若有nodelay参数，可以使得突发时需要等待的请求立即得到处理，与此同时，模拟出一个插槽个数为burst指定数目的令牌桶，该桶每(1/rate)s释放一个令牌，空出的槽位等待新的突发请求进来，若槽位填满，随后突发的请求则会被拒绝。</p>
+<p>这样，真实的请求没有在排队，引入虚拟令牌排队，在它满的情况下是不允许其他请求进来的。</p>
+</li>
+<li><p>若有delay参数（版本1.15.7增加），则可以进行更加精细的控制。如：整体突发（burst）配置成12，超过12个肯定是需要拒绝的，而在12个以内，我们希望前面过来的4-6个并发请求能够更快加载，不要进行无效等待，这里设置delay=8，队列中前8个等待的请求直接传给上游，而不会排队，而第8个之后的请求仍会排队，但不会被直接拒绝，只是会慢一点。</p>
+<blockquote>
+<p>Changes with nginx 1.15.7                                        27 Nov 2018<br>*) Feature: the “proxy_requests” directive in the stream module.</p>
+<p>*) Feature: the “delay” parameter of the “limit_req” directive.<br>  Thanks to Vladislav Shabanov and Peter Shchuchkin.</p>
+<p>*) Bugfix: memory leak on errors during reconfiguration.</p>
+<p>*) Bugfix: in the $upstream_response_time, $upstream_connect_time, and<br>  $upstream_header_time variables.</p>
+<p>*) Bugfix: a segmentation fault might occur in a worker process if the<br>  ngx_http_mp4_module was used on 32-bit platforms.</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h2><span id="并发连接数限制">并发连接数限制</span></h2><h3><span id="limit_conn模块">limit_conn模块</span></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">limit_conn_zone $binary_remote_addr zone=addr:10m;</span><br><span class="line"></span><br><span class="line">limit_conn_log_level error;</span><br><span class="line">limit_conn_status 503;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    location /download/ &#123;</span><br><span class="line">        limit_conn addr 5;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Nginx 有一个模块叫 limit_conn，在下载的场景中，会出现几个用户同时在下载同一个资源，<strong>对于处理中的请求，该模块是在读完请求头全部内容后才开始计数，</strong>比如同时允许在线 5 人下载，那就限制 5 个，超过的 503 拒绝。特别地，<strong>在 HTTP/2 和 SPDY 协议下，每一个并发请求都会当作一个独立的计数项。</strong></p>
+<blockquote>
+<p><strong>HTTP/2</strong>（超文本传输协议第2版，最初命名为<strong>HTTP 2.0</strong>），简称为<strong>h2</strong>（基于TLS/1.2或以上版本的加密连接）或<strong>h2c</strong>（非加密连接）<a href="https://zh.wikipedia.org/wiki/HTTP/2#cite_note-1" target="_blank" rel="noopener">[1]</a>，是<a href="https://zh.wikipedia.org/wiki/HTTP" target="_blank" rel="noopener">HTTP</a>协议的的第二个主要版本，使用于<a href="https://zh.wikipedia.org/wiki/%E5%85%A8%E7%90%83%E8%B3%87%E8%A8%8A%E7%B6%B2" target="_blank" rel="noopener">万维网</a>。</p>
+<p>HTTP/2是<a href="https://zh.wikipedia.org/wiki/HTTP" target="_blank" rel="noopener">HTTP</a>协议自1999年HTTP 1.1发布后的首个更新，主要基于<a href="https://zh.wikipedia.org/wiki/SPDY" target="_blank" rel="noopener">SPDY</a>协议。它由<a href="https://zh.wikipedia.org/wiki/%E4%BA%92%E8%81%94%E7%BD%91%E5%B7%A5%E7%A8%8B%E4%BB%BB%E5%8A%A1%E7%BB%84" target="_blank" rel="noopener">互联网工程任务组</a>（IETF）的Hypertext Transfer Protocol Bis（httpbis）工作小组进行开发。<a href="https://zh.wikipedia.org/wiki/HTTP/2#cite_note-charter-2" target="_blank" rel="noopener">[2]</a>该组织于2014年12月将HTTP/2标准提议递交至<a href="https://zh.wikipedia.org/w/index.php?title=Internet_Engineering_Steering_Group&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">IESG</a>进行讨论<a href="https://zh.wikipedia.org/wiki/HTTP/2#cite_note-3" target="_blank" rel="noopener">[3]</a>，于2015年2月17日被批准。<a href="https://zh.wikipedia.org/wiki/HTTP/2#cite_note-approval2-4" target="_blank" rel="noopener">[4]</a></p>
+<p>HTTP/2标准于2015年5月以RFC 7540正式发表。<a href="https://zh.wikipedia.org/wiki/HTTP/2#cite_note-rfc7540-5" target="_blank" rel="noopener">[5]</a>HTTP/2的标准化工作由<a href="https://zh.wikipedia.org/wiki/Google_Chrome" target="_blank" rel="noopener">Chrome</a>、<a href="https://zh.wikipedia.org/wiki/Opera%E7%80%8F%E8%A6%BD%E5%99%A8" target="_blank" rel="noopener">Opera</a>、<a href="https://zh.wikipedia.org/wiki/Firefox" target="_blank" rel="noopener">Firefox</a><a href="https://zh.wikipedia.org/wiki/HTTP/2#cite_note-6" target="_blank" rel="noopener">[6]</a>、<a href="https://zh.wikipedia.org/wiki/Internet_Explorer_11" target="_blank" rel="noopener">Internet Explorer 11</a>、<a href="https://zh.wikipedia.org/wiki/Safari" target="_blank" rel="noopener">Safari</a>、<a href="https://zh.wikipedia.org/w/index.php?title=Amazon_Silk&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">Amazon Silk</a>及<a href="https://zh.wikipedia.org/wiki/Microsoft_Edge" target="_blank" rel="noopener">Edge</a>等浏览器提供支持。<a href="https://zh.wikipedia.org/wiki/HTTP/2#cite_note-7" target="_blank" rel="noopener">[7]</a></p>
+<p>多数主流浏览器已经在2015年底支持了该协议。<a href="https://zh.wikipedia.org/wiki/HTTP/2#cite_note-browser_support-8" target="_blank" rel="noopener">[8]</a>此外，根据<a href="https://zh.wikipedia.org/w/index.php?title=W3Techs&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">W3Techs</a>的数据，在2017年5月，在排名前一千万的网站中，有13.7%支持了HTTP/2。<a href="https://zh.wikipedia.org/wiki/HTTP/2#cite_note-9" target="_blank" rel="noopener">[9]</a></p>
+</blockquote>
+<h2><span id="下载带宽限制">下载带宽限制</span></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">location /download/ &#123;</span><br><span class="line">    limit_rate_after 500k;</span><br><span class="line">    limit_rate 20k;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 ngx_http_core_module 模块里面有 limit_rate_after 和 limit_rate 参数，这个是下载带宽限制。如上代码所示，意思是<strong>在下载完前面 500KB 数据后，对接下来的数据以每秒 20KB 速度进行限制，</strong>这个在<strong>文件下载、视频播放等业务场景中应用比较多，可以避免不必要的浪费</strong>。</p>
+<p>例如视频播放，第一个画面能够尽快看到，对用户体验来说很重要，如果用户第一个页面看不到，那他的等待忍耐程度是很差的，所以这个场景下前面的几个字节不应该去限速，在看到第一个画面之后，后面画面是按照一定视频码率播放，所以没必要下载很快，而且快了也没用，它照样是流畅的，但却多浪费了流量资源，如果用户看到一半就关掉，整个视频下载完成，对于用户和内容提供商都是资源浪费。</p>
+<h1><span id="openresty的动态流控">OpenResty的动态流控</span></h1><h2><span id="请求速率限制并发连接数限制">请求速率限制/并发连接数限制</span></h2><p>OpenResty官方有一个叫做<a href="https://github.com/openresty/lua-resty-limit-traffic" target="_blank" rel="noopener">lua-resty-limit-traffic</a>的模块，里面有三种限速策略。</p>
+<h3><span id="restylimitreq模块">resty.limit.req模块</span></h3><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> limit_req = <span class="built_in">require</span> <span class="string">"resty.limit.req"</span></span><br><span class="line"><span class="keyword">local</span> lim, err = limit_req.new(<span class="string">"mylimit"</span>, <span class="number">5</span>, <span class="number">9</span>)</span><br><span class="line"><span class="keyword">local</span> delay, err = lim:incoming(ngx.var.binary_remote_addr, <span class="literal">true</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> delay <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">if</span> err == <span class="string">"rejected"</span> <span class="keyword">then</span></span><br><span class="line">      <span class="keyword">return</span> ngx.<span class="built_in">exit</span>(<span class="number">429</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">return</span> ngx.<span class="built_in">exit</span>(<span class="number">500</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> delay &gt;= <span class="number">0.001</span> <span class="keyword">then</span></span><br><span class="line">    ngx.sleep(delay)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>resty.limit.req 模块的设计与 NGINX limit_req 实现的效果和功能一样，当然它用 Lua 来表达限速逻辑，可以在任何的代码里面去引入，几乎可以在任意上下⽂中使⽤。</p>
+<p>以下是该模块官方示例用法：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- demonstrate the usage of the resty.limit.req module (alone!)</span></span><br><span class="line">http &#123;</span><br><span class="line">    lua_shared_dict my_limit_req_store <span class="number">100</span>m;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        location / &#123;</span><br><span class="line">            access_by_lua_block &#123;</span><br><span class="line">                <span class="comment">-- well, we could put the require() and new() calls in our own Lua</span></span><br><span class="line">                <span class="comment">-- modules to save overhead. here we put them below just for</span></span><br><span class="line">                <span class="comment">-- convenience.</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">local</span> limit_req = <span class="built_in">require</span> <span class="string">"resty.limit.req"</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">-- limit the requests under 200 req/sec with a burst of 100 req/sec,</span></span><br><span class="line">                <span class="comment">-- that is, we delay requests under 300 req/sec and above 200</span></span><br><span class="line">                <span class="comment">-- req/sec, and reject any requests exceeding 300 req/sec.</span></span><br><span class="line">                <span class="keyword">local</span> lim, err = limit_req.new(<span class="string">"my_limit_req_store"</span>, <span class="number">200</span>, <span class="number">100</span>)</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> lim <span class="keyword">then</span></span><br><span class="line">                    ngx.<span class="built_in">log</span>(ngx.ERR,</span><br><span class="line">                            <span class="string">"failed to instantiate a resty.limit.req object: "</span>, err)</span><br><span class="line">                    <span class="keyword">return</span> ngx.<span class="built_in">exit</span>(<span class="number">500</span>)</span><br><span class="line">                <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">-- the following call must be per-request.</span></span><br><span class="line">                <span class="comment">-- here we use the remote (IP) address as the limiting key</span></span><br><span class="line">                <span class="keyword">local</span> key = ngx.var.binary_remote_addr</span><br><span class="line">                <span class="keyword">local</span> delay, err = lim:incoming(key, <span class="literal">true</span>)</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> delay <span class="keyword">then</span></span><br><span class="line">                    <span class="keyword">if</span> err == <span class="string">"rejected"</span> <span class="keyword">then</span></span><br><span class="line">                        <span class="keyword">return</span> ngx.<span class="built_in">exit</span>(<span class="number">503</span>)</span><br><span class="line">                    <span class="keyword">end</span></span><br><span class="line">                    ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"failed to limit req: "</span>, err)</span><br><span class="line">                    <span class="keyword">return</span> ngx.<span class="built_in">exit</span>(<span class="number">500</span>)</span><br><span class="line">                <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> delay &gt;= <span class="number">0.001</span> <span class="keyword">then</span></span><br><span class="line">                    <span class="comment">-- the 2nd return value holds the number of excess requests</span></span><br><span class="line">                    <span class="comment">-- per second for the specified key. for example, number 31</span></span><br><span class="line">                    <span class="comment">-- means the current request rate is at 231 req/sec for the</span></span><br><span class="line">                    <span class="comment">-- specified key.</span></span><br><span class="line">                    <span class="keyword">local</span> excess = err</span><br><span class="line"></span><br><span class="line">                    <span class="comment">-- the request exceeding the 200 req/sec but below 300 req/sec,</span></span><br><span class="line">                    <span class="comment">-- so we intentionally delay it here a bit to conform to the</span></span><br><span class="line">                    <span class="comment">-- 200 req/sec rate.</span></span><br><span class="line">                    ngx.sleep(delay)</span><br><span class="line">                <span class="keyword">end</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            # content handler goes here. <span class="keyword">if</span> it is content_by_lua, <span class="keyword">then</span> you can</span><br><span class="line">            # merge the Lua code above <span class="keyword">in</span> access_by_lua into your content_by_lua<span class="string">'s</span></span><br><span class="line"><span class="string">            # Lua handler to save a little bit of CPU time.</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+<h3><span id="restylimitconn模块">resty.limit.conn模块</span></h3><p>功能和 NGINX limit_conn 一致，但 Lua 版本允许突发连接进行短暂延迟等候。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"># demonstrate the usage of the resty.limit.traffic module（limit.conn &amp;&amp; limit.req）</span><br><span class="line">http &#123;</span><br><span class="line">    lua_shared_dict my_req_store <span class="number">100</span>m;</span><br><span class="line">    lua_shared_dict my_conn_store <span class="number">100</span>m;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        location / &#123;</span><br><span class="line">            access_by_lua_block &#123;</span><br><span class="line">                <span class="keyword">local</span> limit_conn = <span class="built_in">require</span> <span class="string">"resty.limit.conn"</span></span><br><span class="line">                <span class="keyword">local</span> limit_req = <span class="built_in">require</span> <span class="string">"resty.limit.req"</span></span><br><span class="line">                <span class="keyword">local</span> limit_traffic = <span class="built_in">require</span> <span class="string">"resty.limit.traffic"</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">local</span> lim1, err = limit_req.new(<span class="string">"my_req_store"</span>, <span class="number">300</span>, <span class="number">200</span>)</span><br><span class="line">                <span class="built_in">assert</span>(lim1, err)</span><br><span class="line">                <span class="keyword">local</span> lim2, err = limit_req.new(<span class="string">"my_req_store"</span>, <span class="number">200</span>, <span class="number">100</span>)</span><br><span class="line">                <span class="built_in">assert</span>(lim2, err)</span><br><span class="line">                <span class="keyword">local</span> lim3, err = limit_conn.new(<span class="string">"my_conn_store"</span>, <span class="number">1000</span>, <span class="number">1000</span>, <span class="number">0.5</span>)</span><br><span class="line">                <span class="built_in">assert</span>(lim3, err)</span><br><span class="line"></span><br><span class="line">                <span class="keyword">local</span> limiters = &#123;lim1, lim2, lim3&#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">local</span> host = ngx.var.host</span><br><span class="line">                <span class="keyword">local</span> client = ngx.var.binary_remote_addr</span><br><span class="line">                <span class="keyword">local</span> keys = &#123;host, client, client&#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">local</span> states = &#123;&#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">local</span> delay, err = limit_traffic.combine(limiters, keys, states)</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> delay <span class="keyword">then</span></span><br><span class="line">                    <span class="keyword">if</span> err == <span class="string">"rejected"</span> <span class="keyword">then</span></span><br><span class="line">                        <span class="keyword">return</span> ngx.<span class="built_in">exit</span>(<span class="number">503</span>)</span><br><span class="line">                    <span class="keyword">end</span></span><br><span class="line">                    ngx.<span class="built_in">log</span>(ngx.ERR, <span class="string">"failed to limit traffic: "</span>, err)</span><br><span class="line">                    <span class="keyword">return</span> ngx.<span class="built_in">exit</span>(<span class="number">500</span>)</span><br><span class="line">                <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> lim3:is_committed() <span class="keyword">then</span></span><br><span class="line">                    <span class="keyword">local</span> ctx = ngx.ctx</span><br><span class="line">                    ctx.limit_conn = lim3</span><br><span class="line">                    ctx.limit_conn_key = keys[<span class="number">3</span>]</span><br><span class="line">                <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">                <span class="built_in">print</span>(<span class="string">"sleeping "</span>, delay, <span class="string">" sec, states: "</span>,</span><br><span class="line">                      <span class="built_in">table</span>.<span class="built_in">concat</span>(states, <span class="string">", "</span>))</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> delay &gt;= <span class="number">0.001</span> <span class="keyword">then</span></span><br><span class="line">                    ngx.sleep(delay)</span><br><span class="line">                <span class="keyword">end</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            # content handler goes here. <span class="keyword">if</span> it is content_by_lua, <span class="keyword">then</span> you can</span><br><span class="line">            # merge the Lua code above <span class="keyword">in</span> access_by_lua into your</span><br><span class="line">            # content_by_lua<span class="string">'s Lua handler to save a little bit of CPU time.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">            log_by_lua_block &#123;</span></span><br><span class="line"><span class="string">                local ctx = ngx.ctx</span></span><br><span class="line"><span class="string">                local lim = ctx.limit_conn</span></span><br><span class="line"><span class="string">                if lim then</span></span><br><span class="line"><span class="string">                    -- if you are using an upstream module in the content phase,</span></span><br><span class="line"><span class="string">                    -- then you probably want to use $upstream_response_time</span></span><br><span class="line"><span class="string">                    -- instead of $request_time below.</span></span><br><span class="line"><span class="string">                    local latency = tonumber(ngx.var.request_time)</span></span><br><span class="line"><span class="string">                    local key = ctx.limit_conn_key</span></span><br><span class="line"><span class="string">                    assert(key)</span></span><br><span class="line"><span class="string">                    local conn, err = lim:leaving(key, latency)</span></span><br><span class="line"><span class="string">                    if not conn then</span></span><br><span class="line"><span class="string">                        ngx.log(ngx.ERR,</span></span><br><span class="line"><span class="string">                                "failed to record the connection leaving ",</span></span><br><span class="line"><span class="string">                                "request: ", err)</span></span><br><span class="line"><span class="string">                        return</span></span><br><span class="line"><span class="string">                    end</span></span><br><span class="line"><span class="string">                end</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+<h3><span id="restylimitcount模块">resty.limit.count模块</span></h3><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> limit_count = <span class="built_in">require</span> <span class="string">"resty.limit.count"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> lim, err = limit_count.new(<span class="string">"mylimit"</span>, <span class="number">5000</span>, <span class="number">3600</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> delay, err = lim:incoming(ngx.req.get_headers()[<span class="string">"Authorization"</span>], <span class="literal">true</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> delay <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">if</span> err == <span class="string">"rejected"</span> <span class="keyword">then</span></span><br><span class="line">        ngx.header[<span class="string">"X-RateLimit-Limit"</span>] = <span class="string">"5000"</span></span><br><span class="line">        ngx.header[<span class="string">"X-RateLimit-Remaining"</span>] = <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> ngx.<span class="built_in">exit</span>(<span class="number">503</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">return</span> ngx.<span class="built_in">exit</span>(<span class="number">500</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">ngx.header[<span class="string">"X-RateLimit-Limit"</span>] = <span class="string">"5000"</span></span><br><span class="line">ngx.header[<span class="string">"X-RateLimit_Remaining"</span>] = err <span class="comment">-- current remaining number</span></span><br></pre></td></tr></table></figure>
+<p> resty.limit.count 模块，请求数量限制，这个目前 Nginx 没有，用一句话概括这个模块，就是在<strong>单位时间内确保累计的请求数量不超过一个最大的值</strong>。比如在 1 分钟之内允许累计有 5000个请求，累计超过 5000就拒绝。这个模和 Github API Rate Limiting<strong>的接口设计类似</strong>，也是一个比较经典的限制请求的方式。</p>
+<h2><span id="跨机器速率限制">跨机器速率限制</span></h2><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> ratelimit = <span class="built_in">require</span> <span class="string">"resty.redis.ratelimit"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> lim, err = ratelimt.new(<span class="string">"mylimit"</span>, <span class="string">"5r/s"</span>, <span class="number">4</span>, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> red = &#123; host = <span class="string">"127.0.0.1"</span>, port = <span class="number">6379</span>, timeout = <span class="number">1</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> delay, err = lim:incoming(ngx.var.binary_remote_addr, red)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> delay <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">if</span> err == <span class="string">"rejected"</span> <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">return</span> ngx.<span class="built_in">exit</span>(<span class="number">429</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">return</span> ngx.<span class="built_in">exit</span>(<span class="number">500</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> delay &gt;= <span class="number">0.001</span> <span class="keyword">then</span></span><br><span class="line">    ngx.sleep(delay)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+                </div>
+            </div>
+    
+            <nav class="post-pagination">
+    
+    <a class="newer-posts" href="/2018/03/04/无题/">
+        Previous post<br>无题
+    </a>
+    
+    <span class="page-number"></span>
+    
+    <a class="older-posts" href="/2018/03/01/Nginx-Lua-Directives/">
+        Next post<br>Nginx-Lua-Directives
+    </a>
+    
+</nav>
+
+    
+            
+
+
+        </div>
+    </div>
+    <div class="single-column-footer">
+    Proudly published with Hexo<br>
+    
+    Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+    
+    &copy; 2018 <a href="http://yoursite.com">javfa&#39;s blog</a>
+</div>
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js" integrity="sha256-EGs9T1xMHdvM1geM8jPpoo8EZ1V1VRsmcJz8OByENLA=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
+<script src="/js/journal.js?59003127"></script>
+
+
+
+</body>
+</html>

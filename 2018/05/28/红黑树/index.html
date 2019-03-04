@@ -4,11 +4,15 @@
 <html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
 
 <head><meta name="generator" content="Hexo 3.8.0">
-    <title>Archive - javfa&#39;s blog</title>
+    <title>红黑树 - javfa&#39;s blog</title>
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content="A Blog Powered By Hexo">
+<meta name="description" content="红黑树的性质
+每个节点要么是红的要么是黑的；
+根节点是黑的；
+每个叶节点（nil）都是黑的；
+如果一个节点是红的，...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -18,7 +22,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?79421740">
+<link rel="stylesheet" href="/css/journal.css?40914209">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -61,7 +65,7 @@
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
                 Home
             </a>
-            <a class="a-block drawer-menu-item active" href="/archives">
+            <a class="a-block drawer-menu-item false" href="/archives">
                 Archive
             </a>
 
@@ -105,7 +109,7 @@
     </a>
 
     <div class="nav-link-list">
-        <a class="a-block no-tint nav-link-item active" href="/archives">
+        <a class="a-block no-tint nav-link-item false" href="/archives">
             Archive
         </a>
 
@@ -133,168 +137,84 @@
         </a>
 
         
-        
-        <div class="pagination-indicator">
-            <span style="text-align: center">
-                3<br><div style="display: inline-block; transform: rotate(-28deg)">-</div><br>3
-            </span>
-        </div>
-        
-
-        
-        <a class="pagination-action" href="/archives/page/2/">
-            <i class="material-icons pagination-action-icon">
-                chevron_left
-            </i>
-        </a>
-        
-
-        
-        
     </div>
 </div>
 
 <div ref="streamContainer" class="stream-container">
     <div class="post-list-container post-list-container-shadow">
-        
-        
-        <div class="post-item-wrapper post-item-wrapper-no-hover">
-            <div class="post-item post-item-no-gaps">
-                <div class="post-item-info-wrapper">
-                    <div class="post-item-title  post-item-title-small">
+        <div class="post">
+            <div class="post-head-wrapper-text-only" style="background-image: url('')">
+                <div class="post-title">
+                    红黑树
+                    <div class="post-meta">
+                        <time datetime="2018-05-28T11:07:51.000Z" itemprop="datePublished">
+                            2018-05-28 19:07
+                        </time>&nbsp;
                         
-                        <a href="/archives/2017">
-                            2017
-                        </a>
+    
                         
                     </div>
                 </div>
             </div>
+    
+            <div class="post-body-wrapper">
+                <div class="post-body">
+                    <h1><span id="红黑树的性质">红黑树的性质</span></h1><ol>
+<li>每个节点要么是红的要么是黑的；</li>
+<li>根节点是黑的；</li>
+<li>每个叶节点（nil）都是黑的；</li>
+<li>如果一个节点是红的，那么它的两个子节点都是黑的；</li>
+<li>任意节点到叶节点的每条简单路径都包含相同数目的黑节点</li>
+</ol>
+<p><img src="/2018/05/28/红黑树/1551508807317.png" alt="1551508807317"></p>
+<h1><span id="复杂度">复杂度</span></h1><p>因为这5条性质，使得n个节点的红黑树始终保持logn的高度，所以它的查询、插入和删除的时间复杂度都是O(logn)。</p>
+<h1><span id="节点操作">节点操作</span></h1><h2><span id="节点插入">节点插入</span></h2><h3><span id="步骤">步骤：</span></h3><ol>
+<li>将红黑树当作一颗二叉查找树，将节点插入；</li>
+<li>将节点着色为红；</li>
+<li>通过旋转和重新着色等方法来修正该树，使之重新成为一颗红黑树。</li>
+</ol>
+<p>在具体实现的过程中，重点是如何该树重新成为一个红黑树，内容涉及左旋、右旋等专门定义的操作。不必细究。</p>
+<h2><span id="节点删除">节点删除</span></h2><h3><span id="步骤">步骤：</span></h3><ol>
+<li>将红黑树当作一颗二叉查找树，将该节点从二叉查找树中删除；</li>
+<li>通过”旋转和重新着色”等一系列来修正该树，使之重新成为一棵红黑树。</li>
+</ol>
+<p>在具体实现的过程中，重点是如何该树重新成为一个红黑树，内容涉及左旋、右旋等专门定义的操作。不必细究。</p>
+<h1><span id="应用场景">应用场景</span></h1><ol>
+<li><p>著名的linux进程调度<a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler" target="_blank" rel="noopener">Completely Fair Scheduler</a>,用红黑树管理进程控制块</p>
+</li>
+<li><p>epoll在内核中的实现，用红黑树管理事件块</p>
+</li>
+<li><p>Nginx中，用红黑树管理<a href="https://www.kancloud.cn/digest/understandingnginx/202602" target="_blank" rel="noopener">timer</a></p>
+</li>
+<li><p>Java的TreeMap实现</p>
+</li>
+<li><p>广泛用在C++的STL中。map和set都是用红黑树实现的。</p>
+</li>
+</ol>
+
+                </div>
+            </div>
+    
+            <nav class="post-pagination">
+    
+    <a class="newer-posts" href="/2019/02/20/Linux-Kernel/">
+        Previous post<br>Discover the Secrets of Linux Kernel
+    </a>
+    
+    <span class="page-number"></span>
+    
+    <a class="older-posts" href="/2018/03/04/无题/">
+        Next post<br>无题
+    </a>
+    
+</nav>
+
+    
+            
+
+
         </div>
-        
-
-        <a href="/2017/02/26/lua进阶学习/" class="a-block">
-            <div class="post-item-wrapper">
-                <div class="post-item post-item-no-gaps">
-                    <div class="post-item-info-wrapper">
-                        <div class="post-item-title">
-                            lua进阶学习
-                        </div>
-                        <div class="post-item-meta">
-                            2017-02-26
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-
-        
-        
-
-        <a href="/2017/02/17/Nginx-modules/" class="a-block">
-            <div class="post-item-wrapper">
-                <div class="post-item post-item-no-gaps">
-                    <div class="post-item-info-wrapper">
-                        <div class="post-item-title">
-                            Nginx modules
-                        </div>
-                        <div class="post-item-meta">
-                            2017-02-17
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-
-        
-        
-        <div class="post-item-wrapper post-item-wrapper-no-hover">
-            <div class="post-item post-item-no-gaps">
-                <div class="post-item-info-wrapper">
-                    <div class="post-item-title  post-item-title-small">
-                        
-                        <a href="/archives/2016">
-                            2016
-                        </a>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-
-        <a href="/2016/02/27/如何追踪函数的完整调用过程/" class="a-block">
-            <div class="post-item-wrapper">
-                <div class="post-item post-item-no-gaps">
-                    <div class="post-item-info-wrapper">
-                        <div class="post-item-title">
-                            如何追踪函数的完整调用过程
-                        </div>
-                        <div class="post-item-meta">
-                            2016-02-27
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-
-        
-        
-
-        <a href="/2016/02/26/Linux内核设计03-安装文件系统/" class="a-block">
-            <div class="post-item-wrapper">
-                <div class="post-item post-item-no-gaps">
-                    <div class="post-item-info-wrapper">
-                        <div class="post-item-title">
-                            Linux内核设计03-安装文件系统
-                        </div>
-                        <div class="post-item-meta">
-                            2016-02-26
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-
-        
-        
-
-        <a href="/2016/02/26/Linux内核设计02-从main到怠速/" class="a-block">
-            <div class="post-item-wrapper">
-                <div class="post-item post-item-no-gaps">
-                    <div class="post-item-info-wrapper">
-                        <div class="post-item-title">
-                            Linux内核设计02-从main到怠速
-                        </div>
-                        <div class="post-item-meta">
-                            2016-02-26
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-
-        
-        
-
-        <a href="/2016/02/24/Linux内核设计01-从加电到main/" class="a-block">
-            <div class="post-item-wrapper">
-                <div class="post-item post-item-no-gaps">
-                    <div class="post-item-info-wrapper">
-                        <div class="post-item-title">
-                            Linux内核设计01-从加电到main
-                        </div>
-                        <div class="post-item-meta">
-                            2016-02-24
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-
-        
     </div>
-
     <div class="single-column-footer">
     Proudly published with Hexo<br>
     
@@ -310,7 +230,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?3389844"></script>
+<script src="/js/journal.js?14415551"></script>
+
+
 
 </body>
 </html>
