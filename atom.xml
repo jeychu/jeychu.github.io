@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-06T04:09:24.560Z</updated>
+  <updated>2019-03-08T06:21:42.550Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="http://yoursite.com/2019/03/06/The-Kernel-of-Nginx%E4%B9%8B%E7%94%A8%E5%A5%BD%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E7%BC%93%E5%AD%98/"/>
     <id>http://yoursite.com/2019/03/06/The-Kernel-of-Nginx之用好浏览器的缓存/</id>
     <published>2019-03-06T03:02:25.000Z</published>
-    <updated>2019-03-06T04:09:24.560Z</updated>
+    <updated>2019-03-08T06:21:42.550Z</updated>
     
-    <content type="html"><![CDATA[<p>浏览器的缓存与nginx缓存</p><ul><li>浏览器缓存<ul><li>优点：<ul><li>使用有效缓存时，没有网络消耗，速度最快</li><li>即使有网络消耗，但对失效缓存使用304响应做到网络流量消耗最小化</li></ul></li><li>缺点：<ul><li>只提升一个用户的体验</li></ul></li></ul></li></ul>]]></content>
+    <content type="html"><![CDATA[<p>浏览器的缓存与nginx缓存</p><ul><li><p>浏览器缓存</p><ul><li>优点：<ul><li>使用有效缓存时，没有网络消耗，速度最快</li><li>即使有网络消耗，但对失效缓存使用304响应做到网络流量消耗最小化</li></ul></li><li>缺点：<ul><li>只提升一个用户的体验</li></ul></li></ul></li><li><p>Nginx缓存</p><ul><li>优点<ul><li>提升所有用户的体验</li><li>相比浏览器缓存，有效降低上游服务的负载</li><li>通过304响应减少Nginx与上游服务间的流量消耗</li></ul></li><li>缺点<ul><li>用户仍然保持网络消耗</li></ul></li></ul></li></ul><p>同时使用浏览器和Nginx缓存</p><p>浏览器缓存</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">st=&gt;start: 浏览器请求</span><br><span class="line">op1=&gt;operation: 有缓存</span><br><span class="line">op2=&gt;operation: 向浏览器请求带If-None_Match</span><br><span class="line">op3=&gt;operation: 向浏览器请求带If-Modified-Since</span><br><span class="line">op4=&gt;operation: 从缓存读取 200（from cache）</span><br><span class="line">op5=&gt;operation: 向web服务器请求</span><br><span class="line">op6=&gt;operation: 请求响应，缓存协商</span><br><span class="line">op7=&gt;operation: 从缓存读取</span><br><span class="line">con1=&gt;condition: 是否过期？</span><br><span class="line">con2=&gt;condition: Etag？</span><br><span class="line">con3=&gt;condition: Last-Modified？</span><br><span class="line">con4=&gt;condition: 200 or 304？</span><br><span class="line">end=&gt;end: 呈现</span><br><span class="line">st-&gt;op1-&gt;con1</span><br><span class="line">con1(no)-&gt;end</span><br><span class="line">con1(yes)-&gt;con2</span><br><span class="line">con2(yes)-&gt;op2-&gt;con4</span><br><span class="line">con2(no)-&gt;con3</span><br><span class="line">con3(yes)-&gt;op3-&gt;con4</span><br><span class="line">con3(no)-&gt;op5-&gt;op6</span><br><span class="line">con4(yes)-&gt;op6</span><br><span class="line">con4(no)-&gt;op7-&gt;end</span><br><span class="line">op6-&gt;end</span><br></pre></td></tr></table></figure>]]></content>
     
     <summary type="html">
     
@@ -31,13 +31,13 @@
       
         &lt;p&gt;浏览器的缓存与nginx缓存&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;浏览器缓存&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;浏览器缓存&lt;/p&gt;
+&lt;ul&gt;
 &lt;li&gt;优点：&lt;ul&gt;
 &lt;li&gt;使用有效缓存时，没有网络消耗，速度最快&lt;/li&gt;
 &lt;li&gt;即使有网络消耗，但对失效缓存使用304响应做到网络流量消耗最小化&lt;/li&gt;
 &lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
+&lt;/
       
     
     </summary>
@@ -80,9 +80,9 @@
     <link href="http://yoursite.com/2019/03/04/%E6%97%A0%E9%A2%98/"/>
     <id>http://yoursite.com/2019/03/04/无题/</id>
     <published>2019-03-03T16:28:27.000Z</published>
-    <updated>2019-03-06T04:29:55.067Z</updated>
+    <updated>2019-03-08T08:26:11.892Z</updated>
     
-    <content type="html"><![CDATA[<blockquote><p>‘无意识流’<sup>自撰</sup>码点字儿，权当消遣、游戏。</p><p>具体写些什么，写出什么，我自己也是不知道的。</p><p>不断填充，每更以时间戳为领。19/3/6</p></blockquote><p>19/3/4</p><p>老夫聊发少年狂，不自量，频思量，要和困滞斗一场<br>人生不如意十八九，又何必，妄自沉，且奋起，争朝夕，人生百年是不枉</p><p>内核源码纷上阵，战得个天昏又地暗<br>人道是，廿一世纪，人工智能日日新，所能之事无限<br>现如今，百业俱兴于互联网<br>信息流转无量，人人都是网中虫<br>码农立功改了世界，创了互联界，人神之间自此有了个第三界</p><p>微信淘宝千百度，淘了个什么，又信了个什么？<br>大小屏幕满城皆是，人人淹没其间。<br>要在屏幕引源流，码农誓要战到深夜，不眠不休。</p><p>王者荣耀坑起来，坑到王者亦非常人也<br>鲁班后羿虽善射，易被珂切<br>项羽是个霸王，本色是喜欢虞姬<br>妲己是个妖女，总想一套秒<br>凯也是个肉，打不死还善单挑<br>典韦疯癫，满场飞奔…</p><p>恩金克思是个宝<br>鲁啊美月协助跑<br>林刘克思做服务<br>韦伯搞网成了王</p><hr><p>19/3/5</p><p>iHola!</p><p>¿Como estas?</p><hr><p>19/3/5</p><p>香尘已隔犹回面<br>居人匹马映林嘶</p><p>新绿小池塘<br>帘动、碎影、斜阳<br>金屋去来 旧时巢燕<br>土花缭绕 前度霉墙<br>绣阁凤帷理丝簧</p><p>天寒水鸟自相依<br>十百为群戏落辉<br>行人过尽都不起<br>忽闻水响一起飞</p><p>携杖来追凉<br>花桥倚胡床<br>船笛参差起<br>池莲自在香</p><hr><p>19/3/6</p><p>知海无涯<br>海里行<br>无向即无功<br>看四周，都是极似<br>手中罗盘<br>历历晰晰<br>准方向<br>不旁骛<br>自可离海登陆<br>船体牢靠<br>方向笃定<br>定成航海王，掌控自生</p><hr><p>不自怨艾，稳住，都将烟消云散<br>云开日现<br>金晖永在，云遮不显<br>拨云自可见日<br>谁可拨？<br>大风耶？大风起兮云飞扬<br>大风来，尘土混乌云，暗无天日<br>小风耶？和风暖阳，自是佳时<br>小风何来？自来也<br>拨云见日者，非人力<br>人自求福，不自作孽，静待日开，得其光<br>但日总在，不因云遮就无<br>光透云，人依然可得其几许<br>故莫担心，莫贪心，莫失心<br>阴晴才是此间正道<br>阴晴都是那颗太阳</p>]]></content>
+    <content type="html"><![CDATA[<blockquote><p>‘无意识流’<sup>自撰</sup>码点字儿，权当消遣、游戏。</p><p>具体写些什么，写出什么，我自己也是不知道的。</p><p>不断填充，每更以时间戳为领。19/3/6</p></blockquote><p>19/3/4</p><p>老夫聊发少年狂，不自量，频思量，要和困滞斗一场<br>人生不如意十八九，又何必，妄自沉，且奋起，争朝夕，人生百年是不枉</p><p>内核源码纷上阵，战得个天昏又地暗<br>人道是，廿一世纪，人工智能日日新，所能之事无限<br>现如今，百业俱兴于互联网<br>信息流转无量，人人都是网中虫<br>码农立功改了世界，创了互联界，人神之间自此有了个第三界</p><p>微信淘宝千百度，淘了个什么，又信了个什么？<br>大小屏幕满城皆是，人人淹没其间。<br>要在屏幕引源流，码农誓要战到深夜，不眠不休。</p><p>王者荣耀坑起来，坑到王者亦非常人也<br>鲁班后羿虽善射，易被珂切<br>项羽是个霸王，本色是喜欢虞姬<br>妲己是个妖女，总想一套秒<br>凯也是个肉，打不死还善单挑<br>典韦疯癫，满场飞奔…</p><p>恩金克思是个宝<br>鲁啊美月协助跑<br>林刘克思做服务<br>韦伯搞网成了王</p><hr><p>19/3/5</p><p>iHola!</p><p>¿Como estas?</p><hr><p>19/3/5</p><p>香尘已隔犹回面<br>居人匹马映林嘶</p><p>新绿小池塘<br>帘动、碎影、斜阳<br>金屋去来 旧时巢燕<br>土花缭绕 前度霉墙<br>绣阁凤帷理丝簧</p><p>天寒水鸟自相依<br>十百为群戏落辉<br>行人过尽都不起<br>忽闻水响一起飞</p><p>携杖来追凉<br>花桥倚胡床<br>船笛参差起<br>池莲自在香</p><hr><p>19/3/6</p><p>知海无涯<br>海里行<br>无向即无功<br>看四周，都是极似<br>手中罗盘<br>历历晰晰<br>准方向<br>不旁骛<br>自可离海登陆<br>船体牢靠<br>方向笃定<br>定成航海王，掌控自生</p><hr><p>不自怨艾，稳住，都将烟消云散<br>云开日现<br>金晖永在，云遮不显<br>拨云自可见日<br>谁可拨？<br>大风耶？大风起兮云飞扬<br>大风来，尘土混乌云，暗无天日<br>小风耶？和风暖阳，自是佳时<br>小风何来？自来也<br>拨云见日者，非人力<br>人自求福，不自作孽，静待日开，得其光<br>但日总在，不因云遮就无<br>光透云，人依然可得其几许<br>故莫担心，莫贪心，莫失心<br>阴晴才是此间正道<br>阴晴都是那颗太阳</p><hr><p>19/3/8</p><p>二月二日 三八女节</p><p>雌雄合一 天地交泰</p><p>元亨利贞 继往开来</p><p>龙飞凤舞 双翔呈瑞</p>]]></content>
     
     <summary type="html">
     
