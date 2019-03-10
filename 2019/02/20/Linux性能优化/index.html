@@ -20,7 +20,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?87875182">
+<link rel="stylesheet" href="/css/journal.css?89470886">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -61,10 +61,10 @@
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                Home
+                ホーム
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                Archive
+                記事一覧
             </a>
 
             
@@ -108,7 +108,7 @@
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            Archive
+            記事一覧
         </a>
 
         
@@ -342,9 +342,76 @@
 <p>session leader的意思。什么是session呢？session指的是相互关联的进程组。</p>
 </li>
 <li><p>+</p>
-<p>表示的是前台进程组</p>
+<p>表示的是前台进程</p>
 </li>
 </ul>
+<h3><span id="处理方法">处理方法</span></h3><p>出现僵尸进程，是由于父进程没有回收子进程的资源。所以，要找到僵尸进程的父进程，在父进程里解决。</p>
+<p>使用pstree命令，找到父进程。</p>
+<h2><span id="软中断">软中断</span></h2><p>中断是一种异步的事件处理机制，可以提高系统的并发处理能力。</p>
+<p>由于中断处理程序会打断其他进程的运行，所以，为了减少对正常进程运行调度的影响，中断处理程序就需要尽可能快地运行。</p>
+<p>为了解决中断处理程序执行过长和中断丢失的问题，Linux将中断处理过程分成了两个阶段：</p>
+<ul>
+<li><p>上半部用来快速处理中断，它在中断禁止模式下运行，主要处理跟硬件紧密相关的或时间敏感的工作；</p>
+<p>直接处理硬件请求，硬中断，特点是快速执行</p>
+<p>会打断CPU正在执行的任务，然后立即执行中断处理程序</p>
+</li>
+<li><p>下半部用来延迟处理上半部未完成的工作，通常以内核线程的方式运行。</p>
+<p>由内核触发，软中断，特点是延迟执行</p>
+<p>以内核线程的方式执行，每个CPU都对应一个软中断内核线程，名为“ksoftirqd/CPU编号”</p>
+</li>
+</ul>
+<p>软中断不只包括硬件设备中断处理程序的下半部，一些内核自定义的事件也属于软中断，比如内核调度和RCU锁（Read-Copy Update）</p>
+<h3><span id="怎么查看软中断和内核线程呢">怎么查看软中断和内核线程呢？</span></h3><p>/proc/softirqs</p>
+<p>/proc/interrupts</p>
+<h2><span id="如何迅速分析出系统cpu的瓶颈在哪里">如何迅速分析出系统CPU的瓶颈在哪里？</span></h2><h2><span id="cpu性能优化的几个思路">CPU性能优化的几个思路</span></h2><p>在找到CPU的性能瓶颈之后，下一步要做的就是优化了，也就是找出充分利用CPU的方法，以便完成更多的工作。</p>
+<h3><span id="性能优化方法论">性能优化方法论</span></h3><p>在经过千辛万苦，通过各种性能优化方法，终于找到引发性能问题的瓶颈后，是不是立即就要开始优化了呢？</p>
+<p>此时，不必着急，动手之前，可以先看看下面三个问题：</p>
+<ul>
+<li>要怎么判断优化措施是否是有效的？特别是，优化后性能到底又提升了多少呢？</li>
+<li>性能问题通常不是独立的，如果有多个性能问题同时发生，应该先优化哪一个呢？</li>
+<li>提升性能的方法并不是唯一的，当有多种方法可以选择时，选用哪一种呢？是不是总选那个最大程度提升性能的方法就行了呢？</li>
+</ul>
+<p>如果你可以轻松回答这三个问题，那么优化可以立即开始了。</p>
+<h4><span id="怎么评估性能优化的效果">怎么评估性能优化的效果？</span></h4><p>为了评估效果，我们需要对系统的性能指标进行量化，并且要分别测试出优化前、后的性能指标，用前后指标的变化来对比呈现效果。</p>
+<p>性能评估“三步走”：</p>
+<ul>
+<li>确定性能的量化指标</li>
+<li>测试优化前的性能指标</li>
+<li>测试优化后的性能指标</li>
+</ul>
+<h4><span id="多个性能问题同时存在要怎么选择">多个性能问题同时存在，要怎么选择？</span></h4><p><strong>并不是所有的性能问题都值得优化</strong>。</p>
+<p>80%的问题都是由20%的代码导致的。只要找出这20%的位置，你就可以优化80%的性能。</p>
+<h4><span id="有多种优化方法时要如何选择">有多种优化方法时，要如何选择？</span></h4><p>一般情况下，选能最大提升性能的方法，这也是性能优化的目标。</p>
+<p>但是，性能优化并非没有成本。性能优化通常会带来复杂度的提升，降低程序的可维护性，还可能在优化一个指标时，引发其他指标的异常。</p>
+<p>所以，在考虑选哪个性能优化方法时，需要综合多方面的因素。</p>
+<h3><span id="cpu优化">CPU优化</span></h3><p>在清楚了性能优化最基本的三个问题后，接下来从应用程序和系统的角度，分别来看看如何才能降低CPU使用率，提高CPU的并行处理能力：</p>
+<h4><span id="应用程序优化">应用程序优化</span></h4><p>从应用程序的角度来说，降低CPU使用率的最好方法是，排除所有不必要的工作，只保留最核心的逻辑。比如减少循环的层次、减少递归、减少动态内存分配等等。</p>
+<p>此外，还有：</p>
+<ul>
+<li>编译器优化：很多编译器都会提供优化选项，适当开启它们，在编译阶段你就可以获得编译器的帮助，来提升性能。比如，gcc就提供了优化选项-O2，开启后会自动对应用程序的代码进行优化。</li>
+<li>算法优化：使用复杂度更低的算法，可以显著加快处理速度。比如，在数据比较大的情况下，可以用O(nlogn)的排序算法（如快排、归并排序等）代替O(n^2)的排序算法（如冒泡、插入排序等）</li>
+<li>异步处理：使用异步处理，可以避免程序因为等待某个资源而一直阻塞，从而提升程序的并发处理能力。比如，把轮询替换为事件通知，就可以避免轮询耗费CPU的问题</li>
+<li>多线程代替多进程：相对于进程的上下文切换，线程的上下文切换并不切换进程地址空间，因此可以降低上下文切换的成本。</li>
+<li>善用缓存：经常访问的数据或计算过程中的步骤，可以放到内存中缓存起来，只要在下次要用的时候就直接从内存中获取，加快程序的处理速度。</li>
+</ul>
+<h4><span id="系统优化">系统优化</span></h4><p>从系统的角度来说，优化CPU的运行，一方面要充分利用CPU缓存的本地性，加速缓存访问；另一方面，就要控制进程的CPU使用情况，减少进程间的相互影响。</p>
+<ul>
+<li>CPU绑定：把进程绑定到一个或者多个CPU上，可以提高CPU缓存的命中率，减少跨CPU调度带来的上下文切换问题</li>
+<li>CPU独占：跟CPU绑定类似，进一步将CPU分组，并通过CPU亲和性机制为其分配进程。这样，这些CPU就由指定的进程独占，也就是说，不允许其他进程再来使用这些CPU</li>
+<li>优先级调整：使用nice调整进程的优先级，正值调低优先级，负值调高优先级。</li>
+<li>为进程设置资源限制</li>
+<li>NUMA优化</li>
+<li>中断负载均衡</li>
+</ul>
+<h3><span id="不要过早优化">不要过早优化</span></h3><blockquote>
+<p>过早优化是万恶之源。——高纳德</p>
+</blockquote>
+<p>过早优化不可取。这是因为：</p>
+<ul>
+<li>优化会带来复杂性的提升，降低可维护性；</li>
+<li>需求不是一成不变的。针对当前情况进行的优化，很可能并不适应快速变化的新需求。这样，在新需求出现时，这些复杂的优化，反而可能阻碍新功能的开发。</li>
+</ul>
+<p>所以，性能优化最好是逐步完善，动态进行的，不追求一步到位，<strong>而要首先保证能满足当前的性能要求</strong>。当发现性能不满足要求或者出现性能瓶颈时，再根据性能评估的结果，选择最重要的性能问题进行优化。</p>
 
                 </div>
             </div>
@@ -352,13 +419,13 @@
             <nav class="post-pagination">
     
     <a class="newer-posts" href="/2019/02/21/Web性能基础/">
-        Previous post<br>Web性能基础
+        前の記事<br>Web性能基础
     </a>
     
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2019/02/20/Linux-Kernel/">
-        Next post<br>Discover the Secrets of Linux Kernel
+        次の記事<br>Discover the Secrets of Linux Kernel
     </a>
     
 </nav>
@@ -384,7 +451,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?11808910"></script>
+<script src="/js/journal.js?14244428"></script>
 
 
 
