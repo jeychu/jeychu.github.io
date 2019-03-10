@@ -8,9 +8,18 @@
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content="平均负载什么是平均负载？
-是指一定时间内系统中处于可运行状态和不可中断等待状态的进程数的平均数
-上下文切换概述进程...">
+<meta name="description" content="
+
+平均负载
+上下文切换
+概述
+怎么查看系统的上下文切换情况
+
+
+CPU的使用率
+概述
+查看CPU使用率
+CPU使...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -20,7 +29,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?71362955">
+<link rel="stylesheet" href="/css/journal.css?88045724">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -61,10 +70,10 @@
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                首頁
+                Home
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                歸檔
+                Archive
             </a>
 
             
@@ -108,7 +117,7 @@
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            歸檔
+            Archive
         </a>
 
         
@@ -163,7 +172,48 @@
     
             <div class="post-body-wrapper">
                 <div class="post-body">
-                    <h2><span id="平均负载">平均负载</span></h2><p>什么是平均负载？</p>
+                    <!-- toc -->
+<ul>
+<li><a href="#平均负载">平均负载</a></li>
+<li><a href="#上下文切换">上下文切换</a><ul>
+<li><a href="#概述">概述</a></li>
+<li><a href="#怎么查看系统的上下文切换情况">怎么查看系统的上下文切换情况</a></li>
+</ul>
+</li>
+<li><a href="#cpu的使用率">CPU的使用率</a><ul>
+<li><a href="#概述-1">概述</a></li>
+<li><a href="#查看cpu使用率">查看CPU使用率</a></li>
+<li><a href="#cpu使用率过高怎么办">CPU使用率过高怎么办？</a></li>
+</ul>
+</li>
+<li><a href="#不可中断进程和僵尸进程的处理方法">不可中断进程和僵尸进程的处理方法</a><ul>
+<li><a href="#进程状态">进程状态</a></li>
+<li><a href="#处理方法">处理方法</a></li>
+</ul>
+</li>
+<li><a href="#软中断">软中断</a><ul>
+<li><a href="#怎么查看软中断和内核线程呢">怎么查看软中断和内核线程呢？</a></li>
+</ul>
+</li>
+<li><a href="#如何迅速分析出系统cpu的瓶颈在哪里">如何迅速分析出系统CPU的瓶颈在哪里？</a></li>
+<li><a href="#cpu性能优化的几个思路">CPU性能优化的几个思路</a><ul>
+<li><a href="#性能优化方法论">性能优化方法论</a><ul>
+<li><a href="#怎么评估性能优化的效果">怎么评估性能优化的效果？</a></li>
+<li><a href="#多个性能问题同时存在要怎么选择">多个性能问题同时存在，要怎么选择？</a></li>
+<li><a href="#有多种优化方法时要如何选择">有多种优化方法时，要如何选择？</a></li>
+</ul>
+</li>
+<li><a href="#cpu优化">CPU优化</a><ul>
+<li><a href="#应用程序优化">应用程序优化</a></li>
+<li><a href="#系统优化">系统优化</a></li>
+</ul>
+</li>
+<li><a href="#不要过早优化">不要过早优化</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h2><span id="平均负载">平均负载</span></h2><p>什么是平均负载？</p>
 <p>是指一定时间内系统中处于可运行状态和不可中断等待状态的进程数的平均数</p>
 <h2><span id="上下文切换">上下文切换</span></h2><h3><span id="概述">概述</span></h3><p>进程在竞争CPU的时候并没有真正运行，为什么还会导致系统的负载升高呢？这是因为CPU上下文切换。</p>
 <p>在每个任务运行前，CPU都需要知道任务从哪里加载，又从哪里开始运行，需要系统事先帮它设置好CPU寄存器和程序计数器（Program Counter，PC）。</p>
@@ -419,13 +469,13 @@
             <nav class="post-pagination">
     
     <a class="newer-posts" href="/2019/02/21/Web性能基础/">
-        上一篇<br>Web性能基础
+        Previous post<br>Web性能基础
     </a>
     
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2019/02/20/Linux-Kernel/">
-        下一篇<br>Discover the Secrets of Linux Kernel
+        Next post<br>Discover the Secrets of Linux Kernel
     </a>
     
 </nav>
@@ -451,7 +501,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?93560098"></script>
+<script src="/js/journal.js?73023792"></script>
 
 
 
