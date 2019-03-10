@@ -21,7 +21,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?32648334">
+<link rel="stylesheet" href="/css/journal.css?49546740">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -211,79 +211,9 @@
 <p>智慧是个女人，她只爱战士——愿你勇敢、无忧、刚强</p>
 <p>明为何而活，自可承受一切，幸与不幸</p>
 <p>受苦之人，没有悲观的权力</p>
-<script type="text/javascript" src="js/echarts.min.js"></script>
-
-<p><div id="map-wrap" style="width: 600px;height:400px;"></div></p>
-<script>
-var bmapChart=echarts.init(document.getElementById("map-wrap"));var data=[{name:"上海",value:299},{name:"厦门",value:245},{name:"丰城",value:120},{name:"南昌",value:160},{name:"张家界",value:128},{name:"长沙",value:75},{name:"杭州",value:90},{name:"福州",value:90},{name:"深圳",value:90},{name:"武汉",value:73}];var geoCoordMap={"厦门":[118.105,24.443],"上海":[121.399,31.321],"丰城":[115.801,28.201],"南昌":[115.856,28.691],"张家界":[110.489,29.118],"福州":[119.3,26.08],"长沙":[113,28.21],"杭州":[120.16,30.28],"深圳":[114.06,22.55],"武汉":[114.31,30.52]};var convertData=function(data){var res=[];for(var i=0;i<data.length;i++){var geoCoord=geoCoordMap[data[i].name];if(geoCoord){res.push({name:data[i].name,value:geoCoord.concat(data[i].value)})}}return res};option={title:{text:"我们的足迹 - Our footprints",subtext:"一步一个脚印，让时光见证",sublink:"#",left:"center"},tooltip:{trigger:"item"},bmap:{center:[106.320439,32.58783],zoom:5,roam:true,mapStyle:{styleJson:[{"featureType":"water","elementType":"all","stylers":{"color":"#d1d1d1"}},{"featureType":"land","elementType":"all","stylers":{"color":"#f3f3f3"}},{"featureType":"railway","elementType":"all","stylers":{"visibility":"off"}},{"featureType":"highway","elementType":"all","stylers":{"color":"#fdfdfd"}},{"featureType":"highway","elementType":"labels","stylers":{"visibility":"off"}},{"featureType":"arterial","elementType":"geometry","stylers":{"color":"#fefefe"}},{"featureType":"arterial","elementType":"geometry.fill","stylers":{"color":"#fefefe"}},{"featureType":"poi","elementType":"all","stylers":{"visibility":"off"}},{"featureType":"green","elementType":"all","stylers":{"visibility":"off"}},{"featureType":"subway","elementType":"all","stylers":{"visibility":"off"}},{"featureType":"manmade","elementType":"all","stylers":{"color":"#d1d1d1"}},{"featureType":"local","elementType":"all","stylers":{"color":"#d1d1d1"}},{"featureType":"arterial","elementType":"labels","stylers":{"visibility":"off"}},{"featureType":"boundary","elementType":"all","stylers":{"color":"#fefefe"}},{"featureType":"building","elementType":"all","stylers":{"color":"#d1d1d1"}},{"featureType":"label","elementType":"labels.text.fill","stylers":{"color":"#999999"}}]}},series:[{name:"footmark",type:"scatter",coordinateSystem:"bmap",data:convertData(data),symbolSize:function(val){return val[2]/10},label:{normal:{formatter:"{b}",position:"right",show:false},emphasis:{show:true}},itemStyle:{normal:{color:"#60C0DD"}}},{name:"I miss you",type:"effectScatter",coordinateSystem:"bmap",data:convertData(data.sort(function(a,b){return b.value-a.value}).slice(0,2)),symbolSize:function(val){return val[2]/10},showEffectOn:"render",rippleEffect:{brushType:"stroke"},hoverAnimation:true,label:{normal:{formatter:"{b}",position:"right",show:true}},itemStyle:{normal:{color:"purple",shadowBlur:10,shadowColor:"#333"}},zlevel:1}]};bmapChart.setOption(option);
-</script>
-
-<script>
-    var symbolSize = 20;
-    var data = [[15, 0], [-50, 10], [-56.5, 20], [-46.5, 30], [-22.1, 40]];
-    var points = [];
-    option = {
-    title: {
-        text: 'Click to Add Points'
-    },
-    tooltip: {
-        formatter: function (params) {
-            var data = params.data || [0, 0];
-            return data[0].toFixed(2) + ', ' + data[1].toFixed(2);
-        }
-    },
-    grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-    },
-    xAxis: {
-        min: -60,
-        max: 20,
-        type: 'value',
-        axisLine: {onZero: false}
-    },
-    yAxis: {
-        min: 0,
-        max: 40,
-        type: 'value',
-        axisLine: {onZero: false}
-    },
-    series: [
-        {
-            id: 'a',
-            type: 'line',
-            smooth: true,
-            symbolSize: symbolSize,
-            data: data
-        }
-    ]
-};
-var zr = myChart.getZr();
-zr.on('click', function (params) {
-    var pointInPixel = [params.offsetX, params.offsetY];
-    var pointInGrid = myChart.convertFromPixel('grid', pointInPixel);
-    if (myChart.containPixel('grid', pointInPixel)) {
-        data.push(pointInGrid);
-        myChart.setOption({
-            series: [{
-                id: 'a',
-                data: data
-            }]
-        });
-    }
-});
-zr.on('mousemove', function (params) {
-    var pointInPixel = [params.offsetX, params.offsetY];
-    zr.setCursorStyle(myChart.containPixel('grid', pointInPixel) ? 'copy' : 'default');
-});
-</script>
-
-
-
 <p><div id="main" style="width: 600px;height:400px;"></div></p>
 <script type="text/javascript">
+var echarts = require('echarts');
 var myChart = echarts.init(document.getElementById('main'));
 var option = {
             title: {
@@ -307,7 +237,8 @@ myChart.setOption(option);
 </script>
 
 
-<p>hello world!</p>
+
+<p>helllll</p>
 
                 </div>
             </div>
@@ -347,7 +278,7 @@ myChart.setOption(option);
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?80931062"></script>
+<script src="/js/journal.js?69725686"></script>
 
 
 
