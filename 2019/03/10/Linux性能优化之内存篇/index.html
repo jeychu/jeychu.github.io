@@ -17,9 +17,7 @@ Linux内存是怎么工作的？
 如何查看内存使用情况
 
 
-
-
-Lin...">
+Buffe...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -29,7 +27,7 @@ Lin...">
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?60418520">
+<link rel="stylesheet" href="/css/journal.css?83601903">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -70,10 +68,10 @@ Lin...">
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                首页
+                Home
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                归档
+                Archive
             </a>
 
             
@@ -117,7 +115,7 @@ Lin...">
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            归档
+            Archive
         </a>
 
         
@@ -181,6 +179,8 @@ Lin...">
 <li><a href="#如何查看内存使用情况">如何查看内存使用情况</a></li>
 </ul>
 </li>
+<li><a href="#buffer和cache">Buffer和Cache</a></li>
+<li><a href="#如何利用系统缓存优化程序的运行效率">如何利用系统缓存优化程序的运行效率</a></li>
 </ul>
 <!-- tocstop -->
 <h1><span id="linux内存是怎么工作的">Linux内存是怎么工作的？</span></h1><p>内存管理是操作系统最核心的功能之一。内存主要用来存储系统和应用程序的指令、数据、缓存等。</p>
@@ -222,7 +222,64 @@ Lin...">
 <li>文件映射段，包括动态库、共享内存等，从高地址开始向下增长；</li>
 <li>栈，包括局部变量和函数调用的上下文等。栈的大小是固定的，一般是8MB。</li>
 </ol>
-<h2><span id="内存分配与回收">内存分配与回收</span></h2><h2><span id="如何查看内存使用情况">如何查看内存使用情况</span></h2>
+<p>内存是怎么分配的呢？</p>
+<h2><span id="内存分配与回收">内存分配与回收</span></h2><p>malloc()是C标准库提供的内存分配函数，对应到系统调用上，有两种实现方式，即brk()和mmap()。</p>
+<ul>
+<li><p>对于小块内存（小于128K），C标准库使用brk()来分配内存。也就是通过移动堆顶的位置来分配内存。这些内存释放后并不会立刻归还系统，而是被缓存起来，重复使用。</p>
+<p>缓存的方式，可以减少缺页异常的发生，提高内存访问效率。</p>
+<p>但是由于内存没有归还系统，易造成内存碎片。</p>
+</li>
+<li><p>对于大块内存（大于128K），则直接使用内存映射mmap()来分配。也就是在文件映射段找一块空闲内存分配出去。</p>
+<p>由于释放时，直接归还系统，所以每次mmap都会发生缺页异常。</p>
+<p>大量的缺页异常，使内核的管理负担增大。所以malloc只对大块内存使用mmap。</p>
+</li>
+</ul>
+<p><strong>当这两种调用发生后，其实并没有真正分配内存。这些内存，都只是在首次访问时才被分配，也就是通过缺页异常进入内核中，再由内核来分配内存。</strong></p>
+<p>内核使用伙伴系统来管理内存分配。和MMU一样，伙伴系统也是以页为单位进行管理，并且通过相邻块的合并，减少内存碎片化。</p>
+<p>对于比页更小的对象，比如不到1K的时候，内核通过slab分配器来管理这些小内存。</p>
+<p>对于内存来说，如果只分配而不释放，就会造成内存泄漏，甚至会耗尽系统内存。所以，在应用程序用完内存后，还需要调用free()或unmap()，来释放这些不用的内存。</p>
+<p>在发现内存紧张时，系统会通过以下方式回收内存：</p>
+<ul>
+<li><p>回收缓存，比如使用LRU（Least Recently Used）算法，回收最近使用最少的内存页面；</p>
+</li>
+<li><p>回收不常访问的内存，把不常用的内存通过交换分区直接写到磁盘中。Swap把一块磁盘空间当成内存来用。从内存到磁盘称为换出，从磁盘读取到内存称为换入。</p>
+</li>
+<li><p>杀死进程，通过OOM（Out Of Memory），直接杀死占用大量内存的进程。内核使用oom_score为每个进程的内存使用情况进行评分：</p>
+<ul>
+<li>一个进程消耗的内存越大，oom_score就越大；</li>
+<li>一个进程运行占用的CPU越大，oom_score就越小。</li>
+</ul>
+<p>oom_score越大，越容易被OOM杀死。</p>
+<p>可以通过调整/proc/中进程的oom_adj来调整进程的oom_score。</p>
+<p>oom_adj的范围为[-17, 15]，数值越大，越容易被OOM杀死；-17表示禁止OOM。如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo -16 &gt; /proc/$(pidof sshd)/oom_adj</span><br></pre></td></tr></table></figure>
+<p>将sshd进程的oom_adj调小为-16，以使sshd不容易被OOM杀死。</p>
+</li>
+</ul>
+<h2><span id="如何查看内存使用情况">如何查看内存使用情况</span></h2><p>free</p>
+<p><img src="/2019/03/10/Linux性能优化之内存篇/1552275955243.png" alt="1552275955243"></p>
+<p>available不仅包含未使用的内存，还包括了可回收的缓存，所以一般会比未使用内存更大。不过，并不是所有缓存都可以回收，因为有些缓存可能正在使用中。</p>
+<p>top</p>
+<p><img src="/2019/03/10/Linux性能优化之内存篇/1552276016601.png" alt="1552276016601"></p>
+<p>下面部分显示了每个进程的内存使用情况：</p>
+<ul>
+<li>VIRT是进程虚拟内存的大小，只要是进程申请过的内存，即便还没有真正分配物理内存，也会计算在内；</li>
+<li>RES是常驻内存的大小，也就是进程实际使用的物理内存大小，但不包括Swap和共享内存；</li>
+<li>SHR是共享内存的大小，比如与其他进程共同使用的共享内存、加载的动态链接库以及程序的代码段等；需要注意的是，SHR并不一定是共享的，程序的代码段、非共享的动态链接库，也都计算在SHR里。</li>
+<li>%MEM是进程使用物理内存占系统总内存的百分比。</li>
+</ul>
+<h1><span id="buffer和cache">Buffer和Cache</span></h1><p>磁盘读写的缓冲为Buffer</p>
+<p>文件读写的缓存为Cache</p>
+<p>Buffer和Cache的设计目的，是为了系统的IO性能。它们利用内存，充当起慢速磁盘和快速CPU之间的桥梁，可以加速IO的访问速度。</p>
+<p>Buffer和Cache分别缓存的是对磁盘和文件系统的读写数据。</p>
+<ul>
+<li>从写的角度来说，不仅可以优化磁盘和文件的写入，对应用程序也有好处，应用程序可以在数据真正落盘前，就返回去做其他工作；</li>
+<li>从度的角度来说，不仅可以提高那些频繁访问数据的读取速度，也降低了频繁IO对磁盘的压力。</li>
+</ul>
+<h1><span id="如何利用系统缓存优化程序的运行效率">如何利用系统缓存优化程序的运行效率</span></h1><p>缓存命中率，指直接通过缓存获取数据的请求次数，占所有数据请求次数的百分比。</p>
+<p>命中率越高，表示使用缓存带来的收益越高，应用程序的性能也就越好。</p>
+<p>实际上，缓存是现在所有高并发系统必需的核心模块，主要作用就是把经常访问的数据（也就是热点数据），提前读入到内存中。以加快应用程序的响应速度。</p>
+
                 </div>
             </div>
     
@@ -231,7 +288,7 @@ Lin...">
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2019/03/09/MySQL的监控/">
-        下一篇<br>MySQL的监控
+        Next post<br>MySQL的监控
     </a>
     
 </nav>
@@ -257,7 +314,7 @@ Lin...">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?27510890"></script>
+<script src="/js/journal.js?42710634"></script>
 
 
 
