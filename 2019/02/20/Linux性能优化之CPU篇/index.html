@@ -29,7 +29,7 @@ CPU使...">
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?4433727">
+<link rel="stylesheet" href="/css/journal.css?27197270">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -319,9 +319,9 @@ CPU使...">
 <li>guest（guest），代表通过虚拟化运行其他操作系统的时间，也就是运行虚拟机的CPU时间。</li>
 <li>guest_nice（gnice），代表以低优先级运行的虚拟机时间。</li>
 </ul>
-<p><img src="/2019/02/20/Linux性能优化之CPU篇/Linux性能优化/1551432942707.png" alt="1551432942707"></p>
+<p><img src="/2019/02/20/Linux性能优化之CPU篇/1551432942707.png" alt="1551432942707"></p>
 <p>为了计算CPU的使用率，性能工具一般都会取间隔一段时间（比如3秒）的两次值，做差后，在计算出这段时间内的平均CPU使用率，即：</p>
-<p><img src="/2019/02/20/Linux性能优化之CPU篇/Linux性能优化/1551433018852.png" alt="1551433018852"></p>
+<p><img src="/2019/02/20/Linux性能优化之CPU篇/1551433018852.png" alt="1551433018852"></p>
 <p>跟系统的指标类似，Linux也给每个进程提供了运行情况的统计信息，也就是/proc/[pid]/stat。</p>
 <p>那是不是说要查看CPU使用率，就必须先读取/proc/stat和/proc/[pid]/stat这两个文件，然后再按照上面的公式计算出来呢？</p>
 <p>当然不是，各种各样的性能分析工具已经帮我们计算好了。</p>
@@ -501,7 +501,7 @@ CPU使...">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?37402861"></script>
+<script src="/js/journal.js?59263852"></script>
 
 
 
