@@ -20,7 +20,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?89575408">
+<link rel="stylesheet" href="/css/journal.css?91339842">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -61,10 +61,10 @@
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                Home
+                首页
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                Archive
+                归档
             </a>
 
             
@@ -108,7 +108,7 @@
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            Archive
+            归档
         </a>
 
         
@@ -248,6 +248,22 @@
 <p><img src="/2019/03/12/Linux性能优化之磁盘篇/1552385847934.png" alt="1552385847934"></p>
 <p>slabtop</p>
 <p><img src="/2019/03/12/Linux性能优化之磁盘篇/1552385975568.png" alt="1552385975568"></p>
+<h1><span id="linux磁盘io是怎么工作的">Linux磁盘IO是怎么工作的？</span></h1><h2><span id="磁盘">磁盘</span></h2><p>磁盘是可以持久化存储的设备，根据存储介质的不同，常见磁盘可以分为：</p>
+<ul>
+<li><p>机械磁盘，也称为硬盘驱动器<sup>Hard Disk Driver</sup>，通常缩写为HDD。机械磁盘主要由盘片和读写磁头组成，数据就存储在盘片的环状磁道中。在读写数据前，需要移动读写磁头，定位到数据所在的磁道，然后才能访问数据。</p>
+<p>如果是连续IO，不需要磁道寻址，可以获得较好性能。对于随机IO，需要不停地移动磁头来定位数据位置，读写性能会比较差。</p>
+<p>最小读写单位是扇区，一般为512字节。</p>
+</li>
+<li><p>固态磁盘<sup>Solid State Disk</sup>，通常缩写为SSD。由固态电子元器件组成。固态磁盘不需要磁道寻址，所以，不管是连续IO，还是随机IO的性能，都比机械磁盘要好很多。</p>
+<p>最小读写单位是页，一般为4KB、8KB等。</p>
+</li>
+</ul>
+<p>无论机械磁盘还是固态磁盘，相同磁盘的随机IO都要比连续IO慢得多，是因为：</p>
+<ul>
+<li>对机械磁盘来说，由于随机IO需要更多的磁头寻道和盘片旋转，它的性能自然要比连续IO慢；</li>
+<li>对固态磁盘来说，虽然它的随机性能比机械硬盘好很多，但同样存在”先擦除再写入”的限制。随机读写会导致大量的垃圾回收，所以相对于的，随机IO的性能比连续IO，还是差了很多。</li>
+<li>连续IO还可以通过预读的方式，来减少IO请求的次数，这也是其性能优异的一个原因。</li>
+</ul>
 
                 </div>
             </div>
@@ -257,7 +273,7 @@
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2019/03/12/在CentOS7上安装eBPF-tools-bcc和ply/">
-        Next post<br>在CentOS7上安装eBPF-tools,bcc和ply
+        下一篇<br>在CentOS7上安装eBPF-tools,bcc和ply
     </a>
     
 </nav>
@@ -283,7 +299,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?55331636"></script>
+<script src="/js/journal.js?98710221"></script>
 
 
 
