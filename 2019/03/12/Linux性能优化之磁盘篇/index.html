@@ -20,7 +20,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?85040957">
+<link rel="stylesheet" href="/css/journal.css?89575408">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -206,7 +206,49 @@
 <li>网络文件系统，也就是用来访问其他计算机数据的文件系统，比如NFS、SMB、iSCSI等。</li>
 </ul>
 <p>这些文件系统，要先挂载到VFS目录树中的某个子目录<sup>称为挂载点</sup>，然后才能访问其中的文件。</p>
-<h2><span id="文件系统io">文件系统IO</span></h2>
+<h2><span id="文件系统io">文件系统IO</span></h2><p>文件读写方式的各种差异，导致IO的分类多种多样。常见的有：</p>
+<ul>
+<li><p>缓冲与非缓冲IO<sup>是否利用标准库缓存</sup>：</p>
+<ul>
+<li>缓冲IO，指利用标准库缓存来加速文件的访问，标准库内部再通过系统调度访问文件；</li>
+<li>非缓冲IO，指直接通过系统调用来访问文件，不再经过标准库缓存。</li>
+</ul>
+<p>无论缓存IO还是非缓冲IO，最终还是要经过系统调用来访问文件。系统调用后，还会通过页缓存，来减少磁盘的IO操作。</p>
+</li>
+<li><p>直接与非直接IO<sup>是否利用操作系统的页缓存</sup>：</p>
+<ul>
+<li>直接IO，指跳过操作系统的页缓存，直接跟文件系统交互来访问文件；</li>
+<li>非直接IO，文件读写时，先要经过系统的页缓存，然后再由内核或额外的系统调用，真正写入磁盘。</li>
+</ul>
+<p>在系统调用中，指定O_DIRECT标志，可以实现直接IO。如果没有设置过，默认是非直接IO。</p>
+<p>直接IO和非直接IO，本质上还是和文件系统交互。如果是在数据库等场景中，还会有跳过文件系统读写磁盘的情况，也就是裸IO。</p>
+</li>
+<li><p>阻塞与非阻塞IO<sup>根据应用程序是否阻塞自身运行</sup>：</p>
+<ul>
+<li>阻塞IO，指应用程序之下IO操作后，如果没有获得响应，就会阻塞当前线程，自然就不能执行其他任务；</li>
+<li>非阻塞IO，是指应用程序执行IO操作后，不会阻塞当前的线程，可以继续执行其他的任务，随后再通过轮询或者事件通知的形式，获取调用的结果。</li>
+</ul>
+<p>如：在访问管道或网络套接字时，设置O_NONBLOCK标志，就表示用非阻塞方式访问；如果不做任何设置，默认的是阻塞访问。</p>
+</li>
+<li><p>同步和异步IO<sup>根据是否等待响应结果</sup>：</p>
+<ul>
+<li>同步IO，指应用程序执行IO操作后，要一直等到整个IO完成后，才能获得IO响应；</li>
+<li>异步IO，指应用程序执行IO操作后，不用等待完成和完成后的响应，而是继续执行就可以。等到这次IO完成后，响应会用事件通知的方式，告诉应用程序。</li>
+</ul>
+<p>如：在操作文件时，如果设置了O_SYNC或O_DSYNC标志，就代表同步IO。</p>
+<p>在访问管道或网络套接字时，设置了O_ASYNC，就代表异步IO。</p>
+</li>
+</ul>
+<h2><span id="如何查看文件系统的性能情况呢">如何查看文件系统的性能情况呢？</span></h2><h3><span id="容量">容量</span></h3><p>df</p>
+<p><img src="/2019/03/12/Linux性能优化之磁盘篇/1552385605875.png" alt="1552385605875"></p>
+<p>索引节点的容量<sup>inode的个数</sup>，是在格式化磁盘时设定好的，一般由格式化工具自动生成。当你发现索引节点空间不足，但磁盘空间充足时，很可能就是过多小文件导致的。</p>
+<h3><span id="缓存">缓存</span></h3><p>/proc/meminfo</p>
+<p><img src="/2019/03/12/Linux性能优化之磁盘篇/1552386039282.png" alt="1552386039282"></p>
+<p>/proc/slabinfo</p>
+<p><img src="/2019/03/12/Linux性能优化之磁盘篇/1552385847934.png" alt="1552385847934"></p>
+<p>slabtop</p>
+<p><img src="/2019/03/12/Linux性能优化之磁盘篇/1552385975568.png" alt="1552385975568"></p>
+
                 </div>
             </div>
     
@@ -241,7 +283,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?82444299"></script>
+<script src="/js/journal.js?55331636"></script>
 
 
 
