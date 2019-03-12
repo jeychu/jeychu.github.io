@@ -1,15 +1,13 @@
 
-
 <!DOCTYPE html>
 <html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
 
 <head><meta name="generator" content="Hexo 3.8.0">
-    <title>JavaScript In A Nutshell - javfa&#39;s blog</title>
+    <title>javfa&#39;s blog</title>
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content="基础运行时页面构建过程生命周期概览
-客户端Web应用的周期从用户指定某个网站地址开始，由两个步骤组成：页面构建和事...">
+<meta name="description" content="A Blog Powered By Hexo">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -19,7 +17,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?78631015">
+<link rel="stylesheet" href="/css/journal.css?11423086">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -59,7 +57,7 @@
 <div class="single-column-drawer-container" ref="drawer" v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
     <div class="drawer-content">
         <div class="drawer-menu">
-            <a class="a-block drawer-menu-item false" href="http://yoursite.com">
+            <a class="a-block drawer-menu-item active" href="http://yoursite.com">
                 首頁
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
@@ -134,83 +132,77 @@
         </a>
 
         
+        
+        <div class="pagination-indicator">
+            <span style="text-align: center">
+                4<br><div style="display: inline-block; transform: rotate(-28deg)">-</div><br>4
+            </span>
+        </div>
+        
+
+        
+        <a class="pagination-action" href="/page/3/">
+            <i class="material-icons pagination-action-icon">
+                chevron_left
+            </i>
+        </a>
+        
+
+        
+        
     </div>
 </div>
 
 <div ref="streamContainer" class="stream-container">
-    <div class="post-list-container post-list-container-shadow">
-        <div class="post">
-            <div class="post-head-wrapper-text-only" style="background-image: url('')">
-                <div class="post-title">
-                    JavaScript In A Nutshell
-                    <div class="post-meta">
-                        <time datetime="2019-02-25T17:49:28.000Z" itemprop="datePublished">
-                            2019-02-26 01:49
-                        </time>&nbsp;
-                        
-    
-                        
-                        
-                        <i class="material-icons" style>label</i>
-                        
-                        <a href="/tags/Web/">Web</a>
-                        
-                        
+    <div class="post-list-container post-list-container-no-background">
+        
+        <a href="/2016/02/24/Linux内核设计01-从加电到main/" class="a-block">
+            <div class="post-item-wrapper">
+                <div class="post-item post-item-no-divider">
+                    <div class="post-item-info-wrapper">
+                        <div class="post-item-title">
+                            Linux内核设计01-从加电到main
+                        </div>
+                        <div class="post-item-summary">
+                            
+
+从开机加电到执行main函数之前的过程
+第一步，启动BIOS，准备实模式下的中断向量表和中断服务程序
+BIOS...
+                        </div>
+                        <div class="post-item-meta">
+                            2016-02-24
+                        </div>
                     </div>
+                    
                 </div>
             </div>
+        </a>
+        
     
-            <div class="post-body-wrapper">
-                <div class="post-body">
-                    <h1><span id="基础">基础</span></h1><h2><span id="运行时页面构建过程">运行时页面构建过程</span></h2><h3><span id="生命周期概览">生命周期概览</span></h3><p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551510836738.png" alt="1551510836738"></p>
-<p>客户端Web应用的周期从用户指定某个网站地址开始，由两个步骤组成：<strong>页面构建和事件处理</strong>。</p>
-<p>来个例子，这个例子展示：每当用户移动鼠标或单击页面就会显示一条消息。</p>
-<p>以下是代码：</p>
-<p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551511209573.png" alt="1551511209573"></p>
-<p>以下是运行和交互结果：</p>
-<p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551512582730.png" alt="1551512582730"></p>
-<h3><span id="页面构建阶段">页面构建阶段</span></h3><p>该阶段的目标是建立web应用的UI，主要包括两个步骤：</p>
-<ul>
-<li>解析HTML代码并构建文档对象模型（DOM）；</li>
-<li>执行JavaScript代码。</li>
-</ul>
-<p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551512933518.png" alt="1551512933518"></p>
-<p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551513184204.png" alt="1551513184204"></p>
-<h3><span id="事件处理">事件处理</span></h3><h1><span id="理解函数">理解函数</span></h1><p>定义与参数</p>
-<p>理解函数调用</p>
-<p>闭包和作用域</p>
-<p>生成器和promise</p>
-<h1><span id="钻研对象">钻研对象</span></h1><p>面向对象与原型</p>
-<p>控制对象的访问</p>
-<p>处理集合</p>
-<p>正则表达式</p>
-<p>代码模式化</p>
-<h1><span id="洞悉浏览器">洞悉浏览器</span></h1><p>DOM操作</p>
-<p>事件</p>
-<p>跨浏览器的开发技巧</p>
+        
+<div class="pagination">
+    
+    <a class="pagination-action" href="/page/3/" style="opacity: 1">
+        
+            <i class="material-icons pagination-action-icon">
+                chevron_left
+            </i>
+        </a>
 
-                </div>
-            </div>
-    
-            <nav class="post-pagination">
-    
-    <a class="newer-posts" href="/2019/02/28/微服务设计/">
-        上一篇<br>微服务设计
-    </a>
-    
-    <span class="page-number"></span>
-    
-    <a class="older-posts" href="/2019/02/21/Nginx的配置/">
-        下一篇<br>Nginx的配置
-    </a>
-    
-</nav>
-
-    
-            
-
-
+        <div class="pagination-indicator">
+            <span>4/4</span>
         </div>
+
+        
+            <a class="pagination-action" style="opacity: 0">
+                
+                <i class="material-icons pagination-action-icon">
+                    chevron_right
+                </i>
+            </a>
+</div>
+
     </div>
     <div class="single-column-footer">
     Proudly published with Hexo<br>
@@ -227,9 +219,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?74244010"></script>
-
-
-
+<script src="/js/journal.js?9340537"></script>
 </body>
 </html>
