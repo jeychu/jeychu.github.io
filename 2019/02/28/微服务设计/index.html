@@ -8,7 +8,11 @@
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content="微服务演化式架构师如何建模服务集成分解单块系统部署测试监控安全康威定律和系统设计规模化微服务">
+<meta name="description" content="微服务演化式架构师如何建模服务集成分解单块系统部署
+构建什么、如何构建以及如何部署？
+
+持续集成简介
+你是否每天签...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -18,7 +22,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?37323976">
+<link rel="stylesheet" href="/css/journal.css?88332846">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -59,10 +63,10 @@
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                Home
+                ホーム
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                Archive
+                記事一覧
             </a>
 
             
@@ -106,7 +110,7 @@
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            Archive
+            記事一覧
         </a>
 
         
@@ -155,20 +159,97 @@
     
             <div class="post-body-wrapper">
                 <div class="post-body">
-                    <h1><span id="微服务">微服务</span></h1><h1><span id="演化式架构师">演化式架构师</span></h1><h1><span id="如何建模服务">如何建模服务</span></h1><h1><span id="集成">集成</span></h1><h1><span id="分解单块系统">分解单块系统</span></h1><h1><span id="部署">部署</span></h1><h1><span id="测试">测试</span></h1><h1><span id="监控">监控</span></h1><h1><span id="安全">安全</span></h1><h1><span id="康威定律和系统设计">康威定律和系统设计</span></h1><h1><span id="规模化微服务">规模化微服务</span></h1>
+                    <h1><span id="微服务">微服务</span></h1><h1><span id="演化式架构师">演化式架构师</span></h1><h1><span id="如何建模服务">如何建模服务</span></h1><h1><span id="集成">集成</span></h1><h1><span id="分解单块系统">分解单块系统</span></h1><h1><span id="部署">部署</span></h1><blockquote>
+<p>构建什么、如何构建以及如何部署？</p>
+</blockquote>
+<h2><span id="持续集成简介">持续集成简介</span></h2><ul>
+<li>你是否每天签入代码到主线？</li>
+<li>你是否有一组测试来验证修改？</li>
+<li>当构建失败后，团队是否把修复CI当作第一优先级的事情来做？</li>
+</ul>
+<h2><span id="把ci映射到微服务">把CI映射到微服务</span></h2><p>如何在微服务、CI构建及源代码三者之间，建立起合适的映射呢？</p>
+<p>最简单的，把所有东西放在一起。如下所示，一个巨大的代码库，其中包括所有的代码，并且只有一个构建。向该代码库任何一次的代码提交都会触发构建，在构建中运行相关的验证，然后生成多个构建物，所有这些都是在同一个构建中完成。</p>
+<p><img src="/2019/02/28/微服务设计/1552533778038.png" alt="1552533778038"></p>
+<p>这种模式存在很多明显的缺点：</p>
+<p>如果我仅仅修改了用户访问中的一行代码，所有其他的服务都需要解析验证和构建，但实际上它们并不需要重新验证和构建，在这里，我们花费了不必要的时间。</p>
+<p>这种方法的一个变体是保留一个代码库，但是用多个CI分别映射到代码库的不同部分，如下所示：</p>
+<p><img src="/2019/02/28/微服务设计/1552533870065.png" alt="1552533870065"></p>
+<p>这种模式可能是双刃剑：一方面它会简化检出/检入的流程，但另一方面，由于可以很轻松地同时提交对多个服务的修改，从而容易做出将多个服务耦合在一起的修改。</p>
+<p>另外一种模式是，每个微服务都有自己的CI，可以在将该微服务部署到生产环境之前做一个快速的验证，如下所示：</p>
+<p><img src="/2019/02/28/微服务设计/1552533913998.png" alt="1552533913998"></p>
+<h2><span id="构建流水线">构建流水线</span></h2><p>使用构建流水线的标准发布流程：</p>
+<p><img src="/2019/02/28/微服务设计/1552536246615.png" alt="1552536246615"></p>
+<p>在微服务的世界，我们想要保证服务之间可以独立于彼此进行部署，所以每个服务都有自己独立的CI。</p>
+<p>但也有例外：刚启动一个新项目时，在什么都没有的情况之下，要花很多时间来识别服务边界。</p>
+<p>在识别出稳定的边界之前，可以把所有的初始服务都放到一起，只用一个构建。此时，也经常会发生跨服务边界的修改，把所有的服务都放在同一个构建中，可以减轻跨服务修改的代价。</p>
+<p>当服务的API稳定之后，就可以开始把它们移动到各自的构建之中。</p>
+<h2><span id="平台特定的构建物">平台特定的构建物</span></h2><p>大多数技术栈都有相应的构建物类型，同时也有相关的工具来创建和安装这些构建物。如：Ruby有gem，Java有JAR包和WAR包，Python有egg。</p>
+<p>从部署的角度，只有构建物本身通常是不够的。如Python应用程序需要运行在Nginx或Apache中。</p>
+<p>为了部署和启动这些构建物，需要安装和配置一些其他的软件。使用Ansible、SaltStack进行自动化配置管理，可以很好的解决这个问题。</p>
+<h2><span id="操作系统构建物">操作系统构建物</span></h2><p>有一种方法可以避免多种技术栈下的构建物所带来的问题，那就是使用操作系统支持的构建物。如，基于RedHat或者CentOS的系统来收，可以使用RPM；对于Ubuntu，可以使用deb包；对于Windows，使用MSI。</p>
+<h2><span id="定制化镜像">定制化镜像</span></h2><p>创建定制化虚拟机镜像：</p>
+<p><img src="/2019/02/28/微服务设计/1552537789945.png" alt="1552537789945"></p>
+<p>只需要构建一次镜像，然后根据这些镜像启动虚拟机，不需要再花费时间来安装相应的依赖，因为它们已经在镜像中安装好了。</p>
+<p>如果你的核心依赖没有改变，那么新版本的服务就可以继续使用相同的基础镜像。</p>
+<h3><span id="将镜像作为构建物">将镜像作为构建物</span></h3><p>把服务本身也包含在镜像中，这样就把镜像变成了构建物。</p>
+<p>现在当你启动镜像时，服务就已经就绪了。</p>
+<p>就像使用OS特定软件包那样，可以认为这些VM镜像是对不同技术栈的一层抽象。我们不需要关心运行在镜像中的服务所使用的语言是Ruby还是Java，我们唯一关心的就是它是否工作。然后把精力放在镜像创建和部署的自动化上即可。</p>
+<h3><span id="不可变服务器">不可变服务器</span></h3><p>通过把配置都存到版本控制代码中，我们可以自动化重建服务，甚至重建整个环境。</p>
+<p>但如果部署完成之后，有人登陆到机器上修改了一些东西，就会导致机器的实际配置和源代码管理中的配置不再一致，整个问题叫做配置漂移。</p>
+<p>为了避免这个问题，可以禁止对任何运行的服务器做手动修改。</p>
+<p>并且，无论修改多么小，都需要经过构建流水线来创建新的机器。</p>
+<h2><span id="环境">环境</span></h2><p>不同环境中部署的服务是相同的，但是每个环境的用途却不一样。</p>
+<p>从笔记本到UAT，再到生产环境，我们希望前面的环境都能不断地靠近生产环境，这样就可以更快地捕获到由于环境差异导致的问题。</p>
+<p>类生产环境和快速反馈之间需要持续地做权衡。</p>
+<h2><span id="服务配置">服务配置</span></h2><p>不同环境的配置差异，如何在部署流程中对其进行处理呢？</p>
+<p>可以对每个环境创建不同的构建物，并把配置内建在该构建物中。</p>
+<p>更好的方法是：只创建一个构建物，并将配置单独管理。</p>
+<p>每个环境一个属性文件。</p>
+<p>应对大量微服务时，这是个很好的方法，即使用专用系统来提供配置。</p>
+<h2><span id="服务与主机之间的映射">服务与主机之间的映射</span></h2><h3><span id="单主机多服务">单主机多服务</span></h3><h3><span id="应用程序容器">应用程序容器</span></h3><h3><span id="每个主机一个服务">每个主机一个服务</span></h3><p><img src="/2019/02/28/微服务设计/1552544268022.png" alt="1552544268022"></p>
+<h3><span id="平台即服务">平台即服务</span></h3><h2><span id="自动化">自动化</span></h2><h2><span id="从物理机到虚拟机">从物理机到虚拟机</span></h2><h2><span id="一个部署接口">一个部署接口</span></h2><p>不管用于部署的底层平台和构建物是什么，使用统一接口来部署给定的服务都是很关键的。</p>
+<p>在很多场景下，都有触发部署的需求，从本地开发测试到生产环境部署。这些不同环境的部署机制应该尽量相似。</p>
+<p>参数化的命令行调用是触发任何部署最合理的方式。可以使用CI工具或手动键入来触发脚本的调用。</p>
+<p>部署脚本需要三个参数：</p>
+<ul>
+<li>部署物是什么？微服务的名字</li>
+<li>把该微服务部署到哪个环境之中？</li>
+<li>该微服务的版本信息</li>
+</ul>
+<p>假设，我们已经创建了一个这样的部署脚本。</p>
+<p>在本地开发时，我们键入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deploy artifact=catalog environment=local version=local</span><br></pre></td></tr></table></figure>
+<p>代码一旦提交，CI进行一次构建，生成一个新的构建物，其编号为b456。这个值会在整个流水线中传递。到了测试阶段，CI会执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deplog artifact=catalog environmet=ci version=b456</span><br></pre></td></tr></table></figure>
+<p>环境定义：</p>
+<h1><span id="测试">测试</span></h1><h1><span id="监控">监控</span></h1><h1><span id="安全">安全</span></h1><h1><span id="康威定律和系统设计">康威定律和系统设计</span></h1><h1><span id="规模化微服务">规模化微服务</span></h1><p>故障无处不在</p>
+<p>何为太多</p>
+<p>功能降级</p>
+<p>架构安全</p>
+<p>反脆弱</p>
+<p>幂等</p>
+<p>扩展</p>
+<p>缓存</p>
+<p>自动伸缩</p>
+<p>CAP</p>
+<p>服务发现</p>
+<p>动态服务注册</p>
+<p>文档服务</p>
+<p>自描述</p>
+
                 </div>
             </div>
     
             <nav class="post-pagination">
     
     <a class="newer-posts" href="/2019/03/02/Nginx和位运算/">
-        Previous post<br>Nginx中的位运算
+        前の記事<br>Nginx中的位运算
     </a>
     
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2019/02/26/JavaScript-In-A-Nutshell/">
-        Next post<br>JavaScript In A Nutshell
+        次の記事<br>JavaScript In A Nutshell
     </a>
     
 </nav>
@@ -194,7 +275,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?74346751"></script>
+<script src="/js/journal.js?56240222"></script>
 
 
 
