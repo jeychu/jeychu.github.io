@@ -20,7 +20,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?99698712">
+<link rel="stylesheet" href="/css/journal.css?76173176">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -61,10 +61,10 @@
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                ホーム
+                首页
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                記事一覧
+                归档
             </a>
 
             
@@ -108,7 +108,7 @@
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            記事一覧
+            归档
         </a>
 
         
@@ -279,9 +279,28 @@
 <li>NONE：不做处理，常用于虚拟机中</li>
 <li>NOOP：最简单的IO调度算法。是一个先入先出的队列，只做一些最基本的请求合并，常用于SSD</li>
 <li>CFQ：是现在很多发行版的默认IO调度器，它为每一个进程维护了一个IO调度队列，并按照时间片来均匀分布每个进程的IO请求。</li>
-<li>DeadLine</li>
+<li>DeadLine：分别为读、写创建了不同的IO队列，可以提高机械磁盘的吞吐量，并确保达到最终期限（deadline）的请求被优先处理。多用于IO压力比较重的场景，比如事件库等。</li>
 </ul>
+<h2><span id="io栈">IO栈</span></h2><p>Linux存储系统的IO栈，由上到下分为三个层次，分别是文件系统层、通用块层和设备层。这三个IO层的关系如下图所示：</p>
 <p><img src="/2019/03/12/Linux性能优化之磁盘篇/1552547651555.png" alt="1552547651555"></p>
+<p>通过这张IO全景图，我们可以清楚的理解存储系统IO的工作原理：</p>
+<ul>
+<li>文件系统层，包括虚拟文件系统和其他各种文件系统的具体实现。为上层的应用程序提供标准的文件访问接口；对下通过通用块层，来存储和管理磁盘数据；</li>
+<li>通用块层，包括块设备IO队列和IO调度。对文件系统的IO请求进行排队，通过重新排序和请求合并，然后发送给下一级的设备层；</li>
+<li>设备层，包括存储设备和相应的驱动程序，负责最终物理设备的IO操作。</li>
+</ul>
+<h2><span id="磁盘性能指标">磁盘性能指标</span></h2><ul>
+<li>使用率</li>
+<li>饱和度</li>
+<li>IOPS</li>
+<li>吞吐量</li>
+<li>响应时间</li>
+</ul>
+<h2><span id="磁盘io观测">磁盘IO观测</span></h2><p>每块磁盘的使用情况</p>
+<p>iostat</p>
+<p><img src="/2019/03/12/Linux性能优化之磁盘篇/1552623565915.png" alt="1552623565915"></p>
+<p>进程IO观测</p>
+<p>pidstat -d 1</p>
 
                 </div>
             </div>
@@ -289,13 +308,13 @@
             <nav class="post-pagination">
     
     <a class="newer-posts" href="/2019/03/12/CDN/">
-        前の記事<br>CDN
+        上一篇<br>CDN
     </a>
     
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2019/03/12/在CentOS7上安装eBPF-tools-bcc和ply/">
-        次の記事<br>在CentOS7上安装eBPF-tools,bcc和ply
+        下一篇<br>在CentOS7上安装eBPF-tools,bcc和ply
     </a>
     
 </nav>
@@ -321,7 +340,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?47883701"></script>
+<script src="/js/journal.js?51574721"></script>
 
 
 
