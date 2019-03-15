@@ -1,0 +1,258 @@
+
+
+<!DOCTYPE html>
+<html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <title>proc目录详解 - javfa&#39;s blog</title>
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Javfa">
+<meta name="description" content="此篇为proc目录man手册内容的翻译。
+持续更新。。。
+proc-进程信息伪-文件系统
+proc文件系统是内核数...">
+<meta name="keywords" content>
+
+    <meta charset="utf-8">
+    <meta name="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta content="telephone=no" name="format-detection">
+    <meta name="renderer" content="webkit">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/journal.css?7816440">
+<script src="/js/loadCSS.js"></script>
+<script>
+    loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
+    (function (d) {
+        var config = {
+                kitId: 'dwg1tuc',
+                scriptTimeout: 3000,
+                async: true
+            },
+            h = d.documentElement, t = setTimeout(function () {
+                h.className = h.className.replace(/\bwf-loading\b/g, "") + " wf-inactive";
+            }, config.scriptTimeout), tk = d.createElement("script"), f = false,
+            s = d.getElementsByTagName("script")[0], a;
+        h.className += " wf-loading";
+        tk.src = 'https://use.typekit.net/' + config.kitId + '.js';
+        tk.async = true;
+        tk.onload = tk.onreadystatechange = function () {
+            a = this.readyState;
+            if (f || a && a != "complete" && a != "loaded") return;
+            f = true;
+            clearTimeout(t);
+            try {
+                Typekit.load(config)
+            } catch (e) {
+            }
+        };
+        s.parentNode.insertBefore(tk, s)
+    })(document);
+</script>
+<noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora|Montserrat|Anonymous+Pro:400|Material+Icons">
+</noscript>
+</head>
+<body>
+<div id="top"></div>
+<div id="app">
+<div class="single-column-drawer-container" ref="drawer" v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            <a class="a-block drawer-menu-item false" href="http://yoursite.com">
+                Home
+            </a>
+            <a class="a-block drawer-menu-item false" href="/archives">
+                Archive
+            </a>
+
+            
+            
+
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav ref="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div ref="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a ref="navTitle" class="navbar-brand" href="/">
+            javfa&#39;s blog
+        </a>
+    </div>
+</nav>
+<div class="single-column-header-container" ref="pageHead" v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="/">
+        <div class="single-column-header-title">javfa&#39;s blog</div>
+        <div class="single-column-header-subtitle"></div>
+    </a>
+</div>
+<div ref="sideContainer" class="side-container">
+    <a class="a-block nav-head false" href="/">
+        <div class="nav-title">
+            {博客@家發}
+        </div>
+        <div class="nav-subtitle">
+            隻言片語<br>於此匯聚
+        </div>
+    </a>
+
+    <div class="nav-link-list">
+        <a class="a-block no-tint nav-link-item false" href="/archives">
+            Archive
+        </a>
+
+        
+        
+
+        
+    </div>
+
+    
+    <div class="nav-footer">
+        Proudly published with Hexo<br>
+        
+        Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+        
+        &copy; 2019 <a href="http://yoursite.com">javfa&#39;s blog</a>
+    </div>
+</div>
+<div ref="extraContainer" class="extra-container">
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+
+        
+    </div>
+</div>
+
+<div ref="streamContainer" class="stream-container">
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            <div class="post-head-wrapper-text-only" style="background-image: url('')">
+                <div class="post-title">
+                    proc目录详解
+                    <div class="post-meta">
+                        <time datetime="2018-03-13T01:45:17.000Z" itemprop="datePublished">
+                            2018-03-13 09:45
+                        </time>&nbsp;
+                        
+    
+                        
+                        
+                        <i class="material-icons" style>label</i>
+                        
+                        <a href="/tags/Linux/">Linux</a>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+    
+            <div class="post-body-wrapper">
+                <div class="post-body">
+                    <p>此篇为proc目录man手册内容的翻译。</p>
+<p>持续更新。。。</p>
+<p>proc-进程信息伪-文件系统</p>
+<p>proc文件系统是内核数据结构的接口。通常挂载到/proc目录。其中大部分内容只读，也有一些文件可被修改从而变更相应的内核参数。</p>
+<p>proc目录层次结构：</p>
+<p><img src="/2018/03/13/proc目录详解/1552443342611.png" alt="1552443342611"></p>
+<p>/proc/[pid]</p>
+<p>数字子目录是对应的是系统正在运行的各个进程。</p>
+<p>这些子目录下的文件结构如下所示：</p>
+<p><img src="/2018/03/13/proc目录详解/1552557164187.png" alt="1552557164187"></p>
+<p>/proc/[pid]/auxv</p>
+<p><img src="/2018/03/13/proc目录详解/1552557500751.png" alt="1552557500751"></p>
+<p>进程运行时的ELF解释器信息。</p>
+<p>/proc/[pid]/cgroup</p>
+<p><img src="/2018/03/13/proc目录详解/1552557711739.png" alt="1552557711739"></p>
+<p>描述进程所属控制组信息。</p>
+<p>在内核配置选项CONFIG_CGROUPS开启的情况下，这个文件才会出现。</p>
+<p>cgroup的使用举例：</p>
+<p>MongoDB是个吃内存的大户，它会尽可能的使用服务器的内存。在数据量巨大的时候，内存很快会被吃光，导致服务器上其它进程无法分配内存。<br>我们可以使用cgroups来限制MongoDB的内存使用。</p>
+<p>配置有几个步骤：</p>
+<ol>
+<li>创建一个控制组群：<code>cgcreate -g memory:DBLimitedGroup</code></li>
+<li>指定可用的最大内存16G: <code>echo 16G &gt; /sys/fs/cgroup/memory/DBLimitedGroup/memory.limit_in_bytes</code></li>
+<li>将缓存页丢掉 (flush and drop): <code>sync; echo 3 &gt; /proc/sys/vm/drop_caches</code></li>
+<li>将mongodb的进程加入控制组：<code>cgclassify -g memory:DBLimitedGroup $(pidof mongod)</code></li>
+</ol>
+<p>基本上就完成了任务，这样此MongoDB最多可以使用16G的内存。</p>
+<p>磁盘缓冲参数<br><strong>1) /proc/sys/vm/dirty_ratio</strong> </p>
+<p>脏数据定义为：内存中已改变，需要写入磁盘但还没有真正写入的数据。</p>
+<p>这个参数控制文件系统的文件系统写缓冲区的大小，单位是百分比，表示当写缓冲使用到系统内存多少的时候，开始向磁盘写数据。增大之后会使用更多系统内存用于磁盘写缓冲，以提高系统的写性能。但是，当你需要持续、恒定的写入时，应该降低其数值：<br><code>echo &#39;1&#39; &gt; /proc/sys/vm/dirty_ratio</code></p>
+<p><strong>2) /proc/sys/vm/dirty_background_ratio</strong><br>这个参数控制文件系统的pdflush进程，在何时刷新磁盘。单位是百分比，意思是当写缓冲使用到系统内存多少的时候，pdflush开始向磁盘写出数据。增大之后会使用更多系统内存用于磁盘写缓冲，也可以极大提高系统的写性能。但是，当你需要持续、恒定的写入场合时，应该降低其数值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &apos;1&apos; &gt; /proc/sys/vm/dirty_background_ratio</span><br></pre></td></tr></table></figure>
+<p><strong>3) /proc/sys/vm/dirty_writeback_centisecs</strong><br>这个参数控制内核的脏数据刷新进程pdflush的运行间隔。单位是 1/100 秒。缺省数值是500，也就是 5 秒。如果你的系统是持续地写入动作，那么实际上还是降低这个数值比较好，这样可以把尖峰的写操作削平成多次写操作。设置方法如下：</p>
+<p><code>echo &quot;100&quot; &gt; /proc/sys/vm/dirty_writeback_centisecs</code><br>如果你的系统是尖峰式的写操作，并且写入数据不大（几十M/次）且内存有比较多富裕，那么应该增大此数值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;1000&quot; &gt; /proc/sys/vm/dirty_writeback_centisecs</span><br></pre></td></tr></table></figure>
+<p><strong>4) /proc/sys/vm/dirty_expire_centisecs</strong><br>这个参数声明Linux内核写缓冲区里面的数据多“旧”了之后，pdflush进程就开始考虑写到磁盘中去。单位是 1/100秒。缺省是 30000，也就是 30 秒的数据就算旧了，将会刷新磁盘。对于特别重载的写操作来说，这个值适当缩小也是好的，但也不能缩小太多，因为缩小太多也会导致IO提高太快。</p>
+<p><code>echo &quot;100&quot; &gt; /proc/sys/vm/dirty_expire_centisecs</code><br>当然，如果你的系统内存比较大，并且写入模式是间歇式的，并且每次写入的数据不大（比如几十M），那么这个值还是大些的好。</p>
+<p><strong>5) /proc/sys/vm/vfs_cache_pressure</strong><br>该文件表示保留或回收内存中的dentry和inode cache的倾向；</p>
+<p>缺省值100表示内核将根据pagecache和swapcache，把dentry和inode cache保持在一个合理的百分比；降低该值低于100，将导致内核倾向于保留dentry和inode cache；增加该值超过100，将导致内核倾向于回收dentry和inode cache</p>
+<p>缺省设置：100</p>
+<p><strong>6) /proc/sys/vm/min_free_kbytes</strong><br>该文件表示强制Linux VM最低保留多少空闲内存（Kbytes）。<br>缺省设置：724（512M物理内存）</p>
+<p><strong>7) /proc/sys/vm/nr_pdflush_threads</strong><br>该文件表示当前正在运行的pdflush进程数量，在I/O负载高的情况下，内核会自动增加更多的pdflush进程。<br>缺省设置：2（只读）</p>
+<p><strong>8) /proc/sys/vm/overcommit_memory</strong><br>该文件指定了内核针对内存分配的策略，其值可以是0、1、2。<br>0， 表示内核将检查是否有足够的可用内存供应用进程使用；如果有足够的可用内存，内存申请允许；否则，内存申请失败，并把错误返回给应用进程。<br>1， 表示内核允许分配所有的物理内存，而不管当前的内存状态如何。<br>2， 表示内核允许分配超过所有物理内存和交换空间总和的内存（参照overcommit_ratio）。</p>
+<p>缺省设置：0</p>
+<p><strong>9) /proc/sys/vm/overcommit_ratio</strong><br>该文件表示，如果overcommit_memory=2，可以过载内存的百分比，通过以下公式来计算系统整体可用内存。<br>系统可分配内存=交换空间+物理内存*overcommit_ratio/100</p>
+<p><strong>10) /proc/sys/vm/page-cluster</strong><br>该文件表示一次Swap写入的页面数量，0表示1页，1表示2页，2表示4页。<br>缺省设置：3（2的3次方，8页）</p>
+<p><strong>11) /proc/sys/vm/swapiness</strong><br>该文件表示系统进行swap的倾向程度，数值（0-100）越高，越可能发生磁盘交换。</p>
+
+                </div>
+            </div>
+    
+            <nav class="post-pagination">
+    
+    <a class="newer-posts" href="/2018/03/14/Vim的使用技巧/">
+        Previous post<br>Vim的使用技巧
+    </a>
+    
+    <span class="page-number"></span>
+    
+    <a class="older-posts" href="/2018/03/02/nginx动态流控/">
+        Next post<br>Nginx和OpenResty的动态流控
+    </a>
+    
+</nav>
+
+    
+            
+
+
+        </div>
+    </div>
+    <div class="single-column-footer">
+    Proudly published with Hexo<br>
+    
+    Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+    
+    &copy; 2018 <a href="http://yoursite.com">javfa&#39;s blog</a>
+</div>
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js" integrity="sha256-EGs9T1xMHdvM1geM8jPpoo8EZ1V1VRsmcJz8OByENLA=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
+<script src="/js/journal.js?3570910"></script>
+
+
+
+</body>
+</html>
