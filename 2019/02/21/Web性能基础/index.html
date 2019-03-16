@@ -4,7 +4,7 @@
 <html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
 
 <head><meta name="generator" content="Hexo 3.8.0">
-    <title>Web性能基础 - javfa&#39;s blog</title>
+    <title>Web性能指南 - javfa&#39;s blog</title>
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
@@ -19,7 +19,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?60646121">
+<link rel="stylesheet" href="/css/journal.css?28507681">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -142,7 +142,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
         <div class="post">
             <div class="post-head-wrapper-text-only" style="background-image: url('')">
                 <div class="post-title">
-                    Web性能基础
+                    Web性能指南
                     <div class="post-meta">
                         <time datetime="2019-02-21T02:54:57.000Z" itemprop="datePublished">
                             2019-02-21 10:54
@@ -187,10 +187,104 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <blockquote>
 <p>在软件交互中，哪怕100-200ms左右的延迟，大多数人都会感觉到‘拖拉’；如果超过了300ms的门槛，就会说“反应迟钝”。</p>
 </blockquote>
+<h2><span id="tcp">TCP</span></h2><p>TCP/IP，是由Vint Cerf和Bob Khan在他们1974年的论文<a href="https://www.cs.princeton.edu/courses/archive/fall06/cos561/papers/cerf74.pdf" target="_blank" rel="noopener">“A Protocol for Packet Network Intercommunication”</a>中首次提出。</p>
 <blockquote>
-<p>光速与分组在介质中传播速度之比，叫做该介质的折射率。我们大都假定光纤的折射率约为1.5，即光通过光纤的速度约为每秒200，000，000米。</p>
+<p>TCP/IP V4：</p>
+<p><a href="https://www.rfc-editor.org/rfc/rfc791.txt" target="_blank" rel="noopener">RFC 791- Internet Protocol</a>;</p>
+<p><a href="https://www.rfc-editor.org/rfc/rfc793.txt" target="_blank" rel="noopener">RFC 793 - Transmission Control Protocol</a>.</p>
 </blockquote>
-<h2><span id="tcp">TCP</span></h2><h2><span id="udp">UDP</span></h2><h2><span id="tls">TLS</span></h2><h1><span id="无线网络性能">无线网络性能</span></h1><h2><span id="wifi">WIFI</span></h2><h2><span id="移动网络">移动网络</span></h2><h1><span id="http">HTTP</span></h1><h2><span id="http-1x">HTTP 1.x</span></h2><h2><span id="http-20">HTTP 2.0</span></h2><h2><span id="优化应用的交付">优化应用的交付</span></h2><h1><span id="浏览器api与协议">浏览器API与协议</span></h1><h2><span id="xmlhttprequest">XMLHttpRequest</span></h2><h2><span id="服务器发送事件">服务器发送事件</span></h2><h2><span id="websocket">websocket</span></h2><p>WebSocket可以实现客户端与服务器间同时双向、基于消息的文本或二进制数据传输。<br>WebSocket使得浏览器具备了实时、双向通信的能力，是由HTML5开始提供的一种浏览器与服务器进行全双工通讯的网络技术，属于应用层协议。基于TCP传输协议，并复用HTTP的握手通道。</p>
+<p>TCP负责在不可靠的传输信道上提供可靠的传输抽象层，向应用层隐藏了大多数网络通信的复杂细节，比如丢包重发、按序发送、拥塞控制及避免、数据完整等等。</p>
+<p>TCP专门为精确传送做了优化，但并未过多顾及时间。</p>
+<p>现实中，几乎所有的HTTP流量都是通过TCP传送的。</p>
+<p>因此，理解TCP的核心机制是优化web体验所必需的基础。</p>
+<h3><span id="三次握手">三次握手</span></h3><p><img src="/2019/02/21/Web性能基础/1552725463782.png" alt="1552725463782"></p>
+<p>所有的TCP连接一开始都要经过三次握手。</p>
+<p>在两端交换数据之前，就起始序列号达成一致。</p>
+<p>序列号由两端随机生成。</p>
+<p>三次握手后，两端就可以通信了。客户端可以在发送ACK之后，立即发送数据，而服务器必须等接收到ACK之后才能发送数据。</p>
+<p>如上图，三次握手至少就花了56ms。</p>
+<p>三次握手带来的延迟使得每创建一个新TCP连接都要付出很大代价。</p>
+<p>重用连接，可以极大提高TCP应用的性能。</p>
+<p><a href="https://www.rfc-editor.org/rfc/rfc7413.txt" target="_blank" rel="noopener">TCP Fast Open</a>：致力于减少新建TCP连接带来的性能损失。</p>
+<p>经过流量分析和网络模拟，谷歌研究人员发现TFO平均可以降低HTTP事务网络延迟15%、整个页面加载时间10%以上。</p>
+<h3><span id="拥塞预防及控制">拥塞预防及控制</span></h3><h4><span id="流量控制">流量控制</span></h4><p>是一种预防发送端向接收端过多发送数据的机制。</p>
+<p>若不做预防，接收端可能因为忙碌、负载过重或缓冲区而无法处理。</p>
+<p>该机制为：TCP连接的每一方都要通告自己的接收窗口<sup>rwnd，即接收数据缓冲区</sup>的大小。</p>
+<p><img src="/2019/02/21/Web性能基础/1552726988500.png" alt="1552726988500"></p>
+<p>第一次建立连接时，两端都会使用自身系统的默认设置来发送rwnd。</p>
+<p>如果其中一端跟不上数据传输，那它可以向发送端通告一个较小的窗口。假如窗口为零，则表示应用层必须先清空缓冲区，才能再接收剩余数据。</p>
+<p>这个过程贯穿于每个TCP连接的整个生命周期：每个ACK分组都会携带相应的最新rwnd指，以便两端动态调整数据流速，适应两端的容量和处理能力。</p>
+<p>窗口缩放：</p>
+<p>最初的TCP规范设定了窗口的最大值为2<sup>16</sup>即65545字节。RFC 1323提供了TCP窗口缩放的选项，可以把窗口大小由65535字节提高到1G字节。在Linux中可以通过如下命令检查和启用窗口缩放选项：</p>
+<p><code>sysctl net.ipv4.tcp_window_scaling</code></p>
+<p><code>sysctl -w net.ipv4.tcp_window_scaling=1</code></p>
+<h4><span id="慢启动">慢启动</span></h4><p><img src="/2019/02/21/Web性能基础/1552727986717.png" alt="1552727986717"></p>
+<p><img src="/2019/02/21/Web性能基础/1552729490241.png" alt="1552729490241"></p>
+<p>发送端和接收端在连接建立之初，谁也不知道可用带宽是多少，因此需要一个机制，估算出双方的可用带宽，根据网络中不断变化的条件动态改变传输速度。</p>
+<p>如上所示，拥塞窗口的初始值为1个TCP报文段（大小为MTU-TCP头部大小-IP头部大小）。</p>
+<blockquote>
+<p>TCP报文段的大小即MSS<sup>Max Segment Size</sup>和MTU：</p>
+<p>MSS=MTU-sizeof(TCP heder)-sizeof(IP header)</p>
+<p>对于以太网：MTU=1500bytes 故：MSS=1500-20-20=1460bytes</p>
+<p>对于Internet：MTU=576bytes 故：MSS=576-20-20=536bytes</p>
+</blockquote>
+<blockquote>
+<p>MSS的协商确定：</p>
+<p>MSS值只会出现在SYN报文中，即SYN=1时，才会有MSS字段值。当客户端想要以TCP方式从服务器端下载数据时，</p>
+<p>（1）首先客户端会发送一个SYN请求报文，这个SYN报文的“选项”字段中会有MSS值（MSS = MUT - IP首部长度 - TCP首部长度）。该MSS值是为了告知对方最大的发送数据大小。</p>
+<p>（2）当服务器端收到SYN报文后，会向请求端返回SYN+ACK（同步确认报文）报文，其中的“选项”字段也会有MSS值。</p>
+<p>（3）通信双方选择SYN和SYN+ACK报文中最小的MSS最为此次TCP连接的MSS，从而达到通信双方协商MSS的效果。</p>
+<p>因此，在第二次握手后就可以确定TCP中最大传输报文（MSS）大小。</p>
+</blockquote>
+<p>此后，每接收到一个ACK，cwnd就增大一倍，称为指数增长阶段。迅速向有效带宽靠拢。</p>
+<p>包括HTTP在内的很多应用层协议都运行于TCP之上，无论带宽多大，每个TCP连接都必须经过慢启动阶段。我们不可能一上来就完全利用连接的最大带宽。</p>
+<p>从一个较小的拥塞窗口开始，每次往返都令其翻倍。</p>
+<p><img src="/2019/02/21/Web性能基础/1552728644844.png" alt="1552728644844"></p>
+<p>假设：</p>
+<ul>
+<li>客户端和服务器的接收窗口为65535字节（64KB）</li>
+<li>初始拥塞窗口：4段</li>
+<li>往返时间为56ms。</li>
+</ul>
+<p>要达到64KB的吞吐量，需要把拥塞窗口大小增加到45个段，而这需要224ms：</p>
+<p><img src="/2019/02/21/Web性能基础/1552731475351.png" alt="1552731475351"></p>
+<p><img src="/2019/02/21/Web性能基础/1552731607667.png" alt="1552731607667"></p>
+<p>三次握手和慢启动对简单HTTP传输的影响：</p>
+<p>假设：</p>
+<ul>
+<li>往返时间：56ms</li>
+<li>客户端到服务器的带宽：5Mbit/s</li>
+<li>客户端和服务器接收窗口：65535字节</li>
+<li>初始拥塞窗口：4段（4×1460字节=5.7KB）</li>
+<li>服务器生成响应的处理时间：40ms</li>
+<li>没有分组丢失、每个分组都要确认、GET请求只占1段。</li>
+</ul>
+<p><img src="/2019/02/21/Web性能基础/1552732025454.png" alt="1552732025454"></p>
+<p>时间分析：</p>
+<ul>
+<li>0ms：客户端发送SYN开始TCP握手</li>
+<li>28ms：服务器响应SYN-ACK并指定rwnd大小</li>
+<li>56ms：客户端确认ACK，并指定rwnd大小，并立即发送GET请求</li>
+<li>84ms：服务器收到GET</li>
+<li>124ms：服务器生成20KB的响应，并发送4个TCP段，然后等待ACK</li>
+<li>152ms：客户端收到4个段，并发送4个ACK</li>
+<li>180ms：服务器针对每个ACK递增cwnd，然后发送8个TCP段</li>
+<li>208ms：客户端收到8个段，并发送8个ACK</li>
+<li>236ms：服务器针对每个ACK递增cwnd，然后发送剩余的TCP段</li>
+<li>264ms：客户端收到剩余的TCP段，并发送ACK</li>
+</ul>
+<p>通过新TCP连接，在往返时间为56ms的两端之间传输一个20KB的文件需要264ms。</p>
+<p>现在重用同一个TCP连接，再发一次相同的请求</p>
+<p><img src="/2019/02/21/Web性能基础/1552732840016.png" alt="1552732840016"></p>
+<p>时间分析：</p>
+<ul>
+<li>0ms：客户端发送GET</li>
+<li>28ms：服务器收到GET</li>
+<li>68ms：服务器生成20KB的响应，此时cwnd已经大于发送文件所需的15段了，因此一次性发送所有数据段</li>
+<li>96ms：客户端收到所有15个段，分别发送ACK</li>
+</ul>
+<p>同一个连接、同样的请求，但没有三次握手和慢启动，只花了96ms，性能提升幅度达275%。</p>
+<h2><span id="udp">UDP</span></h2><h2><span id="tls">TLS</span></h2><h1><span id="无线网络性能">无线网络性能</span></h1><h2><span id="wifi">WIFI</span></h2><h2><span id="移动网络">移动网络</span></h2><h1><span id="http">HTTP</span></h1><h2><span id="http-1x">HTTP 1.x</span></h2><h2><span id="http-20">HTTP 2.0</span></h2><h2><span id="优化应用的交付">优化应用的交付</span></h2><h1><span id="浏览器api与协议">浏览器API与协议</span></h1><h2><span id="xmlhttprequest">XMLHttpRequest</span></h2><h2><span id="服务器发送事件">服务器发送事件</span></h2><h2><span id="websocket">websocket</span></h2><p>WebSocket可以实现客户端与服务器间同时双向、基于消息的文本或二进制数据传输。<br>WebSocket使得浏览器具备了实时、双向通信的能力，是由HTML5开始提供的一种浏览器与服务器进行全双工通讯的网络技术，属于应用层协议。基于TCP传输协议，并复用HTTP的握手通道。</p>
 <ul>
 <li>优点：<ul>
 <li>支持双向通信，实时性更强</li>
@@ -266,7 +360,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?33645965"></script>
+<script src="/js/journal.js?64491906"></script>
 
 
 
