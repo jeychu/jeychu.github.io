@@ -19,7 +19,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?28507681">
+<link rel="stylesheet" href="/css/journal.css?70626498">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -218,12 +218,11 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <p>最初的TCP规范设定了窗口的最大值为2<sup>16</sup>即65545字节。RFC 1323提供了TCP窗口缩放的选项，可以把窗口大小由65535字节提高到1G字节。在Linux中可以通过如下命令检查和启用窗口缩放选项：</p>
 <p><code>sysctl net.ipv4.tcp_window_scaling</code></p>
 <p><code>sysctl -w net.ipv4.tcp_window_scaling=1</code></p>
-<h4><span id="慢启动">慢启动</span></h4><p><img src="/2019/02/21/Web性能基础/1552727986717.png" alt="1552727986717"></p>
-<p><img src="/2019/02/21/Web性能基础/1552729490241.png" alt="1552729490241"></p>
-<p>发送端和接收端在连接建立之初，谁也不知道可用带宽是多少，因此需要一个机制，估算出双方的可用带宽，根据网络中不断变化的条件动态改变传输速度。</p>
-<p>如上所示，拥塞窗口的初始值为1个TCP报文段（大小为MTU-TCP头部大小-IP头部大小）。</p>
+<h4><span id="慢启动">慢启动</span></h4><p>发送端和接收端在连接建立之初，谁也不知道可用带宽是多少，因此需要一个机制，估算出双方的可用带宽，根据网络中不断变化的条件动态改变传输速度。</p>
+<p><img src="/2019/02/21/Web性能基础/1552727986717.png" alt="1552727986717"></p>
+<p>如上所示，拥塞窗口的初始值为4个TCP报文段。</p>
 <blockquote>
-<p>TCP报文段的大小即MSS<sup>Max Segment Size</sup>和MTU：</p>
+<p>TCP报文段的大小即MSS<sup>Max Segment Size</sup>的计算：</p>
 <p>MSS=MTU-sizeof(TCP heder)-sizeof(IP header)</p>
 <p>对于以太网：MTU=1500bytes 故：MSS=1500-20-20=1460bytes</p>
 <p>对于Internet：MTU=576bytes 故：MSS=576-20-20=536bytes</p>
@@ -236,7 +235,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <p>（3）通信双方选择SYN和SYN+ACK报文中最小的MSS最为此次TCP连接的MSS，从而达到通信双方协商MSS的效果。</p>
 <p>因此，在第二次握手后就可以确定TCP中最大传输报文（MSS）大小。</p>
 </blockquote>
-<p>此后，每接收到一个ACK，cwnd就增大一倍，称为指数增长阶段。迅速向有效带宽靠拢。</p>
+<p>此后，每一次数据往返，cwnd就增大一倍（即每接收到一个ACK，cwnd就加1）称为指数增长阶段。cwnd迅速向有效带宽靠拢。</p>
 <p>包括HTTP在内的很多应用层协议都运行于TCP之上，无论带宽多大，每个TCP连接都必须经过慢启动阶段。我们不可能一上来就完全利用连接的最大带宽。</p>
 <p>从一个较小的拥塞窗口开始，每次往返都令其翻倍。</p>
 <p><img src="/2019/02/21/Web性能基础/1552728644844.png" alt="1552728644844"></p>
@@ -249,7 +248,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <p>要达到64KB的吞吐量，需要把拥塞窗口大小增加到45个段，而这需要224ms：</p>
 <p><img src="/2019/02/21/Web性能基础/1552731475351.png" alt="1552731475351"></p>
 <p><img src="/2019/02/21/Web性能基础/1552731607667.png" alt="1552731607667"></p>
-<p>三次握手和慢启动对简单HTTP传输的影响：</p>
+<p>三次握手和慢启动对简单HTTP传输的影响示例：</p>
 <p>假设：</p>
 <ul>
 <li>往返时间：56ms</li>
@@ -284,6 +283,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <li>96ms：客户端收到所有15个段，分别发送ACK</li>
 </ul>
 <p>同一个连接、同样的请求，但没有三次握手和慢启动，只花了96ms，性能提升幅度达275%。</p>
+<p>以上两种情况下，服务器和客户端之间的5Mbit/s的带宽并没有影响，因为拥塞窗口还远没有达到带宽大小。</p>
 <h2><span id="udp">UDP</span></h2><h2><span id="tls">TLS</span></h2><h1><span id="无线网络性能">无线网络性能</span></h1><h2><span id="wifi">WIFI</span></h2><h2><span id="移动网络">移动网络</span></h2><h1><span id="http">HTTP</span></h1><h2><span id="http-1x">HTTP 1.x</span></h2><h2><span id="http-20">HTTP 2.0</span></h2><h2><span id="优化应用的交付">优化应用的交付</span></h2><h1><span id="浏览器api与协议">浏览器API与协议</span></h1><h2><span id="xmlhttprequest">XMLHttpRequest</span></h2><h2><span id="服务器发送事件">服务器发送事件</span></h2><h2><span id="websocket">websocket</span></h2><p>WebSocket可以实现客户端与服务器间同时双向、基于消息的文本或二进制数据传输。<br>WebSocket使得浏览器具备了实时、双向通信的能力，是由HTML5开始提供的一种浏览器与服务器进行全双工通讯的网络技术，属于应用层协议。基于TCP传输协议，并复用HTTP的握手通道。</p>
 <ul>
 <li>优点：<ul>
@@ -360,7 +360,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?64491906"></script>
+<script src="/js/journal.js?15441951"></script>
 
 
 
