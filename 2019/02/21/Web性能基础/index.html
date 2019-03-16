@@ -19,7 +19,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?70626498">
+<link rel="stylesheet" href="/css/journal.css?76251817">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -60,10 +60,10 @@ WPO（Web Performance Optimization）产业从无到有，...">
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                Home
+                首页
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                Archive
+                归档
             </a>
 
             
@@ -107,7 +107,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            Archive
+            归档
         </a>
 
         
@@ -213,12 +213,12 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <p><img src="/2019/02/21/Web性能基础/1552726988500.png" alt="1552726988500"></p>
 <p>第一次建立连接时，两端都会使用自身系统的默认设置来发送rwnd。</p>
 <p>如果其中一端跟不上数据传输，那它可以向发送端通告一个较小的窗口。假如窗口为零，则表示应用层必须先清空缓冲区，才能再接收剩余数据。</p>
-<p>这个过程贯穿于每个TCP连接的整个生命周期：每个ACK分组都会携带相应的最新rwnd指，以便两端动态调整数据流速，适应两端的容量和处理能力。</p>
+<p>这个过程贯穿于每个TCP连接的整个生命周期：每个ACK分组都会携带相应的最新rwnd值，以便两端动态调整数据流速，适应两端的容量和处理能力。</p>
 <p>窗口缩放：</p>
 <p>最初的TCP规范设定了窗口的最大值为2<sup>16</sup>即65545字节。RFC 1323提供了TCP窗口缩放的选项，可以把窗口大小由65535字节提高到1G字节。在Linux中可以通过如下命令检查和启用窗口缩放选项：</p>
 <p><code>sysctl net.ipv4.tcp_window_scaling</code></p>
 <p><code>sysctl -w net.ipv4.tcp_window_scaling=1</code></p>
-<h4><span id="慢启动">慢启动</span></h4><p>发送端和接收端在连接建立之初，谁也不知道可用带宽是多少，因此需要一个机制，估算出双方的可用带宽，根据网络中不断变化的条件动态改变传输速度。</p>
+<h4><span id="慢启动">慢启动</span></h4><p>发送端和接收端在连接建立之初，谁也不知道可用带宽是多少，因此需要一个机制，估算出双方的可用带宽，并根据网络中不断变化的条件动态改变传输速度。</p>
 <p><img src="/2019/02/21/Web性能基础/1552727986717.png" alt="1552727986717"></p>
 <p>如上所示，拥塞窗口的初始值为4个TCP报文段。</p>
 <blockquote>
@@ -235,7 +235,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <p>（3）通信双方选择SYN和SYN+ACK报文中最小的MSS最为此次TCP连接的MSS，从而达到通信双方协商MSS的效果。</p>
 <p>因此，在第二次握手后就可以确定TCP中最大传输报文（MSS）大小。</p>
 </blockquote>
-<p>此后，每一次数据往返，cwnd就增大一倍（即每接收到一个ACK，cwnd就加1）称为指数增长阶段。cwnd迅速向有效带宽靠拢。</p>
+<p>此后，每一次数据往返，cwnd就增大一倍（即每接收到一个ACK，cwnd就加1）这样，cwnd就迅速地向有效带宽靠拢。</p>
 <p>包括HTTP在内的很多应用层协议都运行于TCP之上，无论带宽多大，每个TCP连接都必须经过慢启动阶段。我们不可能一上来就完全利用连接的最大带宽。</p>
 <p>从一个较小的拥塞窗口开始，每次往返都令其翻倍。</p>
 <p><img src="/2019/02/21/Web性能基础/1552728644844.png" alt="1552728644844"></p>
@@ -284,6 +284,33 @@ WPO（Web Performance Optimization）产业从无到有，...">
 </ul>
 <p>同一个连接、同样的请求，但没有三次握手和慢启动，只花了96ms，性能提升幅度达275%。</p>
 <p>以上两种情况下，服务器和客户端之间的5Mbit/s的带宽并没有影响，因为拥塞窗口还远没有达到带宽大小。</p>
+<p>增大TCP的初始拥塞窗口，把服务器的初始cwnd增大到RFC6928新规定的10段（IW10），是提升用户体验以及所有TCP应用性能的最简单方式。</p>
+<p>Linux 2.6.29以上版本内核的新默认值就是IW10。</p>
+<h4><span id="拥塞预防">拥塞预防</span></h4><p>慢启动以保守的窗口初始化连接，随后每次往返都会成倍提高传输的数据量，直到超过接收端的流量控制窗口，即系统配置的拥塞阈值（ssthresh）窗口，或者有分组丢失为止，此时拥塞预防算法介入。</p>
+<p>拥塞预防算法把丢包作为网络拥塞的标志，即路径中某个连接或路由器拥堵了，以至于必须采取删包措施，调整窗口大小，以避免造成更多的包丢失，从而保证网络畅通。</p>
+<p>重置拥塞窗口后，拥塞预防机制按照自己的算法来增大窗口以尽量避免继续丢包。某个时刻，可能又会有丢包，于是这个过程再从头开始。此时的TCP连接吞吐量跟踪曲线成锯齿状，这是拥塞控制和预防算法在处理丢包问题的体现。</p>
+<p>丢包恢复算法：</p>
+<ul>
+<li>AIMD<sup>Multiplicative Decrease and Additive Increase，倍减加增</sup>：发生丢包时，先将拥塞窗口减半，然后每次往返再缓慢地给仓库增加一个固定的值。太过保守。</li>
+<li>PRR<sup>Proportional Rate Reduction，比例减速</sup>：RFC6937规定的一个新算法，其目标就是改进丢包后的恢复速度。是Linux 3.2+内核默认的拥塞预防算法。</li>
+</ul>
+<h4><span id="带宽延迟积">带宽延迟积</span></h4><p>BDP<sup>Bandwidth-delay product</sup>：任意时刻处于在途未确认状态的最大数据量。</p>
+<p>假设cwnd和rwnd的最小值为16KB，往返时间为100ms：</p>
+<p><img src="/2019/02/21/Web性能基础/1552741208611.png" alt="1552741208611"></p>
+<p>不管发送端和接收端的实际带宽多大，这个TCP连接的数据传输速率不会超过1.31Mbit/s。</p>
+<p>假设往返时间不变，发送端的可用带宽为10Mbit/s，接收端为100Mbit/s。两端之间没有网络拥塞，我们的目标是充分利用客户端的10Mbit/s带宽：</p>
+<p><img src="/2019/02/21/Web性能基础/1552741381486.png" alt="1552741381486"></p>
+<p>窗口至少需要122.1KB才能充分利用10Mbit/s带宽。</p>
+<h4><span id="队首阻塞">队首阻塞</span></h4><h4><span id="针对tcp的优化建议">针对TCP的优化建议</span></h4><h4><span id="性能检查清单">性能检查清单</span></h4><ul>
+<li>把服务器内核升级到最新版本</li>
+<li>确保cwnd大小为10</li>
+<li>禁用空闲后的慢启动</li>
+<li>确保启动窗口缩放</li>
+<li>减少传输冗余数据</li>
+<li>压缩要传输的数据</li>
+<li>把服务器放到离用户近的地方以减少往返时间</li>
+<li>尽最大可能重用已经建立的TCP连接</li>
+</ul>
 <h2><span id="udp">UDP</span></h2><h2><span id="tls">TLS</span></h2><h1><span id="无线网络性能">无线网络性能</span></h1><h2><span id="wifi">WIFI</span></h2><h2><span id="移动网络">移动网络</span></h2><h1><span id="http">HTTP</span></h1><h2><span id="http-1x">HTTP 1.x</span></h2><h2><span id="http-20">HTTP 2.0</span></h2><h2><span id="优化应用的交付">优化应用的交付</span></h2><h1><span id="浏览器api与协议">浏览器API与协议</span></h1><h2><span id="xmlhttprequest">XMLHttpRequest</span></h2><h2><span id="服务器发送事件">服务器发送事件</span></h2><h2><span id="websocket">websocket</span></h2><p>WebSocket可以实现客户端与服务器间同时双向、基于消息的文本或二进制数据传输。<br>WebSocket使得浏览器具备了实时、双向通信的能力，是由HTML5开始提供的一种浏览器与服务器进行全双工通讯的网络技术，属于应用层协议。基于TCP传输协议，并复用HTTP的握手通道。</p>
 <ul>
 <li>优点：<ul>
@@ -328,13 +355,13 @@ WPO（Web Performance Optimization）产业从无到有，...">
             <nav class="post-pagination">
     
     <a class="newer-posts" href="/2019/02/21/Nginx的配置/">
-        Previous post<br>Nginx的配置
+        上一篇<br>Nginx的配置
     </a>
     
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2019/02/20/Linux性能优化之CPU篇/">
-        Next post<br>Linux性能优化之CPU篇
+        下一篇<br>Linux性能优化之CPU篇
     </a>
     
 </nav>
@@ -360,7 +387,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?15441951"></script>
+<script src="/js/journal.js?77488371"></script>
 
 
 
