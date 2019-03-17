@@ -4,7 +4,7 @@
 <html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
 
 <head><meta name="generator" content="Hexo 3.8.0">
-    <title>Web性能指南 - javfa&#39;s blog</title>
+    <title>Web性能优化指南 - javfa&#39;s blog</title>
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
@@ -19,7 +19,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?76251817">
+<link rel="stylesheet" href="/css/journal.css?58417143">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -60,10 +60,10 @@ WPO（Web Performance Optimization）产业从无到有，...">
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                首页
+                Home
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                归档
+                Archive
             </a>
 
             
@@ -107,7 +107,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            归档
+            Archive
         </a>
 
         
@@ -142,7 +142,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
         <div class="post">
             <div class="post-head-wrapper-text-only" style="background-image: url('')">
                 <div class="post-title">
-                    Web性能指南
+                    Web性能优化指南
                     <div class="post-meta">
                         <time datetime="2019-02-21T02:54:57.000Z" itemprop="datePublished">
                             2019-02-21 10:54
@@ -199,13 +199,12 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <p>因此，理解TCP的核心机制是优化web体验所必需的基础。</p>
 <h3><span id="三次握手">三次握手</span></h3><p><img src="/2019/02/21/Web性能基础/1552725463782.png" alt="1552725463782"></p>
 <p>所有的TCP连接一开始都要经过三次握手。</p>
-<p>在两端交换数据之前，就起始序列号达成一致。</p>
-<p>序列号由两端随机生成。</p>
+<p>在两端交换数据之前，就起始序列号达成一致。序列号由两端随机生成。</p>
 <p>三次握手后，两端就可以通信了。客户端可以在发送ACK之后，立即发送数据，而服务器必须等接收到ACK之后才能发送数据。</p>
-<p>如上图，三次握手至少就花了56ms。</p>
+<p>三次握手，需要一个往返的时间。如上图，三次握手花了56ms。</p>
 <p>三次握手带来的延迟使得每创建一个新TCP连接都要付出很大代价。</p>
 <p>重用连接，可以极大提高TCP应用的性能。</p>
-<p><a href="https://www.rfc-editor.org/rfc/rfc7413.txt" target="_blank" rel="noopener">TCP Fast Open</a>：致力于减少新建TCP连接带来的性能损失。</p>
+<p><a href="https://www.rfc-editor.org/rfc/rfc7413.txt" target="_blank" rel="noopener">TCP Fast Open</a>：致力于减少新建TCP连接带来的性能损失。通过TFO cookie机制，将DATA放到SYN包和SYN-ACK包之中，从而在新建TCP连接时节省一个RTT<sup>Round Trip Time</sup>的时间。</p>
 <p>经过流量分析和网络模拟，谷歌研究人员发现TFO平均可以降低HTTP事务网络延迟15%、整个页面加载时间10%以上。</p>
 <h3><span id="拥塞预防及控制">拥塞预防及控制</span></h3><h4><span id="流量控制">流量控制</span></h4><p>是一种预防发送端向接收端过多发送数据的机制。</p>
 <p>若不做预防，接收端可能因为忙碌、负载过重或缓冲区而无法处理。</p>
@@ -215,7 +214,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <p>如果其中一端跟不上数据传输，那它可以向发送端通告一个较小的窗口。假如窗口为零，则表示应用层必须先清空缓冲区，才能再接收剩余数据。</p>
 <p>这个过程贯穿于每个TCP连接的整个生命周期：每个ACK分组都会携带相应的最新rwnd值，以便两端动态调整数据流速，适应两端的容量和处理能力。</p>
 <p>窗口缩放：</p>
-<p>最初的TCP规范设定了窗口的最大值为2<sup>16</sup>即65545字节。RFC 1323提供了TCP窗口缩放的选项，可以把窗口大小由65535字节提高到1G字节。在Linux中可以通过如下命令检查和启用窗口缩放选项：</p>
+<p>最初的TCP规范设定了窗口的最大值为2<sup>16</sup>即65535字节。RFC 1323提供了TCP窗口缩放的选项，可以把窗口大小由65535字节提高到1G字节。在Linux中可以通过如下命令检查和启用窗口缩放选项：</p>
 <p><code>sysctl net.ipv4.tcp_window_scaling</code></p>
 <p><code>sysctl -w net.ipv4.tcp_window_scaling=1</code></p>
 <h4><span id="慢启动">慢启动</span></h4><p>发送端和接收端在连接建立之初，谁也不知道可用带宽是多少，因此需要一个机制，估算出双方的可用带宽，并根据网络中不断变化的条件动态改变传输速度。</p>
@@ -283,8 +282,8 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <li>96ms：客户端收到所有15个段，分别发送ACK</li>
 </ul>
 <p>同一个连接、同样的请求，但没有三次握手和慢启动，只花了96ms，性能提升幅度达275%。</p>
-<p>以上两种情况下，服务器和客户端之间的5Mbit/s的带宽并没有影响，因为拥塞窗口还远没有达到带宽大小。</p>
-<p>增大TCP的初始拥塞窗口，把服务器的初始cwnd增大到RFC6928新规定的10段（IW10），是提升用户体验以及所有TCP应用性能的最简单方式。</p>
+<p>以上两种情况下，服务器和客户端之间的5Mbit/s的带宽并没有影响，因为拥塞窗口还远没有达到带宽限定水平。</p>
+<p>增大TCP的初始拥塞窗口，如把服务器的初始cwnd增大到RFC6928新规定的10段（IW10），是提升用户体验以及所有TCP应用性能的最简单方式。</p>
 <p>Linux 2.6.29以上版本内核的新默认值就是IW10。</p>
 <h4><span id="拥塞预防">拥塞预防</span></h4><p>慢启动以保守的窗口初始化连接，随后每次往返都会成倍提高传输的数据量，直到超过接收端的流量控制窗口，即系统配置的拥塞阈值（ssthresh）窗口，或者有分组丢失为止，此时拥塞预防算法介入。</p>
 <p>拥塞预防算法把丢包作为网络拥塞的标志，即路径中某个连接或路由器拥堵了，以至于必须采取删包措施，调整窗口大小，以避免造成更多的包丢失，从而保证网络畅通。</p>
@@ -292,16 +291,17 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <p>丢包恢复算法：</p>
 <ul>
 <li>AIMD<sup>Multiplicative Decrease and Additive Increase，倍减加增</sup>：发生丢包时，先将拥塞窗口减半，然后每次往返再缓慢地给仓库增加一个固定的值。太过保守。</li>
-<li>PRR<sup>Proportional Rate Reduction，比例减速</sup>：RFC6937规定的一个新算法，其目标就是改进丢包后的恢复速度。是Linux 3.2+内核默认的拥塞预防算法。</li>
+<li>PRR<sup>Proportional Rate Reduction，比例减速</sup>：<a href="https://www.rfc-editor.org/pdfrfc/rfc6937.txt.pdf" target="_blank" rel="noopener">RFC6937</a>规定的一个新算法，其目标就是改进丢包后的恢复速度。是Linux 3.2+内核默认的拥塞预防算法。</li>
 </ul>
 <h4><span id="带宽延迟积">带宽延迟积</span></h4><p>BDP<sup>Bandwidth-delay product</sup>：任意时刻处于在途未确认状态的最大数据量。</p>
+<p>窗口和带宽：</p>
 <p>假设cwnd和rwnd的最小值为16KB，往返时间为100ms：</p>
 <p><img src="/2019/02/21/Web性能基础/1552741208611.png" alt="1552741208611"></p>
 <p>不管发送端和接收端的实际带宽多大，这个TCP连接的数据传输速率不会超过1.31Mbit/s。</p>
 <p>假设往返时间不变，发送端的可用带宽为10Mbit/s，接收端为100Mbit/s。两端之间没有网络拥塞，我们的目标是充分利用客户端的10Mbit/s带宽：</p>
 <p><img src="/2019/02/21/Web性能基础/1552741381486.png" alt="1552741381486"></p>
 <p>窗口至少需要122.1KB才能充分利用10Mbit/s带宽。</p>
-<h4><span id="队首阻塞">队首阻塞</span></h4><h4><span id="针对tcp的优化建议">针对TCP的优化建议</span></h4><h4><span id="性能检查清单">性能检查清单</span></h4><ul>
+<h4><span id="队首阻塞">队首阻塞</span></h4><h3><span id="针对tcp的优化建议">针对TCP的优化建议</span></h3><h4><span id="性能检查清单">性能检查清单</span></h4><ul>
 <li>把服务器内核升级到最新版本</li>
 <li>确保cwnd大小为10</li>
 <li>禁用空闲后的慢启动</li>
@@ -311,7 +311,45 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <li>把服务器放到离用户近的地方以减少往返时间</li>
 <li>尽最大可能重用已经建立的TCP连接</li>
 </ul>
-<h2><span id="udp">UDP</span></h2><h2><span id="tls">TLS</span></h2><h1><span id="无线网络性能">无线网络性能</span></h1><h2><span id="wifi">WIFI</span></h2><h2><span id="移动网络">移动网络</span></h2><h1><span id="http">HTTP</span></h1><h2><span id="http-1x">HTTP 1.x</span></h2><h2><span id="http-20">HTTP 2.0</span></h2><h2><span id="优化应用的交付">优化应用的交付</span></h2><h1><span id="浏览器api与协议">浏览器API与协议</span></h1><h2><span id="xmlhttprequest">XMLHttpRequest</span></h2><h2><span id="服务器发送事件">服务器发送事件</span></h2><h2><span id="websocket">websocket</span></h2><p>WebSocket可以实现客户端与服务器间同时双向、基于消息的文本或二进制数据传输。<br>WebSocket使得浏览器具备了实时、双向通信的能力，是由HTML5开始提供的一种浏览器与服务器进行全双工通讯的网络技术，属于应用层协议。基于TCP传输协议，并复用HTTP的握手通道。</p>
+<h2><span id="udp">UDP</span></h2><p>User Datagram Protocol 用户数据报协议</p>
+<p>也被称为：Null Protocol 无协议</p>
+<blockquote>
+<p>数据报</p>
+<p>一个完整、独立的数据实体，携带着从源节点到目的节点的足够信息，对这些节点间之前的数据交换和传输网络没有任何依赖。</p>
+</blockquote>
+<h3><span id="无协议服务">无协议服务</span></h3><p>IPV4首部（20字节）：</p>
+<p><img src="/2019/02/21/Web性能基础/1552784951978.png" alt="1552784951978"></p>
+<p>UDP首部（8字节）：</p>
+<p><img src="/2019/02/21/Web性能基础/1552784980075.png" alt="1552784980075"></p>
+<p>其中源端口和校验和字段都是可选的，应用程序可以忽略UDP校验和，因此UDP仅仅是在IP层上加了应用程序的源端口和目标端口，也可以只是加上目标端口。</p>
+<p>这就是为什么UDP被称为无协议了：</p>
+<ul>
+<li>不保证消息交付：不确认、不重传、无超时</li>
+<li>不保证交付顺序：不设置包序号、不重排、不会发生队首阻塞</li>
+<li>不跟踪连接状态：不必建立连接或重启状态机</li>
+<li>不需要拥塞控制：不内置客户端或网络反馈机制</li>
+</ul>
+<p>UDP是一个简单、无状态的协议，适合作为其他上层应用协议的辅助。</p>
+<p>这个协议的所有决定都需要由上层应用程序作出。</p>
+<h3><span id="udp和网络地址转换器">UDP和网络地址转换器</span></h3><p>IPv4地址只有32位，因而最多提供42.9亿个IP地址。</p>
+<p>1994年，作为解决IPv4地址即将耗尽的一个临时性方案，NAT规范<sup><a href="https://www.rfc-editor.org/pdfrfc/rfc1631.txt.pdf" target="_blank" rel="noopener">RFC 1631</a></sup>出台了。</p>
+<p><img src="/2019/02/21/Web性能基础/1552788332037.png" alt="1552788332037"></p>
+<p>此IP重用方案就是：在网络边缘加入NAT设备，每个NAT设备负责维护一个表，表中包含本地IP和端口到外网（全球唯一）IP和端口的映射。</p>
+<p>NAT设备不仅解决了地址耗尽的问题，而且迅速成为代理和路由器、安全装置、防火墙等。它也不再只是个临时方案，已经成了因特网基础设施的一个组成部分。</p>
+<h4><span id="连接状态超时">连接状态超时</span></h4><h4><span id="nat穿透">NAT穿透</span></h4><p>不可预测的连接状态处理是NAT带来的一个严重问题</p>
+<p>STUN、TURN与ICE</p>
+<h2><span id="tls">TLS</span></h2><p>SSL<sup>Secure Sockets Layer</sup>协议最初是网景公司为了保障网上交易安全而开发的，该协议通过加密来保护客户个人资料，通过认证和完整性检查来确保交易安全。</p>
+<p>在会话层实现，不会影响应用层协议，但能够保证这些协议的网络通信安全。</p>
+<p><img src="/2019/02/21/Web性能基础/1552794544909.png" alt="1552794544909"></p>
+<p><a href="https://www.rfc-editor.org/pdfrfc/rfc2246.txt.pdf" target="_blank" rel="noopener">RFC 2246</a>，TLS1.0，是SSL 3.0的升级版。</p>
+<p>TLS协议的目标是为在它之上运行的应用提供三个基本服务：</p>
+<ul>
+<li>加密</li>
+<li>身份验证</li>
+<li>数据完整性</li>
+</ul>
+<h3><span id="tls握手">TLS握手：</span></h3><h4><span id="应用层协议协商">应用层协议协商</span></h4><h4><span id="服务器名称指示">服务器名称指示</span></h4><h3><span id="tls会话恢复">TLS会话恢复</span></h3><h4><span id="会话标识符">会话标识符</span></h4><h4><span id="会话记录单">会话记录单</span></h4><h3><span id="信任链和证书颁发机构">信任链和证书颁发机构</span></h3><h4><span id="证书撤销">证书撤销</span></h4><h4><span id="tls记录协议">TLS记录协议</span></h4><p><img src="/2019/02/21/Web性能基础/1552800184385.png" alt="1552800184385"></p>
+<h3><span id="针对tls的优化建议">针对TLS的优化建议</span></h3><h1><span id="无线网络性能">无线网络性能</span></h1><h2><span id="wifi">WIFI</span></h2><h2><span id="移动网络">移动网络</span></h2><h1><span id="http">HTTP</span></h1><h2><span id="http-1x">HTTP 1.x</span></h2><h2><span id="http-20">HTTP 2.0</span></h2><h2><span id="优化应用的交付">优化应用的交付</span></h2><h1><span id="浏览器api与协议">浏览器API与协议</span></h1><h2><span id="xmlhttprequest">XMLHttpRequest</span></h2><h2><span id="服务器发送事件">服务器发送事件</span></h2><h2><span id="websocket">websocket</span></h2><p>WebSocket可以实现客户端与服务器间同时双向、基于消息的文本或二进制数据传输。<br>WebSocket使得浏览器具备了实时、双向通信的能力，是由HTML5开始提供的一种浏览器与服务器进行全双工通讯的网络技术，属于应用层协议。基于TCP传输协议，并复用HTTP的握手通道。</p>
 <ul>
 <li>优点：<ul>
 <li>支持双向通信，实时性更强</li>
@@ -355,13 +393,13 @@ WPO（Web Performance Optimization）产业从无到有，...">
             <nav class="post-pagination">
     
     <a class="newer-posts" href="/2019/02/21/Nginx的配置/">
-        上一篇<br>Nginx的配置
+        Previous post<br>Nginx的配置
     </a>
     
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2019/02/20/Linux性能优化之CPU篇/">
-        下一篇<br>Linux性能优化之CPU篇
+        Next post<br>Linux性能优化之CPU篇
     </a>
     
 </nav>
@@ -387,7 +425,7 @@ WPO（Web Performance Optimization）产业从无到有，...">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?77488371"></script>
+<script src="/js/journal.js?27158125"></script>
 
 
 
