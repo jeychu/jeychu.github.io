@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-17T09:55:31.781Z</updated>
+  <updated>2019-03-18T11:56:13.258Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -21,18 +21,16 @@
     <link href="http://yoursite.com/2019/03/17/Reading-Congestion-Avoidance-and-Control/"/>
     <id>http://yoursite.com/2019/03/17/Reading-Congestion-Avoidance-and-Control/</id>
     <published>2019-03-17T08:37:27.000Z</published>
-    <updated>2019-03-17T09:55:31.781Z</updated>
+    <updated>2019-03-18T11:56:13.258Z</updated>
     
-    <content type="html"><![CDATA[<h1><span id="拥塞避免和拥塞控制">拥塞避免和拥塞控制</span></h1><p>Van Jacobson</p><p>Michael J.Kearels</p><p>1988年11月</p><h2><span id="引子">引子</span></h2><p>在过去的几年中，计算机网络经历了爆炸性的增长，这种增长带来了严重的拥堵问题。例如，现在常见的情况是，由于本地缓冲区溢出，Internet网关会丢弃10%的传入数据包。我们对其中一些问题的调查表明，造成这些问题的原因很大程度上在于传输协议的实现方式(而不是在于协议本身)：在网络拥塞问题上，以“直白”方式实现基于窗口的传输协议可能会导致完全错误的行为。我们给出了“错误”行为的例子，并描述了一些可以用来使正确的事情发生的简单算法。这些算法是根植于这样的一个想法——即通过强制传输连接遵循“包守恒”原则来实现网络的稳定。我们展示了这些算法是如何从这一原理中派生出来的，以及它们对拥挤网络上的流量有什么影响。</p><p>86年10月，互联网第一次出现了一系列的“拥堵现象”。在此期间，从LBL到加州大学伯克利分校的数据吞吐量(两个站点相距400码、两个IMP跳数)，从32Kbps下降到40bps。我们被这一突然的千倍带宽下降吸引住了，并开始调查为什么事情会变得如此糟糕。特别是，我们想知道是不是4.3BSD(Berkeley UNIX)TCP出现了问题，又是不是可以使它在糟糕的网络条件下更好地工作。这两个问题的答案都是肯定的。</p><p>从那时开始，我们将以下7种新算法纳入4BSD TCP之中：</p><ol><li>round-trip-time variance estimation</li><li>exponential retransmit timer backoff</li><li>slow-start</li><li>more aggressive reveive ack policy</li><li>dynamic window sizing on congestion</li><li>Karn’s clamped retransmit backoff</li><li>fast retransmit</li></ol><p>我们的测量结果和beta测试人员的报告表明，在处理互联网拥塞状况方面，最终的产品是相当好的。<br>本文简要介绍了1-5项及其背后的理论基础。6是最近由贝尔通信研究的菲尔·卡恩(PhilKarn)在[16]中描述的算法。7在即将出版的“征求意见”(ARPANET“征求意见”)中作了说明。<br>算法1-5来源于这样一个观察：TCP连接上的流(或ISO TP-4或Xerox NS SPP连接)应遵循“包守恒”原则。而且，如果遵守这一原则，拥堵崩溃将成为一个例外。因此，拥塞控制就是查找违反守恒的地方并修复它们。<br>我们所说的“包守恒”是指对于“处于平衡状态”的连接，即这个连接以全窗口数据传输状态稳定运行，它的包流处于“守恒”状态：在旧数据包离开之前，不会将新数据包放入网络。流物理学预测，具有这种性质的系统在面对拥塞情况时应该是健壮的。但对互联网的观察表明，这样的系统也不是特别健壮。为什么会有差异？<br>数据包守恒失败的方式只有三种：</p>]]></content>
+    <content type="html"><![CDATA[<p>原文地址：<a href="https://ee.lbl.gov/papers/congavoid.pdf" target="_blank" rel="noopener">Congestion Avoidance and Control</a></p><h1><span id="拥塞避免和拥塞控制">拥塞避免和拥塞控制</span></h1><p>Van Jacobson</p><p>Michael J.Kearels</p><p>1988年11月</p><h2><span id="引子">引子</span></h2><p>在过去的几年中，计算机网络经历了爆炸性的增长，这种增长带来了严重的拥堵问题。例如，现在常见的情况是，由于本地缓冲区溢出，Internet网关会丢弃10%的传入数据包。我们对其中一些问题的调查表明，造成这些问题的原因很大程度上在于传输协议的实现方式(而不是在于协议本身)：在网络拥塞问题上，以“直白”方式实现基于窗口的传输协议可能会导致完全错误的行为。我们给出了“错误”行为的例子，并描述了一些可以用来使正确的事情发生的简单算法。这些算法是根植于这样的一个想法——即通过强制传输连接遵循“包守恒”原则来实现网络的稳定。我们展示了这些算法是如何从这一原理中派生出来的，以及它们对拥挤网络上的流量有什么影响。</p><p>86年10月，互联网第一次出现了一系列的“拥堵现象”。在此期间，从LBL到加州大学伯克利分校的数据吞吐量(两个站点相距400码、两个IMP跳数)，从32Kbps下降到40bps。我们被这一突然的千倍带宽下降吸引住了，并开始调查为什么事情会变得如此糟糕。特别是，我们想知道是不是4.3BSD(Berkeley UNIX)TCP出现了问题，又是不是可以使它在糟糕的网络条件下更好地工作。这两个问题的答案都是肯定的。</p><p>从那时开始，我们将以下7种新算法纳入4BSD TCP之中：</p><ol><li>round-trip-time variance estimation</li><li>exponential retransmit timer backoff</li><li>slow-start</li><li>more aggressive reveive ack policy</li><li>dynamic window sizing on congestion</li><li>Karn’s clamped retransmit backoff</li><li>fast retransmit</li></ol><p>我们的测量结果和beta测试人员的报告表明，最终产品能很好的解决互联网拥塞的问题。<br>本文简要介绍了1-5项及其背后的理论基础。6是最近由贝尔通信研究的菲尔·卡恩(PhilKarn)在[16]中描述的算法。7在即将出版的“征求意见”(ARPANET“征求意见”)中作了说明。<br>算法1-5来源于这样一个观察：TCP连接上的流(或ISO TP-4或Xerox NS SPP连接)应遵循“包守恒”原则。而且，如果遵守这一原则，拥堵崩溃将成为一个例外。因此，拥塞控制就是查找违反守恒的地方并修复它们。<br>我们所说的“包守恒”是指对于“处于平衡状态”的连接，即这个连接以全窗口数据传输状态稳定运行，它的包流处于“守恒”状态：在旧数据包离开之前，不会将新数据包放入网络。流物理学预测，具有这种性质的系统在面对拥塞情况时应该是健壮的。但对互联网的观察表明，这样的系统也不是特别健壮。为什么会有差异呢？<br>引起包守恒失败的方式只有三种：</p><ul><li>连接没有达到平衡状态，或者</li><li>老包未出之前，新包注入，或者</li><li>由于线路资源限制导致无法达到平衡状态</li></ul><p>在如下章节，我们将对此依次说明。</p><h2><span id="达到平衡状态通过慢启动">达到平衡状态：通过慢启动</span></h2><p><img src="/2019/03/17/Reading-Congestion-Avoidance-and-Control/1552819582010.png" alt="1552819582010"></p><p>失败1发生在一个正在启动的连接，或是一个丢包后正在重新启动的连接。另一种看待守恒属性的方式是，发送方使用ack作为计时，将新的数据包传送到网络。由于接收器生成ack的速度不能比数据包通过网络的速度快，因此该协议是“自计时”(图1)。自计时系统自动调整带宽和延迟变化，并具有较宽的动态范围(考虑到TCP跨越800 Mbps Cray通道到1200 bps数据包无线电链路，这一点很重要)。但同样的东西，使一个自计时系统在运行时保持稳定，却使得启动变得困难-要有数据流，必须有ACK用来计时清出数据包，但是为了获取ACK，必须有数据流。</p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;h1&gt;&lt;span id=&quot;拥塞避免和拥塞控制&quot;&gt;拥塞避免和拥塞控制&lt;/span&gt;&lt;/h1&gt;&lt;p&gt;Van Jacobson&lt;/p&gt;
-&lt;p&gt;Michael J.Kearels&lt;/p&gt;
-&lt;p&gt;1988年11月&lt;/p&gt;
-&lt;h2&gt;&lt;span id=&quot;引子&quot;&gt;引子&lt;/span&gt;&lt;/h2&gt;&lt;
+        &lt;p&gt;原文地址：&lt;a href=&quot;https://ee.lbl.gov/papers/congavoid.pdf&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Congestion Avoidance and Control&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;&lt;span 
       
     
     </summary>
@@ -45,9 +43,9 @@
     <link href="http://yoursite.com/2019/03/15/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%80%E5%AE%9A%E8%A6%81%E7%94%A8MQ%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
     <id>http://yoursite.com/2019/03/15/为什么一定要用MQ中间件/</id>
     <published>2019-03-15T13:14:03.000Z</published>
-    <updated>2019-03-15T13:25:09.709Z</updated>
+    <updated>2019-03-18T11:52:24.977Z</updated>
     
-    <content type="html"><![CDATA[<p>系统解耦</p><p>异步调用</p><p>流量削峰</p><p>可用性</p><p>稳定性</p><p>一致性</p>]]></content>
+    <content type="html"><![CDATA[<p>系统解耦</p><p>异步调用</p><p>流量削峰</p><p>待更。。。</p>]]></content>
     
     <summary type="html">
     
@@ -56,9 +54,7 @@
         &lt;p&gt;系统解耦&lt;/p&gt;
 &lt;p&gt;异步调用&lt;/p&gt;
 &lt;p&gt;流量削峰&lt;/p&gt;
-&lt;p&gt;可用性&lt;/p&gt;
-&lt;p&gt;稳定性&lt;/p&gt;
-&lt;p&gt;一致性&lt;/p&gt;
+&lt;p&gt;待更。。。&lt;/p&gt;
 
       
     
@@ -96,16 +92,17 @@
     <link href="http://yoursite.com/2019/03/14/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/"/>
     <id>http://yoursite.com/2019/03/14/大型网站技术架构/</id>
     <published>2019-03-14T15:04:49.000Z</published>
-    <updated>2019-03-14T15:08:40.881Z</updated>
+    <updated>2019-03-18T11:53:31.294Z</updated>
     
-    <content type="html"><![CDATA[<p>此篇为读书笔记。</p><h1><span id="概述">概述</span></h1><h2><span id="大型网站架构演化">大型网站架构演化</span></h2><h2><span id="大型网站架构模式">大型网站架构模式</span></h2><h2><span id="大型网站核心架构要素">大型网站核心架构要素</span></h2><h1><span id="架构">架构</span></h1><h2><span id="高性能架构">高性能架构</span></h2><h2><span id="高可用架构">高可用架构</span></h2><h2><span id="伸缩性架构">伸缩性架构</span></h2><h2><span id="可扩展架构">可扩展架构</span></h2><h2><span id="安全架构">安全架构</span></h2>]]></content>
+    <content type="html"><![CDATA[<p>此篇为读书笔记。</p><p>待更。。。</p><h1><span id="概述">概述</span></h1><h2><span id="大型网站架构演化">大型网站架构演化</span></h2><h2><span id="大型网站架构模式">大型网站架构模式</span></h2><h2><span id="大型网站核心架构要素">大型网站核心架构要素</span></h2><h1><span id="架构">架构</span></h1><h2><span id="高性能架构">高性能架构</span></h2><h2><span id="高可用架构">高可用架构</span></h2><h2><span id="伸缩性架构">伸缩性架构</span></h2><h2><span id="可扩展架构">可扩展架构</span></h2><h2><span id="安全架构">安全架构</span></h2>]]></content>
     
     <summary type="html">
     
       
       
         &lt;p&gt;此篇为读书笔记。&lt;/p&gt;
-&lt;h1&gt;&lt;span id=&quot;概述&quot;&gt;概述&lt;/span&gt;&lt;/h1&gt;&lt;h2&gt;&lt;span id=&quot;大型网站架构演化&quot;&gt;大型网站架构演化&lt;/span&gt;&lt;/h2&gt;&lt;h2&gt;&lt;span id=&quot;大型网站架构模式&quot;&gt;大型网站架构模式&lt;/span&gt;&lt;/h2&gt;&lt;h2&gt;
+&lt;p&gt;待更。。。&lt;/p&gt;
+&lt;h1&gt;&lt;span id=&quot;概述&quot;&gt;概述&lt;/span&gt;&lt;/h1&gt;&lt;h2&gt;&lt;span id=&quot;大型网站架构演化&quot;&gt;大型网站架构演化&lt;/span&gt;&lt;/h2&gt;&lt;h2&gt;&lt;span id=&quot;大型网站架构模式&quot;&gt;大型网站架构模式&lt;/s
       
     
     </summary>
@@ -120,9 +117,9 @@
     <link href="http://yoursite.com/2019/03/12/TCP%E7%8A%B6%E6%80%81%E8%AF%A6%E8%A7%A3/"/>
     <id>http://yoursite.com/2019/03/12/TCP状态详解/</id>
     <published>2019-03-12T13:42:31.000Z</published>
-    <updated>2019-03-14T03:12:08.776Z</updated>
+    <updated>2019-03-18T11:51:30.172Z</updated>
     
-    <content type="html"><![CDATA[<p>LISTENING：侦听来自远方的TCP端口的连接请求。</p><p>服务器端打开一个socket进行监听，状态为LISTEN。</p>]]></content>
+    <content type="html"><![CDATA[<p>LISTENING：侦听来自远方的TCP端口的连接请求。</p><p>服务器端打开一个socket进行监听，状态为LISTEN。</p><p>待更</p>]]></content>
     
     <summary type="html">
     
@@ -130,6 +127,7 @@
       
         &lt;p&gt;LISTENING：侦听来自远方的TCP端口的连接请求。&lt;/p&gt;
 &lt;p&gt;服务器端打开一个socket进行监听，状态为LISTEN。&lt;/p&gt;
+&lt;p&gt;待更&lt;/p&gt;
 
       
     
@@ -143,9 +141,9 @@
     <link href="http://yoursite.com/2019/03/12/CDN/"/>
     <id>http://yoursite.com/2019/03/12/CDN/</id>
     <published>2019-03-12T13:31:55.000Z</published>
-    <updated>2019-03-16T06:08:07.239Z</updated>
+    <updated>2019-03-18T11:51:49.775Z</updated>
     
-    <content type="html"><![CDATA[<p>CDN ：缓存服务器+智能DNS</p><p>分布式存储 负载均衡 请求重定向 内容管理</p>]]></content>
+    <content type="html"><![CDATA[<p>CDN ：缓存服务器+智能DNS</p><p>分布式存储 负载均衡 请求重定向 内容管理</p><p>待更。。。</p>]]></content>
     
     <summary type="html">
     
@@ -153,6 +151,7 @@
       
         &lt;p&gt;CDN ：缓存服务器+智能DNS&lt;/p&gt;
 &lt;p&gt;分布式存储 负载均衡 请求重定向 内容管理&lt;/p&gt;
+&lt;p&gt;待更。。。&lt;/p&gt;
 
       
     
