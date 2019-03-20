@@ -45,9 +45,9 @@
     <link href="http://yoursite.com/2019/03/18/Nginx%E4%B8%8BLua%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6/"/>
     <id>http://yoursite.com/2019/03/18/Nginx下Lua实现机制/</id>
     <published>2019-03-18T13:52:32.000Z</published>
-    <updated>2019-03-19T06:00:19.236Z</updated>
+    <updated>2019-03-20T07:44:32.746Z</updated>
     
-    <content type="html"><![CDATA[<p>Nginx中的大部分功能是通过模块提供的。一个模块的失效不会影响其他部分，是Nginx扩展性和可靠性的一个保证。</p><p>Nginx使用比较多的场合时反向代理，使用Nginx在前端做登陆校验、JS合并、数据库访问、访问鉴权等。</p><p>Lua是高效、紧凑、嵌入式的快速脚本语言，内建协程，非常便于业务开发。</p><p>ngx_lua模块，将Lua解释器集成进Nginx中，使开发者可以使用Lua脚本语言实现业务。</p><h1><span id="ngx_lua原理">ngx_lua原理</span></h1><p>ngx_lua将Lua集成进Nginx。Lua内建协程，使用协程可以很好地将异步回调转换成顺序调用的形式，和Nginx的全异步模式匹配起来：协程调用异步API，然后协程挂起，在异步回调事件到来时，在将协程唤醒，继续执行。</p><blockquote><p>协程，又称微线程，纤程。</p><p>函数，都是层级调用的，通过栈来实现。一个线程就是执行一个函数。函数调用总是一个入口，一个返回，调用顺序是明确的。</p><p>协程的调用和函数调用不同。</p><p>协程看上去也是函数，但执行过程中，在函数内部可中断，然后转而执行别的函数，在适当的时候再返回来接着执行。</p><p>协程就是一个线程里的函数切换！</p><p>协程的特点在于是一个线程执行，和多线程比，协程有何优势呢？</p><p>协程执行效率极高。</p><p>这是因为：函数切换不是线程切换，而是由程序自身控制，因此，没有线程切换的开销。协程不需要多线程的锁机制，因为只有一个线程，也不存在同时写变量冲突，在协程中控制共享资源不加锁，只需要判断状态就好了。</p><p>那又如何利用多核CPU呢？多进程+协程。</p><p>协程举例：</p><p><img src="/2019/03/18/Nginx下Lua实现机制/1552972980080.png" alt="1552972980080"></p><p>执行结果：</p><p><img src="/2019/03/18/Nginx下Lua实现机制/1552973054529.png" alt="1552973054529"></p><p>consumer函数是一个generator，把一个consumer传入producer之后：</p><ul><li>首先调用c.next()启动生成器；</li><li>然后，一旦生产了东西，通过c.send(i)切换到consumer执行；</li><li>consumer通过yield拿到消息，处理，又通过yield把结果传回；</li><li>producer拿到consumer处理结果，继续生产下一条消息；</li><li>producer决定不生产了，通过c.close()关闭consumer，整个过程结束</li></ul><p>两个子程序，相互切换。</p><p>关键在于子程序consumer的yield，yield(r)返回r，保留现场，其他子程序可通过send(i)，重启这个现场，并传入值i到r。</p><p>整个过程无锁，由一个线程执行，producer和consumer协作完成任务。</p><p>多子程序协同完成任务，非抢占式多任务。</p></blockquote><p>这样既可以实现全异步的Nginx机制，不会影响Nginx的高并发处理性能，又使开发者以同步的方式编写异步程序。</p>]]></content>
+    <content type="html"><![CDATA[<p>Nginx中的大部分功能是通过模块提供的。一个模块的失效不会影响其他部分，是Nginx扩展性和可靠性的一个保证。</p><p>Nginx使用比较多的场合时反向代理，使用Nginx在前端做登陆校验、JS合并、数据库访问、访问鉴权等。</p><p>Lua是高效、紧凑、嵌入式的快速脚本语言，内建协程，非常便于业务开发。</p><p>ngx_lua模块，将Lua解释器集成进Nginx中，使开发者可以使用Lua脚本语言实现业务。</p><h1><span id="ngx_lua原理">ngx_lua原理</span></h1><p>ngx_lua将Lua集成进Nginx。Lua内建协程，使用协程可以很好地将异步回调转换成顺序调用的形式，和Nginx的全异步模式匹配起来：协程调用异步API，然后协程挂起，在异步回调事件到来时，在将协程唤醒，继续执行。</p><p>这样既可以实现全异步的Nginx机制，不会影响Nginx的高并发处理性能，又使开发者以同步的方式编写异步程序。</p>]]></content>
     
     <summary type="html">
     

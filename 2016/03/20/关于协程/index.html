@@ -4,12 +4,12 @@
 <html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
 
 <head><meta name="generator" content="Hexo 3.8.0">
-    <title>TCP状态详解 - javfa&#39;s blog</title>
+    <title>关于协程 - javfa&#39;s blog</title>
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content="LISTENING：侦听来自远方的TCP端口的连接请求。
-服务器端打开一个socket进行监听，状态为LISTEN...">
+<meta name="description" content="协程，又称微线程，纤程。
+函数，都是层级调用的，通过栈来实现。一个线程就是执行一个函数。函数调用总是一个入口，一个...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -19,7 +19,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?90046885">
+<link rel="stylesheet" href="/css/journal.css?23170660">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -142,10 +142,10 @@
         <div class="post">
             <div class="post-head-wrapper-text-only" style="background-image: url('')">
                 <div class="post-title">
-                    TCP状态详解
+                    关于协程
                     <div class="post-meta">
-                        <time datetime="2019-03-12T13:42:31.000Z" itemprop="datePublished">
-                            2019-03-12 21:42
+                        <time datetime="2016-03-20T07:43:18.000Z" itemprop="datePublished">
+                            2016-03-20 15:43
                         </time>&nbsp;
                         
     
@@ -156,23 +156,45 @@
     
             <div class="post-body-wrapper">
                 <div class="post-body">
-                    <p>LISTENING：侦听来自远方的TCP端口的连接请求。</p>
-<p>服务器端打开一个socket进行监听，状态为LISTEN。</p>
-<p>待更</p>
+                    <p>协程，又称微线程，纤程。</p>
+<p>函数，都是层级调用的，通过栈来实现。一个线程就是执行一个函数。函数调用总是一个入口，一个返回，调用顺序是明确的。</p>
+<p>协程的调用和函数调用不同。</p>
+<p>协程看上去也是函数，但执行过程中，在函数内部可中断，然后转而执行别的函数，在适当的时候再返回来接着执行。</p>
+<p>协程就是一个线程里的函数切换！</p>
+<p>协程的特点在于是一个线程执行，和多线程比，协程有何优势呢？</p>
+<p>协程执行效率极高。</p>
+<p>这是因为：函数切换不是线程切换，而是由程序自身控制，因此，没有线程切换的开销。协程不需要多线程的锁机制，因为只有一个线程，也不存在同时写变量冲突，在协程中控制共享资源不加锁，只需要判断状态就好了。</p>
+<p>那又如何利用多核CPU呢？多进程+协程。</p>
+<p>协程举例：</p>
+<p><img src="/2016/03/20/关于协程/../../../../%E6%9C%B1%E5%8A%9B%E7%BF%81/blog/source/_posts/Nginx%E4%B8%8BLua%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6/1552972980080.png" alt="1552972980080"></p>
+<p>执行结果：</p>
+<p><img src="/2016/03/20/关于协程/../../../../%E6%9C%B1%E5%8A%9B%E7%BF%81/blog/source/_posts/Nginx%E4%B8%8BLua%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6/1552973054529.png" alt="1552973054529"></p>
+<p>consumer函数是一个generator，把一个consumer传入producer之后：</p>
+<ul>
+<li>首先调用c.next()启动生成器；</li>
+<li>然后，一旦生产了东西，通过c.send(i)切换到consumer执行；</li>
+<li>consumer通过yield拿到消息，处理，又通过yield把结果传回；</li>
+<li>producer拿到consumer处理结果，继续生产下一条消息；</li>
+<li>producer决定不生产了，通过c.close()关闭consumer，整个过程结束</li>
+</ul>
+<p>两个子程序，相互切换。</p>
+<p>关键在于子程序consumer的yield，yield(r)返回r，保留现场，其他子程序可通过send(i)，重启这个现场，并传入值i到r。</p>
+<p>整个过程无锁，由一个线程执行，producer和consumer协作完成任务。</p>
+<p>多子程序协同完成任务，非抢占式多任务。</p>
 
                 </div>
             </div>
     
             <nav class="post-pagination">
     
-    <a class="newer-posts" href="/2019/03/14/大型网站技术架构/">
-        前の記事<br>大型网站技术架构
+    <a class="newer-posts" href="/2017/02/17/Nginx-modules/">
+        前の記事<br>Nginx modules
     </a>
     
     <span class="page-number"></span>
     
-    <a class="older-posts" href="/2019/03/12/CDN/">
-        次の記事<br>CDN
+    <a class="older-posts" href="/2016/03/20/JVM原理/">
+        次の記事<br>JVM原理
     </a>
     
 </nav>
@@ -198,7 +220,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?75872340"></script>
+<script src="/js/journal.js?33286593"></script>
 
 
 
