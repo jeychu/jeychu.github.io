@@ -19,7 +19,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?71811058">
+<link rel="stylesheet" href="/css/journal.css?54263288">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -60,10 +60,10 @@
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                首页
+                Home
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                归档
+                Archive
             </a>
 
             
@@ -107,7 +107,7 @@
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            归档
+            Archive
         </a>
 
         
@@ -181,6 +181,46 @@
 <p>关键在于子程序consumer的yield，yield(r)返回r，保留现场，其他子程序可通过send(i)，重启这个现场，并传入值i到r。</p>
 <p>整个过程无锁，由一个线程执行，producer和consumer协作完成任务。</p>
 <p>多子程序协同完成任务，非抢占式多任务。</p>
+<hr>
+<p>关于同步、异步、阻塞、非阻塞、回调、事件循环这些概念，有牛做了形象的比喻，我觉得极好，引用如下：</p>
+<blockquote>
+<p>作者：Manjusaka</p>
+<p>链接：<a href="https://www.zhihu.com/question/266222348/answer/304632928" target="_blank" rel="noopener">https://www.zhihu.com/question/266222348/answer/304632928</a></p>
+<p>来源：知乎</p>
+<p>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+<p>举一点不严谨的例子吧</p>
+<p>你现在要买一本《人体艺术导论》，但是奶茶东缺货。</p>
+<p>最开始你一直刷新页面，等着书到货了，这是同步阻塞。</p>
+<p>你觉得这样太浪费时间了。</p>
+<p>你就去去汤不热看点照片压压惊，然后时不时的去刷一下图书状态是否有货，这是同步非阻塞。</p>
+<p>好了，你最后成功买到《人体艺术导论》这本书。</p>
+<p>某一天，你想去再去买一本《知乎撕逼指南》，抱歉你运气很差，还是没货了</p>
+<p>那么现在你觉得不断的刷是否有货太傻了</p>
+<p>你现在奶茶东上设置了一下，当有货的时候给你响起 FBI Warning 的闹钟。</p>
+<p>好了，你现在一直等着闹钟的想起，这叫异步阻塞。</p>
+<p>你还是觉得，我怎么能这么傻</p>
+<p>于是你去干点奇遇事情，等闹钟响起的时候，你就下单。这叫异步非阻塞</p>
+<p>OK，明白了 前面四个概念么？</p>
+<p>都是在奶茶东买书，</p>
+<p>基本版的奶茶东，同步，我们只能手动去不断查询书是否有货</p>
+<p>设置闹钟后的奶茶东，异步，奶茶东可以在有货的时候主动通知我们</p>
+<p>阻塞，在书籍有货之前，我们都没法干其余的事情</p>
+<p>非阻塞，在书籍有货之前，我们可以干其余的事情</p>
+<p>好了，现在你觉得自己下单太傻了，你在奶茶东上做了更进一步的设置。当这本书有货的时候，帮我下单。这就是回调</p>
+<p>好了，进程，线程，协程</p>
+<p>你现在要买十本书，每本书都可能没货，现在你觉得这个工作太繁琐了</p>
+<p>你开了十家公司，每个公司分别帮你购买一本书，公司-&gt;进程</p>
+<p>你开了一家公司，公司里找了十个人，每个人帮你购买一本书，人-&gt;线程</p>
+<p>你开了一家公司，找了一个人，用十个手机，每个手机帮你购买一本书，手机-&gt;协程</p>
+<p>并发和并行是相对的一个概念</p>
+<p>并发：交替做不同事的能力</p>
+<p>并行：同时做不同事的能力</p>
+<p>举个例子，回到买书的问题，有个妹子，找你想让你帮忙买四本书，你找了两个人，一个人买两本书，对于买书的人而言，购买两本书的操作交互进行，这是并发。对你而言，你将四本书分别交给两个人同时购买，这是并行。对于妹子而言，你一个人交替购买四本书，这是并发。</p>
+<p>事件循环是什么？</p>
+<p>前面不是说了么</p>
+<p>你购买书，想收到有货通知，想有货自动下单，但是你自己不知道怎么搞定，你把这个事情交给奶茶东。</p>
+<p>奶茶东-&gt;事件循环</p>
+</blockquote>
 
                 </div>
             </div>
@@ -188,13 +228,13 @@
             <nav class="post-pagination">
     
     <a class="newer-posts" href="/2017/02/17/Nginx-modules/">
-        上一篇<br>Nginx modules
+        Previous post<br>Nginx modules
     </a>
     
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2016/03/20/JVM原理/">
-        下一篇<br>JVM原理
+        Next post<br>JVM原理
     </a>
     
 </nav>
@@ -220,7 +260,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?93824815"></script>
+<script src="/js/journal.js?77751670"></script>
 
 
 
