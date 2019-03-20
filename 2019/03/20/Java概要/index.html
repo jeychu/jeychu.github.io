@@ -21,7 +21,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?8497015">
+<link rel="stylesheet" href="/css/journal.css?62042922">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -233,7 +233,50 @@
 <li>由基本类型向对应的包装类转换称为装箱，例如把 int 包装成 Integer 类的对象；</li>
 <li>包装类向对应的基本类型转换称为拆箱，例如把 Integer 类的对象重新简化为 int。</li>
 </ul>
-<h2><span id="java包">Java包</span></h2><h2><span id="源文件的声明规则">源文件的声明规则</span></h2><h1><span id="继承与多态">继承与多态</span></h1>
+<h2><span id="java包">Java包</span></h2><h2><span id="源文件的声明规则">源文件的声明规则</span></h2><h1><span id="继承与多态">继承与多态</span></h1><h2><span id="继承">继承</span></h2><p>一个类从另一个类获取方法和属性的过程。</p>
+<p>如果B继承于类A，那么B就拥有A的方法和属性。</p>
+<p>继承使用extends关键字。</p>
+<p>单继承性：Java中，一个类只能有一个父类。</p>
+<p>接口允许多继承。</p>
+<h2><span id="super">super</span></h2><p>和this类似，this表示当前类的实例，super表示父类。</p>
+<p>该关键字的功能：</p>
+<ul>
+<li>调用父类中声明为private的变量</li>
+<li>点取已经覆盖了的方法</li>
+<li>作为方法名表示父类构造方法</li>
+</ul>
+<h2><span id="方法的覆盖和重载">方法的覆盖和重载</span></h2><p>被覆盖的方法在子类中只能通过super调用</p>
+<p>覆盖不会删除父类中的方法，而是对子类的实例隐藏</p>
+<p>方法覆盖的原则：</p>
+<ul>
+<li>覆盖方法的返回类型、方法名称、参数列表必须与原方法的相同。</li>
+<li>覆盖方法不能比原方法访问性差（即访问权限不允许缩小）。</li>
+<li>覆盖方法不能比原方法抛出更多的异常。</li>
+<li>被覆盖的方法不能是final类型，因为final修饰的方法是无法覆盖的。</li>
+<li>被覆盖的方法不能为private，否则在其子类中只是新定义了一个方法，并没有对其进行覆盖。</li>
+<li>被覆盖的方法不能为static。如果父类中的方法为静态的，而子类中的方法不是静态的，但是两个方法除了这一点外其他都满足覆盖条件，那么会发生编译错误；反之亦然。即使父类和子类中的方法都是静态的，并且满足覆盖条件，但是仍然不会发生覆盖，因为静态方法是在编译的时候把静态方法和类的引用类型进行匹配。</li>
+</ul>
+<p>覆盖和重载的不同：</p>
+<ul>
+<li>方法覆盖要求参数列表必须一致，而方法重载要求参数列表必须不一致。</li>
+<li>方法覆盖要求返回类型必须一致，方法重载对此没有要求。</li>
+<li>方法覆盖只能用于子类覆盖父类的方法，方法重载用于同一个类中的所有方法（包括从父类中继承而来的方法）。</li>
+<li>方法覆盖对方法的访问权限和抛出的异常有特殊的要求，而方法重载在这方面没有任何限制。</li>
+<li>父类的一个方法只能被子类覆盖一次，而一个方法可以在所有的类中可以被重载多次。</li>
+</ul>
+<h2><span id="多态与动态绑定">多态与动态绑定</span></h2><p>父类变量可以引用父类的实例，也可以引用子类的实例。</p>
+<p>多态存在的三个必要条件：</p>
+<ul>
+<li>要有继承</li>
+<li>要有重写覆盖</li>
+<li>父类变量引用子类对象</li>
+</ul>
+<p>当使用多态方式调用方法时：</p>
+<ul>
+<li>首先检查父类中是否有该方法，如果没有，则编译错误；若有，则检查子类是否覆盖了该方法；</li>
+<li>如果子类覆盖了该方法，就调用子类的方法，否则调用父类方法</li>
+</ul>
+<h2><span id="instanceof">instanceof</span></h2>
                 </div>
             </div>
     
@@ -268,7 +311,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?43595128"></script>
+<script src="/js/journal.js?34737273"></script>
 
 
 
