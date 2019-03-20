@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <title>Java概要 - javfa&#39;s blog</title>
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Javfa">
+<meta name="description" content="类与对象Java变量的作用域
+类级变量
+全局级变量或者静态变量，加static修饰符
+类级变量在类定义后就会一直存...">
+<meta name="keywords" content>
+
+    <meta charset="utf-8">
+    <meta name="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta content="telephone=no" name="format-detection">
+    <meta name="renderer" content="webkit">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/journal.css?65366855">
+<script src="/js/loadCSS.js"></script>
+<script>
+    loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
+    (function (d) {
+        var config = {
+                kitId: 'dwg1tuc',
+                scriptTimeout: 3000,
+                async: true
+            },
+            h = d.documentElement, t = setTimeout(function () {
+                h.className = h.className.replace(/\bwf-loading\b/g, "") + " wf-inactive";
+            }, config.scriptTimeout), tk = d.createElement("script"), f = false,
+            s = d.getElementsByTagName("script")[0], a;
+        h.className += " wf-loading";
+        tk.src = 'https://use.typekit.net/' + config.kitId + '.js';
+        tk.async = true;
+        tk.onload = tk.onreadystatechange = function () {
+            a = this.readyState;
+            if (f || a && a != "complete" && a != "loaded") return;
+            f = true;
+            clearTimeout(t);
+            try {
+                Typekit.load(config)
+            } catch (e) {
+            }
+        };
+        s.parentNode.insertBefore(tk, s)
+    })(document);
+</script>
+<noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora|Montserrat|Anonymous+Pro:400|Material+Icons">
+</noscript>
+</head>
+<body>
+<div id="top"></div>
+<div id="app">
+<div class="single-column-drawer-container" ref="drawer" v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            <a class="a-block drawer-menu-item false" href="http://yoursite.com">
+                ホーム
+            </a>
+            <a class="a-block drawer-menu-item false" href="/archives">
+                記事一覧
+            </a>
+
+            
+            
+
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav ref="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div ref="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a ref="navTitle" class="navbar-brand" href="/">
+            javfa&#39;s blog
+        </a>
+    </div>
+</nav>
+<div class="single-column-header-container" ref="pageHead" v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="/">
+        <div class="single-column-header-title">javfa&#39;s blog</div>
+        <div class="single-column-header-subtitle"></div>
+    </a>
+</div>
+<div ref="sideContainer" class="side-container">
+    <a class="a-block nav-head false" href="/">
+        <div class="nav-title">
+            {博客@家發}
+        </div>
+        <div class="nav-subtitle">
+            隻言片語<br>於此匯聚
+        </div>
+    </a>
+
+    <div class="nav-link-list">
+        <a class="a-block no-tint nav-link-item false" href="/archives">
+            記事一覧
+        </a>
+
+        
+        
+
+        
+    </div>
+
+    
+    <div class="nav-footer">
+        Proudly published with Hexo<br>
+        
+        Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+        
+        &copy; 2019 <a href="http://yoursite.com">javfa&#39;s blog</a>
+    </div>
+</div>
+<div ref="extraContainer" class="extra-container">
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+
+        
+    </div>
+</div>
+
+<div ref="streamContainer" class="stream-container">
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            <div class="post-head-wrapper-text-only" style="background-image: url('')">
+                <div class="post-title">
+                    Java概要
+                    <div class="post-meta">
+                        <time datetime="2019-03-20T04:17:46.000Z" itemprop="datePublished">
+                            2019-03-20 12:17
+                        </time>&nbsp;
+                        
+    
+                        
+                    </div>
+                </div>
+            </div>
+    
+            <div class="post-body-wrapper">
+                <div class="post-body">
+                    <h1><span id="类与对象">类与对象</span></h1><h2><span id="java变量的作用域">Java变量的作用域</span></h2><ul>
+<li><p>类级变量</p>
+<p>全局级变量或者静态变量，加static修饰符</p>
+<p>类级变量在类定义后就会一直存在，占用内存空间，可以通过类名来访问，不需要实例化</p>
+</li>
+<li><p>对象实例级变量</p>
+<p>成员变量，实例化后才会分配内存空间，才能访问</p>
+</li>
+<li><p>方法级变量</p>
+<p>方法内部定义的变量，就是局部变量</p>
+</li>
+<li><p>块级变量</p>
+<p>是定义在一个块内的变量，出了这个块变量就消失了。块是指由大括号包围的代码。</p>
+</li>
+</ul>
+<h2><span id="this">this</span></h2><p>用来表示当前对象本身。通过this可以调用本对象的所有方法和属性。</p>
+<p>this只有在实例化后才有意义。</p>
+<p>可以用来区分同名变量、作为构造方法、作为参数传递</p>
+<h2><span id="重载">重载</span></h2><p>重载就是在一个类中，有相同的函数名称，但形参不同的函数。</p>
+<p>说明：</p>
+<ul>
+<li>参数列表不同包括：个数不同、类型不同和顺序不同。</li>
+<li>仅仅参数变量名称不同是不可以的。</li>
+<li>跟成员方法一样，构造方法也可以重载。</li>
+<li>声明为final的方法不能被重载。</li>
+<li>声明为static的方法不能被重载，但是能够被再次声明。</li>
+</ul>
+<h2><span id="包装类-拆箱和装箱">包装类、拆箱和装箱</span></h2><p>Java为每种基本数据类型分别设计了对应的类，称之为包装类（Wrapper Classes）。</p>
+<table>
+<thead>
+<tr>
+<th>基本数据类型</th>
+<th>对应的包装类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>byte</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>short</td>
+<td>Short</td>
+</tr>
+<tr>
+<td>int</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>long</td>
+<td>Long</td>
+</tr>
+<tr>
+<td>char</td>
+<td>Character</td>
+</tr>
+<tr>
+<td>float</td>
+<td>Float</td>
+</tr>
+<tr>
+<td>double</td>
+<td>Double</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>Boolean</td>
+</tr>
+</tbody>
+</table>
+<p>基本类型和对应的包装类可以相互装换： </p>
+<ul>
+<li>由基本类型向对应的包装类转换称为装箱，例如把 int 包装成 Integer 类的对象；</li>
+<li>包装类向对应的基本类型转换称为拆箱，例如把 Integer 类的对象重新简化为 int。</li>
+</ul>
+<h2><span id="java包">Java包</span></h2><h2><span id="源文件的声明规则">源文件的声明规则</span></h2><h1><span id="继承与多态">继承与多态</span></h1>
+                </div>
+            </div>
+    
+            <nav class="post-pagination">
+    
+    <span class="page-number"></span>
+    
+    <a class="older-posts" href="/2019/03/18/Nginx下Lua实现机制/">
+        次の記事<br>Nginx下Lua实现机制
+    </a>
+    
+</nav>
+
+    
+            
+
+
+        </div>
+    </div>
+    <div class="single-column-footer">
+    Proudly published with Hexo<br>
+    
+    Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+    
+    &copy; 2018 <a href="http://yoursite.com">javfa&#39;s blog</a>
+</div>
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js" integrity="sha256-EGs9T1xMHdvM1geM8jPpoo8EZ1V1VRsmcJz8OByENLA=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
+<script src="/js/journal.js?38380390"></script>
+
+
+
+</body>
+</html>

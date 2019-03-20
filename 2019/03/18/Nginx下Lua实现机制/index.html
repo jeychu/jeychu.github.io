@@ -1,0 +1,236 @@
+
+
+<!DOCTYPE html>
+<html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <title>Nginx下Lua实现机制 - javfa&#39;s blog</title>
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Javfa">
+<meta name="description" content="Nginx中的大部分功能是通过模块提供的。一个模块的失效不会影响其他部分，是Nginx扩展性和可靠性的一个保证。
+...">
+<meta name="keywords" content>
+
+    <meta charset="utf-8">
+    <meta name="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta content="telephone=no" name="format-detection">
+    <meta name="renderer" content="webkit">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/journal.css?6925001">
+<script src="/js/loadCSS.js"></script>
+<script>
+    loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
+    (function (d) {
+        var config = {
+                kitId: 'dwg1tuc',
+                scriptTimeout: 3000,
+                async: true
+            },
+            h = d.documentElement, t = setTimeout(function () {
+                h.className = h.className.replace(/\bwf-loading\b/g, "") + " wf-inactive";
+            }, config.scriptTimeout), tk = d.createElement("script"), f = false,
+            s = d.getElementsByTagName("script")[0], a;
+        h.className += " wf-loading";
+        tk.src = 'https://use.typekit.net/' + config.kitId + '.js';
+        tk.async = true;
+        tk.onload = tk.onreadystatechange = function () {
+            a = this.readyState;
+            if (f || a && a != "complete" && a != "loaded") return;
+            f = true;
+            clearTimeout(t);
+            try {
+                Typekit.load(config)
+            } catch (e) {
+            }
+        };
+        s.parentNode.insertBefore(tk, s)
+    })(document);
+</script>
+<noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora|Montserrat|Anonymous+Pro:400|Material+Icons">
+</noscript>
+</head>
+<body>
+<div id="top"></div>
+<div id="app">
+<div class="single-column-drawer-container" ref="drawer" v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            <a class="a-block drawer-menu-item false" href="http://yoursite.com">
+                ホーム
+            </a>
+            <a class="a-block drawer-menu-item false" href="/archives">
+                記事一覧
+            </a>
+
+            
+            
+
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav ref="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div ref="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a ref="navTitle" class="navbar-brand" href="/">
+            javfa&#39;s blog
+        </a>
+    </div>
+</nav>
+<div class="single-column-header-container" ref="pageHead" v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="/">
+        <div class="single-column-header-title">javfa&#39;s blog</div>
+        <div class="single-column-header-subtitle"></div>
+    </a>
+</div>
+<div ref="sideContainer" class="side-container">
+    <a class="a-block nav-head false" href="/">
+        <div class="nav-title">
+            {博客@家發}
+        </div>
+        <div class="nav-subtitle">
+            隻言片語<br>於此匯聚
+        </div>
+    </a>
+
+    <div class="nav-link-list">
+        <a class="a-block no-tint nav-link-item false" href="/archives">
+            記事一覧
+        </a>
+
+        
+        
+
+        
+    </div>
+
+    
+    <div class="nav-footer">
+        Proudly published with Hexo<br>
+        
+        Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+        
+        &copy; 2019 <a href="http://yoursite.com">javfa&#39;s blog</a>
+    </div>
+</div>
+<div ref="extraContainer" class="extra-container">
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+
+        
+    </div>
+</div>
+
+<div ref="streamContainer" class="stream-container">
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            <div class="post-head-wrapper-text-only" style="background-image: url('')">
+                <div class="post-title">
+                    Nginx下Lua实现机制
+                    <div class="post-meta">
+                        <time datetime="2019-03-18T13:52:32.000Z" itemprop="datePublished">
+                            2019-03-18 21:52
+                        </time>&nbsp;
+                        
+    
+                        
+                    </div>
+                </div>
+            </div>
+    
+            <div class="post-body-wrapper">
+                <div class="post-body">
+                    <p>Nginx中的大部分功能是通过模块提供的。一个模块的失效不会影响其他部分，是Nginx扩展性和可靠性的一个保证。</p>
+<p>Nginx使用比较多的场合时反向代理，使用Nginx在前端做登陆校验、JS合并、数据库访问、访问鉴权等。</p>
+<p>Lua是高效、紧凑、嵌入式的快速脚本语言，内建协程，非常便于业务开发。</p>
+<p>ngx_lua模块，将Lua解释器集成进Nginx中，使开发者可以使用Lua脚本语言实现业务。</p>
+<h1><span id="ngx_lua原理">ngx_lua原理</span></h1><p>ngx_lua将Lua集成进Nginx。Lua内建协程，使用协程可以很好地将异步回调转换成顺序调用的形式，和Nginx的全异步模式匹配起来：协程调用异步API，然后协程挂起，在异步回调事件到来时，在将协程唤醒，继续执行。</p>
+<blockquote>
+<p>协程，又称微线程，纤程。</p>
+<p>函数，都是层级调用的，通过栈来实现。一个线程就是执行一个函数。函数调用总是一个入口，一个返回，调用顺序是明确的。</p>
+<p>协程的调用和函数调用不同。</p>
+<p>协程看上去也是函数，但执行过程中，在函数内部可中断，然后转而执行别的函数，在适当的时候再返回来接着执行。</p>
+<p>协程就是一个线程里的函数切换！</p>
+<p>协程的特点在于是一个线程执行，和多线程比，协程有何优势呢？</p>
+<p>协程执行效率极高。</p>
+<p>这是因为：函数切换不是线程切换，而是由程序自身控制，因此，没有线程切换的开销。协程不需要多线程的锁机制，因为只有一个线程，也不存在同时写变量冲突，在协程中控制共享资源不加锁，只需要判断状态就好了。</p>
+<p>那又如何利用多核CPU呢？多进程+协程。</p>
+<p>协程举例：</p>
+<p><img src="/2019/03/18/Nginx下Lua实现机制/1552972980080.png" alt="1552972980080"></p>
+<p>执行结果：</p>
+<p><img src="/2019/03/18/Nginx下Lua实现机制/1552973054529.png" alt="1552973054529"></p>
+<p>consumer函数是一个generator，把一个consumer传入producer之后：</p>
+<ul>
+<li>首先调用c.next()启动生成器；</li>
+<li>然后，一旦生产了东西，通过c.send(i)切换到consumer执行；</li>
+<li>consumer通过yield拿到消息，处理，又通过yield把结果传回；</li>
+<li>producer拿到consumer处理结果，继续生产下一条消息；</li>
+<li>producer决定不生产了，通过c.close()关闭consumer，整个过程结束</li>
+</ul>
+<p>两个子程序，相互切换。</p>
+<p>关键在于子程序consumer的yield，yield(r)返回r，保留现场，其他子程序可通过send(i)，重启这个现场，并传入值i到r。</p>
+<p>整个过程无锁，由一个线程执行，producer和consumer协作完成任务。</p>
+<p>多子程序协同完成任务，非抢占式多任务。</p>
+</blockquote>
+<p>这样既可以实现全异步的Nginx机制，不会影响Nginx的高并发处理性能，又使开发者以同步的方式编写异步程序。</p>
+
+                </div>
+            </div>
+    
+            <nav class="post-pagination">
+    
+    <a class="newer-posts" href="/2019/03/20/Java概要/">
+        前の記事<br>Java概要
+    </a>
+    
+    <span class="page-number"></span>
+    
+    <a class="older-posts" href="/2019/03/18/MySQL优化/">
+        次の記事<br>MySQL优化
+    </a>
+    
+</nav>
+
+    
+            
+
+
+        </div>
+    </div>
+    <div class="single-column-footer">
+    Proudly published with Hexo<br>
+    
+    Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+    
+    &copy; 2018 <a href="http://yoursite.com">javfa&#39;s blog</a>
+</div>
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js" integrity="sha256-EGs9T1xMHdvM1geM8jPpoo8EZ1V1VRsmcJz8OByENLA=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
+<script src="/js/journal.js?95030983"></script>
+
+
+
+</body>
+</html>
