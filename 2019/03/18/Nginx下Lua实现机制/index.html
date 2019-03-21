@@ -19,7 +19,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?26428751">
+<link rel="stylesheet" href="/css/journal.css?15799785">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -162,6 +162,22 @@
 <p>ngx_lua模块，将Lua解释器集成进Nginx中，使开发者可以使用Lua脚本语言实现业务。</p>
 <h1><span id="ngx_lua原理">ngx_lua原理</span></h1><p>ngx_lua将Lua集成进Nginx。Lua内建<a href="https://jeychu.github.io/2016/03/20/关于协程/" target="_blank" rel="noopener">协程</a>，使用协程可以很好地将异步回调转换成顺序调用的形式，和Nginx的全异步模式匹配起来：协程调用异步API，然后协程挂起，在异步回调事件到来时，在将协程唤醒，继续执行。</p>
 <p>这样既可以实现全异步的Nginx机制，不会影响Nginx的高并发处理性能，又使开发者以同步的方式编写异步程序。</p>
+<p>Ngx_lua在Nginx的管理/工作进程<sup>master-worker</sup>机制基础上加入了Lua解释器。ngx_lua在每一个Nginx工作进程上执行一个Lua解释器实例，这个工作进程上处理的所有请求共享这个实例。</p>
+<p>每个请求的上下文都被Lua的协程分割，保证每个请求是独立的。</p>
+<p>采用一个请求一个协程的处理模式，对于每个用户请求，都会创建一个协程用于执行用户代码以处理请求，请求处理完毕，协程会被销毁。</p>
+<p>每个协程都有一个独立的全局变量空间，保存从全局共享的数据。用户在自己的代码里操作了全局空间的变量不会影响其他的请求处理协程，因为数据被隔离了。数据用完就会被释放，用户代码是运行在一个沙箱里，沙箱的生存周期与请求的生命周期相同。</p>
+<p>协程是轻量级线程，占用极少内存，通常每个请求ngx_lua只会占用2KB左右内存。</p>
+<p>一个简单的ngx_lua请求处理流程：</p>
+<p><img src="/2019/03/18/Nginx下Lua实现机制/1553134371819.png" alt="1553134371819"></p>
+<p>Nginx HTTP请求流程及11个阶段：</p>
+<p><img src="/2019/03/18/Nginx下Lua实现机制/1553135971971.png" alt="1553135971971"></p>
+<p><img src="/2019/03/18/Nginx下Lua实现机制/1553136066981.png" alt="1553136066981"></p>
+<p>ngx_lua的11个阶段在Nginx的4个主要阶段分布情况：</p>
+<p><img src="/2019/03/18/Nginx下Lua实现机制/1553135166993.png" alt="1553135166993"></p>
+<p>Lua可使用的主要阶段：</p>
+<p><img src="/2019/03/18/Nginx下Lua实现机制/1553135339907.png" alt="1553135339907"></p>
+<h1><span id="阶段解析">阶段解析</span></h1><p>init_by_lua</p>
+<p>在每次Nginx重新加载配置时执行</p>
 
                 </div>
             </div>
@@ -201,7 +217,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?60773515"></script>
+<script src="/js/journal.js?89900335"></script>
 
 
 

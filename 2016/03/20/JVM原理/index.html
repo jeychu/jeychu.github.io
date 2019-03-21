@@ -8,7 +8,12 @@
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content>
+<meta name="description" content="JVM内存图解
+
+程序计数器
+一块较小的内存空间。
+是当前线程所执行字节码的行号指示器。
+字节码解释器工作时就是通...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -18,7 +23,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?99652074">
+<link rel="stylesheet" href="/css/journal.css?64887299">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -149,13 +154,54 @@
                         
     
                         
+                        
+                        <i class="material-icons" style>label</i>
+                        
+                        <a href="/tags/Java/">Java</a>
+                        
+                        
                     </div>
                 </div>
             </div>
     
             <div class="post-body-wrapper">
                 <div class="post-body">
-                    
+                    <h1><span id="jvm内存图解">JVM内存图解</span></h1><p><img src="/2016/03/20/JVM原理/1553087439559.png" alt="1553087439559"></p>
+<ul>
+<li><p>程序计数器</p>
+<p>一块较小的内存空间。</p>
+<p>是当前线程所执行字节码的行号指示器。</p>
+<p>字节码解释器工作时就是通过改变这个计数器的值来选取下一条要执行的字节指令。</p>
+<p>分支、循环、跳转、异常处理、线程恢复等功能都需要依赖这个计数器来完成。</p>
+<p>每个线程都有一个独立的程序计数器，各个线程之间的计数器互不影响。</p>
+<p>是线程私有内存。</p>
+<p>如果一个线程在执行一个Java方法，这个计数器记录的是正在执行的虚拟机字节码指令地址，如果执行的是native方法，计数器为空。</p>
+<p>此区不会发生内存溢出异常。</p>
+</li>
+<li><p>虚拟机栈</p>
+<p>也是线程私有的。</p>
+<p>它的生命周期与线程一样。</p>
+<p>每个方法在调用的时候都会在此处创建一个栈帧。</p>
+<p>栈帧中存放：</p>
+<ul>
+<li>局部变量表</li>
+<li>操作数栈</li>
+<li>当前方法所属的类运行时常量引用</li>
+<li>方法出口</li>
+</ul>
+</li>
+<li><p>本地方法栈</p>
+</li>
+</ul>
+<ul>
+<li><p>堆</p>
+</li>
+<li><p>方法区</p>
+</li>
+<li><p>直接内存</p>
+</li>
+</ul>
+
                 </div>
             </div>
     
@@ -194,7 +240,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?58558518"></script>
+<script src="/js/journal.js?17932834"></script>
 
 
 
