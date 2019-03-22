@@ -8,7 +8,7 @@
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content="JVM内存图解
+<meta name="description" content="JVM内存区域
 
 程序计数器
 一块较小的内存空间。
@@ -23,7 +23,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?44127700">
+<link rel="stylesheet" href="/css/journal.css?59915289">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -64,10 +64,10 @@
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                首页
+                Home
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                归档
+                Archive
             </a>
 
             
@@ -111,7 +111,7 @@
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            归档
+            Archive
         </a>
 
         
@@ -166,7 +166,7 @@
     
             <div class="post-body-wrapper">
                 <div class="post-body">
-                    <h1><span id="jvm内存图解">JVM内存图解</span></h1><p><img src="/2016/03/20/JVM原理/1553087439559.png" alt="1553087439559"></p>
+                    <h1><span id="jvm内存区域">JVM内存区域</span></h1><p><img src="/2016/03/20/JVM原理/1553087439559.png" alt="1553087439559"></p>
 <ul>
 <li><p>程序计数器</p>
 <p>一块较小的内存空间。</p>
@@ -184,37 +184,96 @@
 <p>每个方法在调用的时候都会在此处创建一个栈帧。</p>
 <p>栈帧中存放：</p>
 <ul>
-<li>局部变量表</li>
-<li>操作数栈</li>
-<li>当前方法所属的类运行时常量引用</li>
-<li>方法出口</li>
+<li><p>局部变量表</p>
+<p>存放编译期可知的各种基本数据类型、对象引用和returnAddress类型</p>
+</li>
+<li><p>操作数栈</p>
+</li>
+<li><p>当前方法所属的类运行时常量引用</p>
+</li>
+<li><p>方法出口</p>
+</li>
+</ul>
+<p>每个方法从调用直至执行完成的过程，就对应着一个栈帧在虚拟机中入栈到出栈的过程。</p>
+<p>这个区域有两种异常：</p>
+<ul>
+<li>如果线程请求的栈深度大于虚拟机所允许的深度，就抛出StackOverflowError异常</li>
+<li>可动态扩展的虚拟机栈，如果扩展时无法申请到足够的内存，就会抛出OutOfMemoryError异常</li>
 </ul>
 </li>
 <li><p>本地方法栈</p>
+<p>为虚拟机Native方法服务。</p>
+<p>规范对本地方法栈中使用语言、使用方式与数据结构并没有强制规定，具体的虚拟机可以自由实现。</p>
+<p>而HotSpot虚拟机直接就把本地方法栈和虚拟机栈合二为一了。</p>
+<p>与虚拟机栈一样，此区域也可能会抛出StackOverflowError和OutOfMemoryError异常。</p>
 </li>
-</ul>
-<ul>
 <li><p>堆</p>
+<p>是Java虚拟机所管理的内存中最大的一块。</p>
+<p>是被所有线程共享的一块内存区域，在虚拟机启动时创建。</p>
+<p>唯一目的就是存放对象实例，几乎所有的对象实例都在这里分配内存。</p>
+<p>是GC管理的主要区域。</p>
+<p>可以细分为：新生代和老年代；Eden、From Survivor、To Survivor等</p>
+<p>物理上可以不连续，逻辑上连续。</p>
+<p>可以实现成固定大小、也可以是可扩展的<sup>-Xmx -Xms控制</sup>。</p>
+<p>如果在堆中没有内存完成实例分配，并且堆也无法再扩展时，抛出OutOfMemoryError异常。</p>
+<p><em>HotSpot对象分析</em>：</p>
+<ul>
+<li><p>对象创建</p>
+<p>JVM在遇到一条new指令时，首先检查这个指令的参数是否能在常量池定位到一个类的符号引用，并且检查这个符号引用代表的类是否已被加载、解析和初始化过。如果没有，把必须先执行相应的类加载过程。</p>
+<p>在类加载检查通过后，接下来为新生对象分配内存。</p>
+<p>假如堆中内存是绝对规整的，采用Bump the Pointer；若不是规整的，采用Free list。</p>
+<p>是否规整，由采用的垃圾收集器是否带有压缩整理功能决定。</p>
+<p>并发安全的问题：</p>
+<ul>
+<li>CAS</li>
+<li>TLAB</li>
+</ul>
+<p>内存分配完成后，将分配的内存空间都初始化为零值（不包括对象头）。</p>
+<p>接下来，对对象进行必要的设置，如这个对象是哪个类的实例、如何找到类的元数据信息、对象的哈希码、对象的GC分代年龄等。这些信息存放在对象头之中。</p>
 </li>
-<li><p>方法区</p>
+<li><p>对象的内存布局</p>
+<ul>
+<li>对象头</li>
+<li>实例数据</li>
+<li>对齐填充</li>
+</ul>
 </li>
-<li><p>直接内存</p>
+<li><p>对象的访问定位</p>
+<ul>
+<li><p>使用句柄访问，堆中将会划分一块内存来作为句柄池，reference中存储的就是对象的句柄地址，句柄中包含了对象实例数据与类型数据各自的具体地址信息</p>
+<p><img src="/2016/03/20/JVM原理/1553242472621.png" alt="1553242472621"></p>
+</li>
+<li><p>使用直接指针访问</p>
 </li>
 </ul>
-
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>![1553242498483](JVM原理/1553242498483.png)
+</code></pre><ul>
+<li><p>方法区</p>
+<p>各个线程共享的内存区域，用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。</p>
+<p>运行时常量池是方法区的一部分。</p>
+<p>类文件中除了有类的版本、字段、方法、接口等描述信息外，还有一项信息是常量池，用于存放编译器生成的各种字面量和符号引用，这部分内容将再类加载后进入方法区的运行时常量池中存放。</p>
+</li>
+<li><p>直接内存<br>不是JVM运行时数据区的一部分。</p>
+</li>
+</ul>
+<h1><span id="垃圾收集器和内存分配策略">垃圾收集器和内存分配策略</span></h1><h1><span id="虚拟机性能监控和故障处理">虚拟机性能监控和故障处理</span></h1><h1><span id="类文件结构">类文件结构</span></h1><h1><span id="类加载机制">类加载机制</span></h1><h1><span id="字节码执行引擎">字节码执行引擎</span></h1><h1><span id="编译与代码优化">编译与代码优化</span></h1><h1><span id="内存模型与线程">内存模型与线程</span></h1><h1><span id="线程安全和锁优化">线程安全和锁优化</span></h1>
                 </div>
             </div>
     
             <nav class="post-pagination">
     
     <a class="newer-posts" href="/2016/03/20/关于协程/">
-        上一篇<br>关于协程
+        Previous post<br>关于协程
     </a>
     
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2016/03/20/一致性哈希算法/">
-        下一篇<br>一致性哈希算法
+        Next post<br>一致性哈希算法
     </a>
     
 </nav>
@@ -240,7 +299,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?72670992"></script>
+<script src="/js/journal.js?44695099"></script>
 
 
 
