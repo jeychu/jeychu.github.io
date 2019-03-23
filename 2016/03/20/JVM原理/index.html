@@ -23,7 +23,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?59915289">
+<link rel="stylesheet" href="/css/journal.css?78455523">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -64,10 +64,10 @@
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                Home
+                首頁
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                Archive
+                歸檔
             </a>
 
             
@@ -111,7 +111,7 @@
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            Archive
+            歸檔
         </a>
 
         
@@ -255,25 +255,66 @@
 <li><p>方法区</p>
 <p>各个线程共享的内存区域，用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。</p>
 <p>运行时常量池是方法区的一部分。</p>
-<p>类文件中除了有类的版本、字段、方法、接口等描述信息外，还有一项信息是常量池，用于存放编译器生成的各种字面量和符号引用，这部分内容将再类加载后进入方法区的运行时常量池中存放。</p>
+<p>类文件中除了有类的版本、字段、方法、接口等描述信息外，还有一项信息是常量池，用于存放编译器生成的各种字面量和符号引用，这部分内容将在类加载后进入方法区的运行时常量池中存放。</p>
 </li>
 <li><p>直接内存<br>不是JVM运行时数据区的一部分。</p>
 </li>
 </ul>
-<h1><span id="垃圾收集器和内存分配策略">垃圾收集器和内存分配策略</span></h1><h1><span id="虚拟机性能监控和故障处理">虚拟机性能监控和故障处理</span></h1><h1><span id="类文件结构">类文件结构</span></h1><h1><span id="类加载机制">类加载机制</span></h1><h1><span id="字节码执行引擎">字节码执行引擎</span></h1><h1><span id="编译与代码优化">编译与代码优化</span></h1><h1><span id="内存模型与线程">内存模型与线程</span></h1><h1><span id="线程安全和锁优化">线程安全和锁优化</span></h1>
+<h1><span id="垃圾收集器和内存分配策略">垃圾收集器和内存分配策略</span></h1><ul>
+<li>哪些内存需要回收？</li>
+<li>什么时候回收？</li>
+<li>如何回收？</li>
+</ul>
+<p>gc在对堆进行回收前，第一件事情就是要确定这些对象中哪些还存活，哪些已经死去。怎么确定呢？</p>
+<ul>
+<li>引用计数算法</li>
+<li>可达性分析算法</li>
+</ul>
+<p>引用：</p>
+<ul>
+<li>强引用</li>
+<li>软引用</li>
+<li>弱引用</li>
+<li>虚引用</li>
+</ul>
+<h1><span id="虚拟机性能监控和故障处理">虚拟机性能监控和故障处理</span></h1><p>给系统定位问题的时候，知识、经验是基础，数据是依据，工具是运用知识处理数据的手段。</p>
+<p>这里说的数据包括：运行日志、异常堆栈、GC日志、线程快照（threaddump/javacore文件）、堆转储快照（heapdump/hprof文件）等</p>
+<h2><span id="jdk命令行工具">JDK命令行工具</span></h2><p><img src="/2016/03/20/JVM原理/1553252129075.png" alt="1553252129075"></p>
+<h1><span id="类文件结构">类文件结构</span></h1><p>代码编译的结果从本地机器码转变成字节码。</p>
+<p>虚拟机以及大量建立在虚拟机之上的程序语言的发展，将程序编译成二进制本地机器码已不再是唯一的选择，越来越多的程序语言选择了与操作系统和机器指令集无关的、平台中立的格式作为程序编译后的存储格式。</p>
+<h2><span id="平台和语言无关性">平台和语言无关性</span></h2><p>虚拟机和字节码存储格式能实现平台无关性和语言无关性的基石。</p>
+<p>Java虚拟机不和包括Java在内的任何语言绑定，它只与class文件这种特定的二进制文件格式所关联。</p>
+<p>class文件中包含了Java虚拟机指令集和符号表以及其他辅助信息。</p>
+<p>虚拟机并不关心class的来源是何种语言，从而实现语言的无关性。</p>
+<p><img src="/2016/03/20/JVM原理/1553267446785.png" alt="1553267446785"></p>
+<h2><span id="class文件的结构">Class文件的结构</span></h2><p>Class文件是一组以8位字节为单位的二进制流，中间没有任何分隔符。</p>
+<p>用伪结构体来存储数据。</p>
+<p>伪结构中只有两种数据类型：无符号数和表。</p>
+<p>无符号数：u1、u2、u4、u8分别代表1个字节、2个字节、4个字节和8个字节的无符号数，无符号数可以用来描述数字、索引引用、数量值或者按照UTF-8编码构成字符串值。</p>
+<p>表是由多个无符号数或者其他表作为数据项构成的复合数据类型，所有表都以_info结尾。整个Class文件本质上就是一张表。Class文件格式如下所示：</p>
+<p><img src="/2016/03/20/JVM原理/1553266819775.png" alt="1553266819775"></p>
+<h1><span id="类加载机制">类加载机制</span></h1><p>虚拟机把Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型，这就是虚拟机的类加载机制。</p>
+<p>类的生命周期如下所示：</p>
+<p><img src="/2016/03/20/JVM原理/1553268746903.png" alt="1553268746903"></p>
+<h1><span id="字节码执行引擎">字节码执行引擎</span></h1><p>虚拟机是相对于物理机的概念，这两种机器都有代码执行能力。</p>
+<p>物理机的执行引擎是直接建立在处理器、硬件、指令集和操作系统层面上的，虚拟机的执行引擎则是由自己实现的，因此可以自行指定指令集与执行引擎的结构体系，并且能够执行那些不被硬件直接支持的指令集格式。</p>
+<p>规范制定了虚拟机字节码执行引擎的概念模型，这个概念模型成为各种虚拟机执行引擎的统一外观<sup>Facade</sup>。</p>
+<h2><span id="运行时栈帧结构">运行时栈帧结构</span></h2><p>栈帧的概念结构如下所示：</p>
+<p><img src="/2016/03/20/JVM原理/1553269127694.png" alt="1553269127694"></p>
+<h3><span id="局部变量表">局部变量表</span></h3><h3><span id="操作数栈">操作数栈</span></h3><h3><span id="动态链接">动态链接</span></h3><h3><span id="返回地址">返回地址</span></h3><h2><span id="方法调用">方法调用</span></h2><h3><span id="解析">解析</span></h3><h3><span id="分派">分派</span></h3><h2><span id="基于栈的字节码解释执行引擎">基于栈的字节码解释执行引擎</span></h2><h1><span id="编译与代码优化">编译与代码优化</span></h1><h2><span id="编译期优化">编译期优化</span></h2><h2><span id="运行期优化">运行期优化</span></h2><h1><span id="内存模型与线程">内存模型与线程</span></h1><h1><span id="线程安全和锁优化">线程安全和锁优化</span></h1>
                 </div>
             </div>
     
             <nav class="post-pagination">
     
     <a class="newer-posts" href="/2016/03/20/关于协程/">
-        Previous post<br>关于协程
+        上一篇<br>关于协程
     </a>
     
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2016/03/20/一致性哈希算法/">
-        Next post<br>一致性哈希算法
+        下一篇<br>一致性哈希算法
     </a>
     
 </nav>
@@ -299,7 +340,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?44695099"></script>
+<script src="/js/journal.js?63694930"></script>
 
 
 
