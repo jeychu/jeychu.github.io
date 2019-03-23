@@ -23,7 +23,7 @@ Server层包括连接器、查询缓存、分析器、优化器...">
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?21983461">
+<link rel="stylesheet" href="/css/journal.css?20510188">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -64,10 +64,10 @@ Server层包括连接器、查询缓存、分析器、优化器...">
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                首页
+                首頁
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                归档
+                歸檔
             </a>
 
             
@@ -111,7 +111,7 @@ Server层包括连接器、查询缓存、分析器、优化器...">
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            归档
+            歸檔
         </a>
 
         
@@ -250,28 +250,58 @@ Server层包括连接器、查询缓存、分析器、优化器...">
 <p>根据锁的范围，大致可分成</p>
 <ul>
 <li><p>全局锁：对整个数据库实例加锁。</p>
-<p>全局加读锁的命令：flush tables with read lock。之后，整库处于只读状态，其他线程的以下语句会被阻塞：数据更新语句、数据定义语句和更新类事务的提交语句。</p>
+<p>全局加读锁的命令：<code>flush tables with read lock</code>。之后，整库处于只读状态，其他线程的以下语句会被阻塞：数据更新语句、数据定义语句和更新类事务的提交语句。</p>
 <p>典型使用场景是，做全库逻辑备份。</p>
 <p>全库只读，很危险：</p>
 <ul>
 <li>若在主库备份，则在备份期间都不能执行更新，业务停摆；</li>
 <li>若在从库备份，则在备份期间不能执行主库同步过来的binlog，会导致主从延迟。</li>
 </ul>
-<p>-single-transaction MVCC</p>
-<p>可重复读隔离级别开启一个事务</p>
-<p>一致性读</p>
+<p>但是，不加锁的话，备份系统备份得到的库不是一个逻辑时间点，这个视图是逻辑不一致的。</p>
+<p>如何不加锁的情况下，得到一致性视图呢？</p>
+<p>可以在可重复读隔离级别下开启一个事务，得到一致性视图。</p>
+<p>mysqldump使用参数-single-transaction的时候，导数据之前就会启动一个事务，来确保拿到一致性视图。由于 MVCC的支持，这个过程中的数据是可以正常更新的。</p>
+<p>一致性读的前提是引擎要支持这个隔离级别。</p>
+<p>single-transaction方法只适用于所有表使用事务引擎的库。</p>
 </li>
 <li><p>表级锁</p>
-<p>语法是lock tables … read/write</p>
+<ul>
+<li><p>一类是主动加锁，语法是<code>lock tables … read/write</code></p>
 <p>可以使用unlock tables主动释放锁，亦可以在客户端断开的时候自动释放。</p>
 <p>lock tables除了会限制别的线程的读写外，也限定了本线程接下来的操作对象。</p>
-<p>另一类表级锁是MDL<sup>metadata lock</sup>。MDL不需要显式使用，在访问一个表的时候会被自动加上。</p>
+</li>
+<li><p>另一类表级锁是系统默认加的MDL<sup>metadata lock</sup>。MDL不需要显式使用，在访问一个表的时候会被自动加上。</p>
 <p>MDL的作用是，保证读写的正确性。</p>
 <p>当对一个表做增删改查操作的时候，加MDL读锁；当要对表做结构变更操作的时候，加MDL写锁。</p>
+<ul>
+<li>读锁之间不互斥，因此可以多线程同时对一张表增删改查</li>
+<li>读写锁之间、写锁之间是互斥的，用来保证变更表结构操作的安全性。因此，如果有两个线程要同时给一个表加字段，其中一个要等另一个执行完才能开始执行。</li>
+</ul>
 </li>
 </ul>
+<p>一个事务在提交之前，它是不会释放MDL锁的。所以在事务提交之前，若有另一个session需要MDL写锁，就会阻塞，并且会导致随后其他所有session的所有操作。</p>
+<p>给一个表加字段，或者修改字段，或者加索引，需要扫描全表的数据。在对大表操作的时候，要特别小心，以免对线上服务造成影响。对于小表，操作不慎也会出问题。</p>
+<p>如何安全地给小表加字段？</p>
+<p>首先，我们要解决长事务，事务不提交，就会一直占着MDL锁。在MySQL的information_schema库的innodb_trx表中，可以查到当前执行中的事务。如果要做DDL变更的表刚好有长事务在执行，要考虑先暂停DDL，或者kill掉这个长事务。</p>
+<p>如果要变更的表是一个热点表，虽然数据量不大，但是上面的请求很频繁。此时kill可能未必管用，因为新的请求马上就来了。理想的机制是，在alter table语句里设定等待时间，如果在这个指定的等待时间里能够拿到MDL写锁最好，拿不到也不要阻塞后面的业务语句，先放弃。之后再重试命令重复这个过程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE tb1_name NOWAIT add column...</span><br><span class="line">ALTER TABLE tb1_name WAIT N add column...</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>行锁</p>
+<p><strong>两阶段锁</strong></p>
+<p>在InnoDB中，行锁是在需要的时候加上的，但并不是不需要了就立刻释放，而是要等到事务结束时才释放，这个就是两阶段锁协议。</p>
+<p>因此，如果你的事务中需要锁多个行，要把最可能造成锁冲突、最可能影响并发度的锁尽量往后放。</p>
+<p><strong>死锁和死锁检测</strong></p>
+<p>在并发系统中不同线程出现循环资源依赖，涉及的线程都在等待别的线程释放资源时，就会导致这几个线程都进入无线等待的状态，称为死锁。</p>
+<p><img src="/2019/03/18/MySQL优化/1553348202957.png" alt="1553348202957"></p>
+<p>如上，事务A在等待事务B释放id=2的行锁，而B在等待A释放id=1的行锁，互相等待对方的资源释放，就进入死锁状态。</p>
+<p>出现死锁之后，有两种策略：</p>
 <ul>
-<li>行锁</li>
+<li>直接进入等待，直到超时。超时实际那可以痛通参数<code>innodb_lock_wait_timeout</code>来设置。</li>
+<li>发起死锁检测，发现死锁后，主动回滚死锁链条中的某一个事务，然其他事务得以继续执行。将参数<code>innodb_deadlock_detect</code>设置为on，表示开启这个逻辑。</li>
+</ul>
+<p>死锁检测时有额外负担的。</p>
+<p>每当一个事务被锁的时候，就要看看它所依赖的线程有没有被别人锁住，如此循环，最后判断释放出现了循环等待，也就是死锁。</p>
+</li>
 </ul>
 
                 </div>
@@ -312,7 +342,7 @@ Server层包括连接器、查询缓存、分析器、优化器...">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?41059545"></script>
+<script src="/js/journal.js?86793245"></script>
 
 
 
