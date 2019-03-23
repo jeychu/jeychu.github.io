@@ -4,16 +4,13 @@
 <html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
 
 <head><meta name="generator" content="Hexo 3.8.0">
-    <title>MySQL优化 - javfa&#39;s blog</title>
+    <title>Pro MySQL - javfa&#39;s blog</title>
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content="应用程序优化
-硬件优化
-操作系统优化
-数据库参数优化
+<meta name="description" content="
 基础架构
-Server层包括连接器、查询缓存、分析器、优化器...">
+Server层包括连接器、查询缓存、分析器、优化器、执行器等，涵盖MySQL的大多数核心服务功能，以及...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -23,7 +20,7 @@ Server层包括连接器、查询缓存、分析器、优化器...">
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?20510188">
+<link rel="stylesheet" href="/css/journal.css?64345188">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -64,10 +61,10 @@ Server层包括连接器、查询缓存、分析器、优化器...">
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                首頁
+                首页
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                歸檔
+                归档
             </a>
 
             
@@ -111,7 +108,7 @@ Server层包括连接器、查询缓存、分析器、优化器...">
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            歸檔
+            归档
         </a>
 
         
@@ -146,7 +143,7 @@ Server层包括连接器、查询缓存、分析器、优化器...">
         <div class="post">
             <div class="post-head-wrapper-text-only" style="background-image: url('')">
                 <div class="post-title">
-                    MySQL优化
+                    Pro MySQL
                     <div class="post-meta">
                         <time datetime="2019-03-18T12:08:03.000Z" itemprop="datePublished">
                             2019-03-18 20:08
@@ -166,10 +163,7 @@ Server层包括连接器、查询缓存、分析器、优化器...">
     
             <div class="post-body-wrapper">
                 <div class="post-body">
-                    <p>应用程序优化</p>
-<p>硬件优化</p>
-<p>操作系统优化</p>
-<p>数据库参数优化</p>
+                    <!--toc-->
 <h1><span id="基础架构">基础架构</span></h1><p><img src="/2019/03/18/MySQL优化/1553066900441.png" alt="1553066900441"></p>
 <p>Server层包括连接器、查询缓存、分析器、优化器、执行器等，涵盖MySQL的大多数核心服务功能，以及所有的内置函数，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等</p>
 <p>而存储引擎负责数据的存储和提取。其架构模式是插件式的，支持InnoDB、MyISAM、Memory等多个存储引擎。</p>
@@ -291,15 +285,15 @@ Server层包括连接器、查询缓存、分析器、优化器...">
 <p>在InnoDB中，行锁是在需要的时候加上的，但并不是不需要了就立刻释放，而是要等到事务结束时才释放，这个就是两阶段锁协议。</p>
 <p>因此，如果你的事务中需要锁多个行，要把最可能造成锁冲突、最可能影响并发度的锁尽量往后放。</p>
 <p><strong>死锁和死锁检测</strong></p>
-<p>在并发系统中不同线程出现循环资源依赖，涉及的线程都在等待别的线程释放资源时，就会导致这几个线程都进入无线等待的状态，称为死锁。</p>
+<p>在并发系统中不同线程出现循环资源依赖，涉及的线程都在等待别的线程释放资源时，就会导致这几个线程都进入无限等待的状态，称为死锁。</p>
 <p><img src="/2019/03/18/MySQL优化/1553348202957.png" alt="1553348202957"></p>
-<p>如上，事务A在等待事务B释放id=2的行锁，而B在等待A释放id=1的行锁，互相等待对方的资源释放，就进入死锁状态。</p>
+<p>如上，事务A在等待事务B释放id=2的行锁，而B在等待A释放id=1的行锁，AB互相等待对方的资源释放，就进入死锁状态。</p>
 <p>出现死锁之后，有两种策略：</p>
 <ul>
-<li>直接进入等待，直到超时。超时实际那可以痛通参数<code>innodb_lock_wait_timeout</code>来设置。</li>
+<li>直接进入等待，直到超时。超时时间可以通过参数<code>innodb_lock_wait_timeout</code>来设置。</li>
 <li>发起死锁检测，发现死锁后，主动回滚死锁链条中的某一个事务，然其他事务得以继续执行。将参数<code>innodb_deadlock_detect</code>设置为on，表示开启这个逻辑。</li>
 </ul>
-<p>死锁检测时有额外负担的。</p>
+<p>死锁检测是有额外负担的。</p>
 <p>每当一个事务被锁的时候，就要看看它所依赖的线程有没有被别人锁住，如此循环，最后判断释放出现了循环等待，也就是死锁。</p>
 </li>
 </ul>
@@ -342,7 +336,7 @@ Server层包括连接器、查询缓存、分析器、优化器...">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?86793245"></script>
+<script src="/js/journal.js?71639532"></script>
 
 
 
