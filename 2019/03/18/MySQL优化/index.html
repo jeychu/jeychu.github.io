@@ -23,7 +23,7 @@ Server层包括连接器、查询缓存、分析器、优化器...">
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?74214103">
+<link rel="stylesheet" href="/css/journal.css?21983461">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -64,10 +64,10 @@ Server层包括连接器、查询缓存、分析器、优化器...">
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                首頁
+                首页
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                歸檔
+                归档
             </a>
 
             
@@ -111,7 +111,7 @@ Server层包括连接器、查询缓存、分析器、优化器...">
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            歸檔
+            归档
         </a>
 
         
@@ -216,6 +216,63 @@ Server层包括连接器、查询缓存、分析器、优化器...">
 <h2><span id="b树">B*树：</span></h2><p>在B+树基础上，为非叶子结点也增加链表指针，将结点的最低利用率</p>
 <p>从1/2提高到2/3；</p>
 </blockquote>
+<h1><span id="事务隔离">事务隔离</span></h1><p>事务，就是要保证一组数据库操作，要么全部成功，要么全部失败。</p>
+<p>MyISAM不支持事务，因而被InnoDB取代。</p>
+<p>隔离的越严实，效率就会越低。</p>
+<h2><span id="隔离级别">隔离级别</span></h2><p>SQL标准的事务隔离级别包括：</p>
+<ul>
+<li>读未提交<sup>read uncommitted</sup>，一个事务还没提交时，它做的变更就能被别的事务看到；</li>
+<li>读提交<sup>read committed</sup>，一个事务提交之后，它做的变更才会被其他事务看到；</li>
+<li>可重复读<sup>repeated read</sup>，一个事务执行过程中看到的数据，总是跟这个事务在启动时看到的数据是一致的。未提交变更对其他事务也是不可见的。</li>
+<li>串行化<sup>serializable</sup>，对于同一个记录，写会加写锁，读会加读锁。当出现读写锁冲突的时候，后访问的事务必须等前一个事务执行完成，才能继续执行。</li>
+</ul>
+<p>形象一点：</p>
+<p><img src="/2019/03/18/MySQL优化/1553321751566.png" alt="1553321751566"></p>
+<h2><span id="隔离的实现">隔离的实现</span></h2><p>同一条记录在系统中可以存在多个版本，就是数据库的多版本并发控制<sup>MVCC</sup>。</p>
+<p>在MySQL中，每条记录在更新的时候都会同时记录一条回滚记录。</p>
+<p>在查询这条记录的时候，不同时刻启动的事务会有不同的read-view。</p>
+<p>当没有事务再需要用到这些回滚日志之时，也就是当系统里没有比这个回滚日志更早的read-view的时候，回滚日志会被删除。</p>
+<p>长事务，意味着系统里面会存在很老的事务视图。由于这些事务随时可能访问数据库里面的任何数据，所以在这个事务提交之前，数据库里面它可能用到的回滚记录都必须保留，这就会导致大量占用存储空间。</p>
+<p>长事务还占用锁资源，可能会拖跨库。</p>
+<p>因此，应该尽量避免长事务。</p>
+<h2><span id="事务的启动方式">事务的启动方式</span></h2><ul>
+<li>显式启动事务语句，begin或start transaction。配套的提交语句是commit，回滚语句是rollback</li>
+<li>set autocommit=0，这个命令会将这个线程的自动提交关闭。这会容易导致意外长事务的出现。</li>
+</ul>
+<p>建议总是使用set autocommit=1，然后显式启动事务。</p>
+<p>在autocommit=1的情况下，用begin显式启动的事务，如果执行commit则提交事务。如果执行commit work and chain，则是提交事务并自动启动下一个事务，这样也省去了再次执行begin语句的开销。</p>
+<p>以下语句可查询持续时间超过60s的长事务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from information_schema.innodb_trx where TIME_TO_SEC(timediff(now(),trx_started))&gt;60</span><br></pre></td></tr></table></figure>
+<h2><span id="自问自答检查掌握程度">自问自答，检查掌握程度</span></h2><p><img src="/2019/03/18/MySQL优化/1553321891152.png" alt="1553321891152"></p>
+<h1><span id="锁">锁</span></h1><p>是为了处理并发。</p>
+<p>多用户共享的资源，当出现并发访问的时候，数据库需要合理地控制资源的访问规则。</p>
+<p>锁就是用来实现这些访问规则的数据结构。</p>
+<p>根据锁的范围，大致可分成</p>
+<ul>
+<li><p>全局锁：对整个数据库实例加锁。</p>
+<p>全局加读锁的命令：flush tables with read lock。之后，整库处于只读状态，其他线程的以下语句会被阻塞：数据更新语句、数据定义语句和更新类事务的提交语句。</p>
+<p>典型使用场景是，做全库逻辑备份。</p>
+<p>全库只读，很危险：</p>
+<ul>
+<li>若在主库备份，则在备份期间都不能执行更新，业务停摆；</li>
+<li>若在从库备份，则在备份期间不能执行主库同步过来的binlog，会导致主从延迟。</li>
+</ul>
+<p>-single-transaction MVCC</p>
+<p>可重复读隔离级别开启一个事务</p>
+<p>一致性读</p>
+</li>
+<li><p>表级锁</p>
+<p>语法是lock tables … read/write</p>
+<p>可以使用unlock tables主动释放锁，亦可以在客户端断开的时候自动释放。</p>
+<p>lock tables除了会限制别的线程的读写外，也限定了本线程接下来的操作对象。</p>
+<p>另一类表级锁是MDL<sup>metadata lock</sup>。MDL不需要显式使用，在访问一个表的时候会被自动加上。</p>
+<p>MDL的作用是，保证读写的正确性。</p>
+<p>当对一个表做增删改查操作的时候，加MDL读锁；当要对表做结构变更操作的时候，加MDL写锁。</p>
+</li>
+</ul>
+<ul>
+<li>行锁</li>
+</ul>
 
                 </div>
             </div>
@@ -255,7 +312,7 @@ Server层包括连接器、查询缓存、分析器、优化器...">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?85260519"></script>
+<script src="/js/journal.js?41059545"></script>
 
 
 
