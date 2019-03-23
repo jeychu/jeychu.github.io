@@ -82,17 +82,20 @@
     <link href="http://yoursite.com/2019/03/18/MySQL%E4%BC%98%E5%8C%96/"/>
     <id>http://yoursite.com/2019/03/18/MySQL优化/</id>
     <published>2019-03-18T12:08:03.000Z</published>
-    <updated>2019-03-23T13:59:30.698Z</updated>
+    <updated>2019-03-23T14:05:12.640Z</updated>
     
-    <content type="html"><![CDATA[<!--toc--><h1><span id="基础架构">基础架构</span></h1><p><img src="/2019/03/18/MySQL优化/1553066900441.png" alt="1553066900441"></p><p>Server层包括连接器、查询缓存、分析器、优化器、执行器等，涵盖MySQL的大多数核心服务功能，以及所有的内置函数，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等</p><p>而存储引擎负责数据的存储和提取。其架构模式是插件式的，支持InnoDB、MyISAM、Memory等多个存储引擎。</p><h2><span id="连接器">连接器</span></h2><p>负责建立连接、获取权限、维持和管理连接。</p><p>连接空闲最长时间由参数wait_timeout控制，默认值是8小时。</p><p>连接断开后，再次发送请求，就会有错误提醒：Lost connection to MySQL server during query。此时要重连。</p><p>使用长连接，占用内存大，容易被系统强行杀掉，导致异常重启。</p><p>解决方法：</p><ul><li>定期断开长连接</li><li>执行一个比较大的操作后，通过执行mysql_reset_connection来重新初始化连接资源。这个过程不需要重连和重新做权限验证，但是会将连接恢复到刚刚创建完时的状态</li></ul><h2><span id="查询缓存">查询缓存</span></h2><p>8.0已经没有这个功能了</p><p>query_cache_type设置为DEMAND，则默认不启用查询缓存。</p><p>可以特定语句使用缓存：</p><p>select SQL_CACHE * from T where ID=10;</p><h2><span id="分析器">分析器</span></h2><h2><span id="优化器">优化器</span></h2><h2><span id="执行器">执行器</span></h2><h2><span id="日志系统">日志系统</span></h2><p>MySQL可以恢复到半个月内任意一秒的状态。</p><h3><span id="redo-log">redo log</span></h3><p>用于保证crash-safe能力</p><h3><span id="binlog">binlog</span></h3><h1><span id="索引">索引</span></h1><p>是为了提高数据查询的效率</p><h2><span id="索引的实现">索引的实现</span></h2><h3><span id="哈希表">哈希表</span></h3><p>是一种以key-value存储数据的结构。</p><p>哈希函数将一个值<sup>key</sup>换算成一个确定的位置<sup>value</sup>，然后把值放到这个位置。</p><p>不可避免地，会出现多个key经过哈希函数的换算，得到同一个value的情况。处理办法是，在此value项拉出一个链表，重复的key依次往后追加。查找时通过哈希换算+顺序遍历，找到索引项。</p><p>链表只是追加，并不是有序的，所以做区间查询会很慢。</p><p>因此，哈希表适用于只有等值查询的场景。比如Memcached及其他一些NoSQL引擎。</p><h3><span id="有序数组">有序数组</span></h3><p>在等值查询和范围查询场景中的性能都很优秀。</p><p>用二分法查找，时间复杂度是O(logN)。</p><p>只看查询效率，有序数组就是最好的数据结构了。</p><p>但是，更新数据的成本太高。</p><p>所以，有序数组只适用于静态存储引擎。</p><h3><span id="搜索树">搜索树</span></h3><p>二叉搜索树：每个节点的左子小于父，父小于右子。</p><p>查找的时间复杂度是O(logN)。</p><p>为了维持O(logN)的查询复杂度，需平衡二叉树，更新的时间复杂度也是O(logN)。</p><p>还可以有多叉树。</p><p>二叉树的搜索效率最高，但实际上大多数数据库存储却并不使用二叉树。原因是，索引不只存在内存中，还要写到磁盘上。</p><p>100万个节点的平衡二叉树，树高20。一次查询可能需要访问20个数据块。机械硬盘随机读一个数据块需要10ms左右的寻址时间。因此，单独访问一行就可能需要200ms的时间。</p><p>为了尽量少的读磁盘，使用N叉树。</p><p>InnoDB的一个整数字段索引，N差不多是1200。这棵树高是4的时候，就可以存1200<sup>3</sup>个值，约17亿。树根的数据块总是在内存中，因此一个10亿行的表上一个整数字段的索引，查找一个值最多只需要访问3次磁盘。</p><h2><span id="innodb的索引模型">InnoDB的索引模型</span></h2><p>B+树</p><blockquote><h2><span id="b-树">B-树：</span></h2><p>多路搜索树，每个结点存储M/2到M个关键字，非叶子结点存储指向关键字范围的子结点；</p><p>所有关键字在整颗树中出现，且只出现一次，非叶子结点可以命中；</p><h2><span id="b树">B+树：</span></h2><p>在B-树基础上，为叶子结点增加链表指针，所有关键字都在叶子结点中出现，非叶子结点作为叶子结点的索引；</p><p>B+树总是到叶子结点才命中；</p><h2><span id="b树">B*树：</span></h2><p>在B+树基础上，为非叶子结点也增加链表指针，将结点的最低利用率</p><p>从1/2提高到2/3；</p></blockquote><h1><span id="事务隔离">事务隔离</span></h1><p>事务，就是要保证一组数据库操作，要么全部成功，要么全部失败。</p><p>MyISAM不支持事务，因而被InnoDB取代。</p><p>隔离的越严实，效率就会越低。</p><h2><span id="隔离级别">隔离级别</span></h2><p>SQL标准的事务隔离级别包括：</p><ul><li>读未提交<sup>read uncommitted</sup>，一个事务还没提交时，它做的变更就能被别的事务看到；</li><li>读提交<sup>read committed</sup>，一个事务提交之后，它做的变更才会被其他事务看到；</li><li>可重复读<sup>repeated read</sup>，一个事务执行过程中看到的数据，总是跟这个事务在启动时看到的数据是一致的。未提交变更对其他事务也是不可见的。</li><li>串行化<sup>serializable</sup>，对于同一个记录，写会加写锁，读会加读锁。当出现读写锁冲突的时候，后访问的事务必须等前一个事务执行完成，才能继续执行。</li></ul><p>形象一点：</p><p><img src="/2019/03/18/MySQL优化/1553321751566.png" alt="1553321751566"></p><h2><span id="隔离的实现">隔离的实现</span></h2><p>同一条记录在系统中可以存在多个版本，就是数据库的多版本并发控制<sup>MVCC</sup>。</p><p>在MySQL中，每条记录在更新的时候都会同时记录一条回滚记录。</p><p>在查询这条记录的时候，不同时刻启动的事务会有不同的read-view。</p><p>当没有事务再需要用到这些回滚日志之时，也就是当系统里没有比这个回滚日志更早的read-view的时候，回滚日志会被删除。</p><p>长事务，意味着系统里面会存在很老的事务视图。由于这些事务随时可能访问数据库里面的任何数据，所以在这个事务提交之前，数据库里面它可能用到的回滚记录都必须保留，这就会导致大量占用存储空间。</p><p>长事务还占用锁资源，可能会拖跨库。</p><p>因此，应该尽量避免长事务。</p><h2><span id="事务的启动方式">事务的启动方式</span></h2><ul><li>显式启动事务语句，begin或start transaction。配套的提交语句是commit，回滚语句是rollback</li><li>set autocommit=0，这个命令会将这个线程的自动提交关闭。这会容易导致意外长事务的出现。</li></ul><p>建议总是使用set autocommit=1，然后显式启动事务。</p><p>在autocommit=1的情况下，用begin显式启动的事务，如果执行commit则提交事务。如果执行commit work and chain，则是提交事务并自动启动下一个事务，这样也省去了再次执行begin语句的开销。</p><p>以下语句可查询持续时间超过60s的长事务：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from information_schema.innodb_trx where TIME_TO_SEC(timediff(now(),trx_started))&gt;60</span><br></pre></td></tr></table></figure><h2><span id="自问自答检查掌握程度">自问自答，检查掌握程度</span></h2><p><img src="/2019/03/18/MySQL优化/1553321891152.png" alt="1553321891152"></p><h1><span id="锁">锁</span></h1><p>是为了处理并发。</p><p>多用户共享的资源，当出现并发访问的时候，数据库需要合理地控制资源的访问规则。</p><p>锁就是用来实现这些访问规则的数据结构。</p><p>根据锁的范围，大致可分成</p><ul><li><p>全局锁：对整个数据库实例加锁。</p><p>全局加读锁的命令：<code>flush tables with read lock</code>。之后，整库处于只读状态，其他线程的以下语句会被阻塞：数据更新语句、数据定义语句和更新类事务的提交语句。</p><p>典型使用场景是，做全库逻辑备份。</p><p>全库只读，很危险：</p><ul><li>若在主库备份，则在备份期间都不能执行更新，业务停摆；</li><li>若在从库备份，则在备份期间不能执行主库同步过来的binlog，会导致主从延迟。</li></ul><p>但是，不加锁的话，备份系统备份得到的库不是一个逻辑时间点，这个视图是逻辑不一致的。</p><p>如何不加锁的情况下，得到一致性视图呢？</p><p>可以在可重复读隔离级别下开启一个事务，得到一致性视图。</p><p>mysqldump使用参数-single-transaction的时候，导数据之前就会启动一个事务，来确保拿到一致性视图。由于 MVCC的支持，这个过程中的数据是可以正常更新的。</p><p>一致性读的前提是引擎要支持这个隔离级别。</p><p>single-transaction方法只适用于所有表使用事务引擎的库。</p></li><li><p>表级锁</p><ul><li><p>一类是主动加锁，语法是<code>lock tables … read/write</code></p><p>可以使用unlock tables主动释放锁，亦可以在客户端断开的时候自动释放。</p><p>lock tables除了会限制别的线程的读写外，也限定了本线程接下来的操作对象。</p></li><li><p>另一类表级锁是系统默认加的MDL<sup>metadata lock</sup>。MDL不需要显式使用，在访问一个表的时候会被自动加上。</p><p>MDL的作用是，保证读写的正确性。</p><p>当对一个表做增删改查操作的时候，加MDL读锁；当要对表做结构变更操作的时候，加MDL写锁。</p><ul><li>读锁之间不互斥，因此可以多线程同时对一张表增删改查</li><li>读写锁之间、写锁之间是互斥的，用来保证变更表结构操作的安全性。因此，如果有两个线程要同时给一个表加字段，其中一个要等另一个执行完才能开始执行。</li></ul></li></ul><p>一个事务在提交之前，它是不会释放MDL锁的。所以在事务提交之前，若有另一个session需要MDL写锁，就会阻塞，并且会导致随后其他所有session的所有操作。</p><p>给一个表加字段，或者修改字段，或者加索引，需要扫描全表的数据。在对大表操作的时候，要特别小心，以免对线上服务造成影响。对于小表，操作不慎也会出问题。</p><p>如何安全地给小表加字段？</p><p>首先，我们要解决长事务，事务不提交，就会一直占着MDL锁。在MySQL的information_schema库的innodb_trx表中，可以查到当前执行中的事务。如果要做DDL变更的表刚好有长事务在执行，要考虑先暂停DDL，或者kill掉这个长事务。</p><p>如果要变更的表是一个热点表，虽然数据量不大，但是上面的请求很频繁。此时kill可能未必管用，因为新的请求马上就来了。理想的机制是，在alter table语句里设定等待时间，如果在这个指定的等待时间里能够拿到MDL写锁最好，拿不到也不要阻塞后面的业务语句，先放弃。之后再重试命令重复这个过程。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE tb1_name NOWAIT add column...</span><br><span class="line">ALTER TABLE tb1_name WAIT N add column...</span><br></pre></td></tr></table></figure></li><li><p>行锁</p><p><strong>两阶段锁</strong></p><p>在InnoDB中，行锁是在需要的时候加上的，但并不是不需要了就立刻释放，而是要等到事务结束时才释放，这个就是两阶段锁协议。</p><p>因此，如果你的事务中需要锁多个行，要把最可能造成锁冲突、最可能影响并发度的锁尽量往后放。</p><p><strong>死锁和死锁检测</strong></p><p>在并发系统中不同线程出现循环资源依赖，涉及的线程都在等待别的线程释放资源时，就会导致这几个线程都进入无限等待的状态，称为死锁。</p><p><img src="/2019/03/18/MySQL优化/1553348202957.png" alt="1553348202957"></p><p>如上，事务A在等待事务B释放id=2的行锁，而B在等待A释放id=1的行锁，AB互相等待对方的资源释放，就进入死锁状态。</p><p>出现死锁之后，有两种策略：</p><ul><li>直接进入等待，直到超时。超时时间可以通过参数<code>innodb_lock_wait_timeout</code>来设置。</li><li>发起死锁检测，发现死锁后，主动回滚死锁链条中的某一个事务，然其他事务得以继续执行。将参数<code>innodb_deadlock_detect</code>设置为on，表示开启这个逻辑。</li></ul><p>死锁检测是有额外负担的。</p><p>每当一个事务被锁的时候，就要看看它所依赖的线程有没有被别人锁住，如此循环，最后判断释放出现了循环等待，也就是死锁。</p></li></ul>]]></content>
+    <content type="html"><![CDATA[<!-- toc --><ul><li><a href="#基础架构">基础架构</a><ul><li><a href="#连接器">连接器</a></li><li><a href="#查询缓存">查询缓存</a></li><li><a href="#分析器">分析器</a></li><li><a href="#优化器">优化器</a></li><li><a href="#执行器">执行器</a></li><li><a href="#日志系统">日志系统</a><ul><li><a href="#redo-log">redo log</a></li><li><a href="#binlog">binlog</a></li></ul></li></ul></li><li><a href="#索引">索引</a><ul><li><a href="#索引的实现">索引的实现</a><ul><li><a href="#哈希表">哈希表</a></li><li><a href="#有序数组">有序数组</a></li><li><a href="#搜索树">搜索树</a></li></ul></li><li><a href="#innodb的索引模型">InnoDB的索引模型</a></li><li><a href="#b-树">B-树：</a></li><li><a href="#b树">B+树：</a></li><li><a href="#b树">B*树：</a></li></ul></li><li><a href="#事务隔离">事务隔离</a><ul><li><a href="#隔离级别">隔离级别</a></li><li><a href="#隔离的实现">隔离的实现</a></li><li><a href="#事务的启动方式">事务的启动方式</a></li><li><a href="#自问自答检查掌握程度">自问自答，检查掌握程度</a></li></ul></li><li><a href="#锁">锁</a></li></ul><!-- tocstop --><h1><span id="基础架构">基础架构</span></h1><p><img src="/2019/03/18/MySQL优化/1553066900441.png" alt="1553066900441"></p><p>Server层包括连接器、查询缓存、分析器、优化器、执行器等，涵盖MySQL的大多数核心服务功能，以及所有的内置函数，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等</p><p>而存储引擎负责数据的存储和提取。其架构模式是插件式的，支持InnoDB、MyISAM、Memory等多个存储引擎。</p><h2><span id="连接器">连接器</span></h2><p>负责建立连接、获取权限、维持和管理连接。</p><p>连接空闲最长时间由参数wait_timeout控制，默认值是8小时。</p><p>连接断开后，再次发送请求，就会有错误提醒：Lost connection to MySQL server during query。此时要重连。</p><p>使用长连接，占用内存大，容易被系统强行杀掉，导致异常重启。</p><p>解决方法：</p><ul><li>定期断开长连接</li><li>执行一个比较大的操作后，通过执行mysql_reset_connection来重新初始化连接资源。这个过程不需要重连和重新做权限验证，但是会将连接恢复到刚刚创建完时的状态</li></ul><h2><span id="查询缓存">查询缓存</span></h2><p>8.0已经没有这个功能了</p><p>query_cache_type设置为DEMAND，则默认不启用查询缓存。</p><p>可以特定语句使用缓存：</p><p>select SQL_CACHE * from T where ID=10;</p><h2><span id="分析器">分析器</span></h2><h2><span id="优化器">优化器</span></h2><h2><span id="执行器">执行器</span></h2><h2><span id="日志系统">日志系统</span></h2><p>MySQL可以恢复到半个月内任意一秒的状态。</p><h3><span id="redo-log">redo log</span></h3><p>用于保证crash-safe能力</p><h3><span id="binlog">binlog</span></h3><h1><span id="索引">索引</span></h1><p>是为了提高数据查询的效率</p><h2><span id="索引的实现">索引的实现</span></h2><h3><span id="哈希表">哈希表</span></h3><p>是一种以key-value存储数据的结构。</p><p>哈希函数将一个值<sup>key</sup>换算成一个确定的位置<sup>value</sup>，然后把值放到这个位置。</p><p>不可避免地，会出现多个key经过哈希函数的换算，得到同一个value的情况。处理办法是，在此value项拉出一个链表，重复的key依次往后追加。查找时通过哈希换算+顺序遍历，找到索引项。</p><p>链表只是追加，并不是有序的，所以做区间查询会很慢。</p><p>因此，哈希表适用于只有等值查询的场景。比如Memcached及其他一些NoSQL引擎。</p><h3><span id="有序数组">有序数组</span></h3><p>在等值查询和范围查询场景中的性能都很优秀。</p><p>用二分法查找，时间复杂度是O(logN)。</p><p>只看查询效率，有序数组就是最好的数据结构了。</p><p>但是，更新数据的成本太高。</p><p>所以，有序数组只适用于静态存储引擎。</p><h3><span id="搜索树">搜索树</span></h3><p>二叉搜索树：每个节点的左子小于父，父小于右子。</p><p>查找的时间复杂度是O(logN)。</p><p>为了维持O(logN)的查询复杂度，需平衡二叉树，更新的时间复杂度也是O(logN)。</p><p>还可以有多叉树。</p><p>二叉树的搜索效率最高，但实际上大多数数据库存储却并不使用二叉树。原因是，索引不只存在内存中，还要写到磁盘上。</p><p>100万个节点的平衡二叉树，树高20。一次查询可能需要访问20个数据块。机械硬盘随机读一个数据块需要10ms左右的寻址时间。因此，单独访问一行就可能需要200ms的时间。</p><p>为了尽量少的读磁盘，使用N叉树。</p><p>InnoDB的一个整数字段索引，N差不多是1200。这棵树高是4的时候，就可以存1200<sup>3</sup>个值，约17亿。树根的数据块总是在内存中，因此一个10亿行的表上一个整数字段的索引，查找一个值最多只需要访问3次磁盘。</p><h2><span id="innodb的索引模型">InnoDB的索引模型</span></h2><p>B+树</p><blockquote><h2><span id="b-树">B-树：</span></h2><p>多路搜索树，每个结点存储M/2到M个关键字，非叶子结点存储指向关键字范围的子结点；</p><p>所有关键字在整颗树中出现，且只出现一次，非叶子结点可以命中；</p><h2><span id="b树">B+树：</span></h2><p>在B-树基础上，为叶子结点增加链表指针，所有关键字都在叶子结点中出现，非叶子结点作为叶子结点的索引；</p><p>B+树总是到叶子结点才命中；</p><h2><span id="b树">B*树：</span></h2><p>在B+树基础上，为非叶子结点也增加链表指针，将结点的最低利用率</p><p>从1/2提高到2/3；</p></blockquote><h1><span id="事务隔离">事务隔离</span></h1><p>事务，就是要保证一组数据库操作，要么全部成功，要么全部失败。</p><p>MyISAM不支持事务，因而被InnoDB取代。</p><p>隔离的越严实，效率就会越低。</p><h2><span id="隔离级别">隔离级别</span></h2><p>SQL标准的事务隔离级别包括：</p><ul><li>读未提交<sup>read uncommitted</sup>，一个事务还没提交时，它做的变更就能被别的事务看到；</li><li>读提交<sup>read committed</sup>，一个事务提交之后，它做的变更才会被其他事务看到；</li><li>可重复读<sup>repeated read</sup>，一个事务执行过程中看到的数据，总是跟这个事务在启动时看到的数据是一致的。未提交变更对其他事务也是不可见的。</li><li>串行化<sup>serializable</sup>，对于同一个记录，写会加写锁，读会加读锁。当出现读写锁冲突的时候，后访问的事务必须等前一个事务执行完成，才能继续执行。</li></ul><p>形象一点：</p><p><img src="/2019/03/18/MySQL优化/1553321751566.png" alt="1553321751566"></p><h2><span id="隔离的实现">隔离的实现</span></h2><p>同一条记录在系统中可以存在多个版本，就是数据库的多版本并发控制<sup>MVCC</sup>。</p><p>在MySQL中，每条记录在更新的时候都会同时记录一条回滚记录。</p><p>在查询这条记录的时候，不同时刻启动的事务会有不同的read-view。</p><p>当没有事务再需要用到这些回滚日志之时，也就是当系统里没有比这个回滚日志更早的read-view的时候，回滚日志会被删除。</p><p>长事务，意味着系统里面会存在很老的事务视图。由于这些事务随时可能访问数据库里面的任何数据，所以在这个事务提交之前，数据库里面它可能用到的回滚记录都必须保留，这就会导致大量占用存储空间。</p><p>长事务还占用锁资源，可能会拖跨库。</p><p>因此，应该尽量避免长事务。</p><h2><span id="事务的启动方式">事务的启动方式</span></h2><ul><li>显式启动事务语句，begin或start transaction。配套的提交语句是commit，回滚语句是rollback</li><li>set autocommit=0，这个命令会将这个线程的自动提交关闭。这会容易导致意外长事务的出现。</li></ul><p>建议总是使用set autocommit=1，然后显式启动事务。</p><p>在autocommit=1的情况下，用begin显式启动的事务，如果执行commit则提交事务。如果执行commit work and chain，则是提交事务并自动启动下一个事务，这样也省去了再次执行begin语句的开销。</p><p>以下语句可查询持续时间超过60s的长事务：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from information_schema.innodb_trx where TIME_TO_SEC(timediff(now(),trx_started))&gt;60</span><br></pre></td></tr></table></figure><h2><span id="自问自答检查掌握程度">自问自答，检查掌握程度</span></h2><p><img src="/2019/03/18/MySQL优化/1553321891152.png" alt="1553321891152"></p><h1><span id="锁">锁</span></h1><p>是为了处理并发。</p><p>多用户共享的资源，当出现并发访问的时候，数据库需要合理地控制资源的访问规则。</p><p>锁就是用来实现这些访问规则的数据结构。</p><p>根据锁的范围，大致可分成</p><ul><li><p>全局锁：对整个数据库实例加锁。</p><p>全局加读锁的命令：<code>flush tables with read lock</code>。之后，整库处于只读状态，其他线程的以下语句会被阻塞：数据更新语句、数据定义语句和更新类事务的提交语句。</p><p>典型使用场景是，做全库逻辑备份。</p><p>全库只读，很危险：</p><ul><li>若在主库备份，则在备份期间都不能执行更新，业务停摆；</li><li>若在从库备份，则在备份期间不能执行主库同步过来的binlog，会导致主从延迟。</li></ul><p>但是，不加锁的话，备份系统备份得到的库不是一个逻辑时间点，这个视图是逻辑不一致的。</p><p>如何不加锁的情况下，得到一致性视图呢？</p><p>可以在可重复读隔离级别下开启一个事务，得到一致性视图。</p><p>mysqldump使用参数-single-transaction的时候，导数据之前就会启动一个事务，来确保拿到一致性视图。由于 MVCC的支持，这个过程中的数据是可以正常更新的。</p><p>一致性读的前提是引擎要支持这个隔离级别。</p><p>single-transaction方法只适用于所有表使用事务引擎的库。</p></li><li><p>表级锁</p><ul><li><p>一类是主动加锁，语法是<code>lock tables … read/write</code></p><p>可以使用unlock tables主动释放锁，亦可以在客户端断开的时候自动释放。</p><p>lock tables除了会限制别的线程的读写外，也限定了本线程接下来的操作对象。</p></li><li><p>另一类表级锁是系统默认加的MDL<sup>metadata lock</sup>。MDL不需要显式使用，在访问一个表的时候会被自动加上。</p><p>MDL的作用是，保证读写的正确性。</p><p>当对一个表做增删改查操作的时候，加MDL读锁；当要对表做结构变更操作的时候，加MDL写锁。</p><ul><li>读锁之间不互斥，因此可以多线程同时对一张表增删改查</li><li>读写锁之间、写锁之间是互斥的，用来保证变更表结构操作的安全性。因此，如果有两个线程要同时给一个表加字段，其中一个要等另一个执行完才能开始执行。</li></ul></li></ul><p>一个事务在提交之前，它是不会释放MDL锁的。所以在事务提交之前，若有另一个session需要MDL写锁，就会阻塞，并且会导致随后其他所有session的所有操作。</p><p>给一个表加字段，或者修改字段，或者加索引，需要扫描全表的数据。在对大表操作的时候，要特别小心，以免对线上服务造成影响。对于小表，操作不慎也会出问题。</p><p>如何安全地给小表加字段？</p><p>首先，我们要解决长事务，事务不提交，就会一直占着MDL锁。在MySQL的information_schema库的innodb_trx表中，可以查到当前执行中的事务。如果要做DDL变更的表刚好有长事务在执行，要考虑先暂停DDL，或者kill掉这个长事务。</p><p>如果要变更的表是一个热点表，虽然数据量不大，但是上面的请求很频繁。此时kill可能未必管用，因为新的请求马上就来了。理想的机制是，在alter table语句里设定等待时间，如果在这个指定的等待时间里能够拿到MDL写锁最好，拿不到也不要阻塞后面的业务语句，先放弃。之后再重试命令重复这个过程。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE tb1_name NOWAIT add column...</span><br><span class="line">ALTER TABLE tb1_name WAIT N add column...</span><br></pre></td></tr></table></figure></li><li><p>行锁</p><p><strong>两阶段锁</strong></p><p>在InnoDB中，行锁是在需要的时候加上的，但并不是不需要了就立刻释放，而是要等到事务结束时才释放，这个就是两阶段锁协议。</p><p>因此，如果你的事务中需要锁多个行，要把最可能造成锁冲突、最可能影响并发度的锁尽量往后放。</p><p><strong>死锁和死锁检测</strong></p><p>在并发系统中不同线程出现循环资源依赖，涉及的线程都在等待别的线程释放资源时，就会导致这几个线程都进入无限等待的状态，称为死锁。</p><p><img src="/2019/03/18/MySQL优化/1553348202957.png" alt="1553348202957"></p><p>如上，事务A在等待事务B释放id=2的行锁，而B在等待A释放id=1的行锁，AB互相等待对方的资源释放，就进入死锁状态。</p><p>出现死锁之后，有两种策略：</p><ul><li>直接进入等待，直到超时。超时时间可以通过参数<code>innodb_lock_wait_timeout</code>来设置。</li><li>发起死锁检测，发现死锁后，主动回滚死锁链条中的某一个事务，然其他事务得以继续执行。将参数<code>innodb_deadlock_detect</code>设置为on，表示开启这个逻辑。</li></ul><p>死锁检测是有额外负担的。</p><p>每当一个事务被锁的时候，就要看看它所依赖的线程有没有被别人锁住，如此循环，最后判断释放出现了循环等待，也就是死锁。</p></li></ul>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;!--toc--&gt;
-&lt;h1&gt;&lt;span id=&quot;基础架构&quot;&gt;基础架构&lt;/span&gt;&lt;/h1&gt;&lt;p&gt;&lt;img src=&quot;/2019/03/18/MySQL优化/1553066900441.png&quot; alt=&quot;1553066900441&quot;&gt;&lt;/p&gt;
-&lt;p&gt;Server层包括连接器、
+        &lt;!-- toc --&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#基础架构&quot;&gt;基础架构&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#连接器&quot;&gt;连接器&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#查询缓存&quot;&gt;查询缓存&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#分析器&quot;&gt;分析器&lt;
       
     
     </summary>
@@ -223,30 +226,6 @@
   </entry>
   
   <entry>
-    <title>CDN</title>
-    <link href="http://yoursite.com/2019/03/12/CDN/"/>
-    <id>http://yoursite.com/2019/03/12/CDN/</id>
-    <published>2019-03-12T13:31:55.000Z</published>
-    <updated>2019-03-18T11:51:49.775Z</updated>
-    
-    <content type="html"><![CDATA[<p>CDN ：缓存服务器+智能DNS</p><p>分布式存储 负载均衡 请求重定向 内容管理</p><p>待更。。。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;CDN ：缓存服务器+智能DNS&lt;/p&gt;
-&lt;p&gt;分布式存储 负载均衡 请求重定向 内容管理&lt;/p&gt;
-&lt;p&gt;待更。。。&lt;/p&gt;
-
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
     <title>Linux性能优化之磁盘篇</title>
     <link href="http://yoursite.com/2019/03/12/Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E7%A3%81%E7%9B%98%E7%AF%87/"/>
     <id>http://yoursite.com/2019/03/12/Linux性能优化之磁盘篇/</id>
@@ -288,30 +267,6 @@
         &lt;ol&gt;
 &lt;li&gt;&lt;p&gt;升级内核：&lt;/p&gt;
 &lt;p&gt;CentOS7的内核版本是3.x，要安装使用eBPF，bcc和ply，内核版本至少是4.9，所以需要先升级CentOS7的内核。详见&lt;a href=&quot;https://jeychu.github.io/2019/03/11/Cent
-      
-    
-    </summary>
-    
-    
-      <category term="Linux" scheme="http://yoursite.com/tags/Linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>systemtap</title>
-    <link href="http://yoursite.com/2019/03/11/systemtap/"/>
-    <id>http://yoursite.com/2019/03/11/systemtap/</id>
-    <published>2019-03-11T09:45:32.000Z</published>
-    <updated>2019-03-13T02:02:50.123Z</updated>
-    
-    <content type="html"><![CDATA[<p>此篇为systemtap的学习笔记，待更。。。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;此篇为systemtap的学习笔记，待更。。。&lt;/p&gt;
-
       
     
     </summary>
@@ -513,6 +468,50 @@
     
     
       <category term="Nginx" scheme="http://yoursite.com/tags/Nginx/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>微服务设计</title>
+    <link href="http://yoursite.com/2019/02/28/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1/"/>
+    <id>http://yoursite.com/2019/02/28/微服务设计/</id>
+    <published>2019-02-28T14:53:03.000Z</published>
+    <updated>2019-03-21T09:42:34.293Z</updated>
+    
+    <content type="html"><![CDATA[<h1><span id="微服务">微服务</span></h1><h1><span id="演化式架构师">演化式架构师</span></h1><h1><span id="如何建模服务">如何建模服务</span></h1><h1><span id="集成">集成</span></h1><h1><span id="分解单块系统">分解单块系统</span></h1><h1><span id="部署">部署</span></h1><blockquote><p>构建什么、如何构建以及如何部署？</p></blockquote><h2><span id="持续集成简介">持续集成简介</span></h2><ul><li>你是否每天签入代码到主线？</li><li>你是否有一组测试来验证修改？</li><li>当构建失败后，团队是否把修复CI当作第一优先级的事情来做？</li></ul><h2><span id="把ci映射到微服务">把CI映射到微服务</span></h2><p>如何在微服务、CI构建及源代码三者之间，建立起合适的映射呢？</p><p>最简单的，把所有东西放在一起。如下所示，一个巨大的代码库，其中包括所有的代码，并且只有一个构建。向该代码库任何一次的代码提交都会触发构建，在构建中运行相关的验证，然后生成多个构建物，所有这些都是在同一个构建中完成。</p><p><img src="/2019/02/28/微服务设计/1552533778038.png" alt="1552533778038"></p><p>这种模式存在很多明显的缺点：</p><p>如果我仅仅修改了用户访问中的一行代码，所有其他的服务都需要解析验证和构建，但实际上它们并不需要重新验证和构建，在这里，我们花费了不必要的时间。</p><p>这种方法的一个变体是保留一个代码库，但是用多个CI分别映射到代码库的不同部分，如下所示：</p><p><img src="/2019/02/28/微服务设计/1552533870065.png" alt="1552533870065"></p><p>这种模式可能是双刃剑：一方面它会简化检出/检入的流程，但另一方面，由于可以很轻松地同时提交对多个服务的修改，从而容易做出将多个服务耦合在一起的修改。</p><p>另外一种模式是，每个微服务都有自己的CI，可以在将该微服务部署到生产环境之前做一个快速的验证，如下所示：</p><p><img src="/2019/02/28/微服务设计/1552533913998.png" alt="1552533913998"></p><h2><span id="构建流水线">构建流水线</span></h2><p>使用构建流水线的标准发布流程：</p><p><img src="/2019/02/28/微服务设计/1552536246615.png" alt="1552536246615"></p><p>在微服务的世界，我们想要保证服务之间可以独立于彼此进行部署，所以每个服务都有自己独立的CI。</p><p>但也有例外：刚启动一个新项目时，在什么都没有的情况之下，要花很多时间来识别服务边界。</p><p>在识别出稳定的边界之前，可以把所有的初始服务都放到一起，只用一个构建。此时，也经常会发生跨服务边界的修改，把所有的服务都放在同一个构建中，可以减轻跨服务修改的代价。</p><p>当服务的API稳定之后，就可以开始把它们移动到各自的构建之中。</p><h2><span id="平台特定的构建物">平台特定的构建物</span></h2><p>大多数技术栈都有相应的构建物类型，同时也有相关的工具来创建和安装这些构建物。如：Ruby有gem，Java有JAR包和WAR包，Python有egg。</p><p>从部署的角度，只有构建物本身通常是不够的。如Python应用程序需要运行在Nginx或Apache中。</p><p>为了部署和启动这些构建物，需要安装和配置一些其他的软件。使用Ansible、SaltStack进行自动化配置管理，可以很好的解决这个问题。</p><h2><span id="操作系统构建物">操作系统构建物</span></h2><p>有一种方法可以避免多种技术栈下的构建物所带来的问题，那就是使用操作系统支持的构建物。如，基于RedHat或者CentOS的系统来收，可以使用RPM；对于Ubuntu，可以使用deb包；对于Windows，使用MSI。</p><h2><span id="定制化镜像">定制化镜像</span></h2><p>创建定制化虚拟机镜像：</p><p><img src="/2019/02/28/微服务设计/1552537789945.png" alt="1552537789945"></p><p>只需要构建一次镜像，然后根据这些镜像启动虚拟机，不需要再花费时间来安装相应的依赖，因为它们已经在镜像中安装好了。</p><p>如果你的核心依赖没有改变，那么新版本的服务就可以继续使用相同的基础镜像。</p><h3><span id="将镜像作为构建物">将镜像作为构建物</span></h3><p>把服务本身也包含在镜像中，这样就把镜像变成了构建物。</p><p>现在当你启动镜像时，服务就已经就绪了。</p><p>就像使用OS特定软件包那样，可以认为这些VM镜像是对不同技术栈的一层抽象。我们不需要关心运行在镜像中的服务所使用的语言是Ruby还是Java，我们唯一关心的就是它是否工作。然后把精力放在镜像创建和部署的自动化上即可。</p><h3><span id="不可变服务器">不可变服务器</span></h3><p>通过把配置都存到版本控制代码中，我们可以自动化重建服务，甚至重建整个环境。</p><p>但如果部署完成之后，有人登陆到机器上修改了一些东西，就会导致机器的实际配置和源代码管理中的配置不再一致，整个问题叫做配置漂移。</p><p>为了避免这个问题，可以禁止对任何运行的服务器做手动修改。</p><p>并且，无论修改多么小，都需要经过构建流水线来创建新的机器。</p><h2><span id="环境">环境</span></h2><p>不同环境中部署的服务是相同的，但是每个环境的用途却不一样。</p><p>从笔记本到UAT，再到生产环境，我们希望前面的环境都能不断地靠近生产环境，这样就可以更快地捕获到由于环境差异导致的问题。</p><p>类生产环境和快速反馈之间需要持续地做权衡。</p><h2><span id="服务配置">服务配置</span></h2><p>不同环境的配置差异，如何在部署流程中对其进行处理呢？</p><p>可以对每个环境创建不同的构建物，并把配置内建在该构建物中。</p><p>更好的方法是：只创建一个构建物，并将配置单独管理。</p><p>每个环境一个属性文件。</p><p>应对大量微服务时，这是个很好的方法，即使用专用系统来提供配置。</p><h2><span id="服务与主机之间的映射">服务与主机之间的映射</span></h2><h3><span id="每个主机一个服务">每个主机一个服务</span></h3><p><img src="/2019/02/28/微服务设计/1552544268022.png" alt="1552544268022"></p><h3><span id="平台即服务">平台即服务</span></h3><h2><span id="自动化">自动化</span></h2><h2><span id="从物理机到虚拟机">从物理机到虚拟机</span></h2><h2><span id="一个部署接口">一个部署接口</span></h2><p>不管用于部署的底层平台和构建物是什么，使用统一接口来部署给定的服务都是很关键的。</p><p>在很多场景下，都有触发部署的需求，从本地开发测试到生产环境部署。这些不同环境的部署机制应该尽量相似。</p><p>参数化的命令行调用是触发任何部署最合理的方式。可以使用CI工具或手动键入来触发脚本的调用。</p><p>部署脚本需要三个参数：</p><ul><li>部署物是什么？微服务的名字</li><li>把该微服务部署到哪个环境之中？</li><li>该微服务的版本信息</li></ul><p>假设，我们已经创建了一个这样的部署脚本。</p><p>在本地开发时，我们键入：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deploy artifact=catalog environment=local version=local</span><br></pre></td></tr></table></figure><p>代码一旦提交，CI进行一次构建，生成一个新的构建物，其编号为b456。这个值会在整个流水线中传递。到了测试阶段，CI会执行：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deplog artifact=catalog environmet=ci version=b456</span><br></pre></td></tr></table></figure><p>环境定义：</p><h1><span id="测试">测试</span></h1><h1><span id="监控">监控</span></h1><h1><span id="安全">安全</span></h1><h1><span id="康威定律和系统设计">康威定律和系统设计</span></h1><h1><span id="规模化微服务">规模化微服务</span></h1><p>故障无法避免</p><p>故障是必然事件。</p><p>系统正常只是所有异常中的一种特例。</p><p>故障是无法避免的。不要想着如何避免故障，而是要想着怎么样快速从故障恢复出来。</p><p>何为太多</p><p>功能降级</p><p>架构安全</p><p>反脆弱</p><p>幂等</p><p>扩展</p><p>缓存</p><p>自动伸缩</p><p>CAP</p><p>服务发现</p><p>动态服务注册</p><p>文档服务</p><p>自描述</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1&gt;&lt;span id=&quot;微服务&quot;&gt;微服务&lt;/span&gt;&lt;/h1&gt;&lt;h1&gt;&lt;span id=&quot;演化式架构师&quot;&gt;演化式架构师&lt;/span&gt;&lt;/h1&gt;&lt;h1&gt;&lt;span id=&quot;如何建模服务&quot;&gt;如何建模服务&lt;/span&gt;&lt;/h1&gt;&lt;h1&gt;&lt;span id=&quot;集成&quot;&gt;集成&lt;/span
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>JavaScript In A Nutshell</title>
+    <link href="http://yoursite.com/2019/02/26/JavaScript-In-A-Nutshell/"/>
+    <id>http://yoursite.com/2019/02/26/JavaScript-In-A-Nutshell/</id>
+    <published>2019-02-25T17:49:28.000Z</published>
+    <updated>2019-03-02T07:54:16.741Z</updated>
+    
+    <content type="html"><![CDATA[<h1><span id="基础">基础</span></h1><h2><span id="运行时页面构建过程">运行时页面构建过程</span></h2><h3><span id="生命周期概览">生命周期概览</span></h3><p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551510836738.png" alt="1551510836738"></p><p>客户端Web应用的周期从用户指定某个网站地址开始，由两个步骤组成：<strong>页面构建和事件处理</strong>。</p><p>来个例子，这个例子展示：每当用户移动鼠标或单击页面就会显示一条消息。</p><p>以下是代码：</p><p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551511209573.png" alt="1551511209573"></p><p>以下是运行和交互结果：</p><p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551512582730.png" alt="1551512582730"></p><h3><span id="页面构建阶段">页面构建阶段</span></h3><p>该阶段的目标是建立web应用的UI，主要包括两个步骤：</p><ul><li>解析HTML代码并构建文档对象模型（DOM）；</li><li>执行JavaScript代码。</li></ul><p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551512933518.png" alt="1551512933518"></p><p><img src="/2019/02/26/JavaScript-In-A-Nutshell/1551513184204.png" alt="1551513184204"></p><h3><span id="事件处理">事件处理</span></h3><h1><span id="理解函数">理解函数</span></h1><p>定义与参数</p><p>理解函数调用</p><p>闭包和作用域</p><p>生成器和promise</p><h1><span id="钻研对象">钻研对象</span></h1><p>面向对象与原型</p><p>控制对象的访问</p><p>处理集合</p><p>正则表达式</p><p>代码模式化</p><h1><span id="洞悉浏览器">洞悉浏览器</span></h1><p>DOM操作</p><p>事件</p><p>跨浏览器的开发技巧</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1&gt;&lt;span id=&quot;基础&quot;&gt;基础&lt;/span&gt;&lt;/h1&gt;&lt;h2&gt;&lt;span id=&quot;运行时页面构建过程&quot;&gt;运行时页面构建过程&lt;/span&gt;&lt;/h2&gt;&lt;h3&gt;&lt;span id=&quot;生命周期概览&quot;&gt;生命周期概览&lt;/span&gt;&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/2019/02/
+      
+    
+    </summary>
+    
+    
+      <category term="Web" scheme="http://yoursite.com/tags/Web/"/>
     
   </entry>
   
