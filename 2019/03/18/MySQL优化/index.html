@@ -34,7 +34,7 @@ binlog
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?91551014">
+<link rel="stylesheet" href="/css/journal.css?71030020">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -275,6 +275,9 @@ binlog
 </ul>
 <p>基于非主键索引的查询需要多扫描一颗索引树。因此，我们在应用中应该尽量使用主键查询。</p>
 <h2><span id="索引的维护">索引的维护</span></h2><p>B+树为了维护索引有序性，在插入新值的时候需要做必要的维护。</p>
+<p>覆盖索引</p>
+<p>最左前缀</p>
+<p>索引下推</p>
 <h1><span id="事务隔离">事务隔离</span></h1><p>事务，就是要保证一组数据库操作，要么全部成功，要么全部失败。</p>
 <p>MyISAM不支持事务，因而被InnoDB取代。</p>
 <p>隔离的越严实，效率就会越低。</p>
@@ -355,7 +358,7 @@ binlog
 <p>出现死锁之后，有两种策略：</p>
 <ul>
 <li>直接进入等待，直到超时。超时时间可以通过参数<code>innodb_lock_wait_timeout</code>来设置。</li>
-<li>发起死锁检测，发现死锁后，主动回滚死锁链条中的某一个事务，然其他事务得以继续执行。将参数<code>innodb_deadlock_detect</code>设置为on，表示开启这个逻辑。</li>
+<li>发起死锁检测，发现死锁后，主动回滚死锁链条中的某一个事务，然后其他事务得以继续执行。将参数<code>innodb_deadlock_detect</code>设置为on，表示开启这个逻辑。</li>
 </ul>
 <p>死锁检测是有额外负担的。</p>
 <p>每当一个事务被锁的时候，就要看看它所依赖的线程有没有被别人锁住，如此循环，最后判断释放出现了循环等待，也就是死锁。</p>
@@ -400,7 +403,7 @@ binlog
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?63984960"></script>
+<script src="/js/journal.js?6234790"></script>
 
 
 

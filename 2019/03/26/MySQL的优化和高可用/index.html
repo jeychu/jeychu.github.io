@@ -4,11 +4,12 @@
 <html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
 
 <head><meta name="generator" content="Hexo 3.8.0">
-    <title>記事一覧: 2017/3 - javfa&#39;s blog</title>
+    <title>MySQL的优化和高可用 - javfa&#39;s blog</title>
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content="A Blog Powered By Hexo">
+<meta name="description" content="优化服务器物理硬件的优化
+磁盘寻到能力（磁盘IO）：机械硬盘，可以选择SAS 15000转做RAID10；在资金允...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -18,7 +19,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?74995168">
+<link rel="stylesheet" href="/css/journal.css?86957296">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -61,7 +62,7 @@
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
                 ホーム
             </a>
-            <a class="a-block drawer-menu-item active" href="/archives">
+            <a class="a-block drawer-menu-item false" href="/archives">
                 記事一覧
             </a>
 
@@ -105,7 +106,7 @@
     </a>
 
     <div class="nav-link-list">
-        <a class="a-block no-tint nav-link-item active" href="/archives">
+        <a class="a-block no-tint nav-link-item false" href="/archives">
             記事一覧
         </a>
 
@@ -133,68 +134,70 @@
         </a>
 
         
-        
-
-        
-
-        
-        
     </div>
 </div>
 
 <div ref="streamContainer" class="stream-container">
     <div class="post-list-container post-list-container-shadow">
-        
-        
-        <div class="post-item-wrapper post-item-wrapper-no-hover">
-            <div class="post-item post-item-no-gaps">
-                <div class="post-item-info-wrapper">
-                    <div class="post-item-title  post-item-title-small">
+        <div class="post">
+            <div class="post-head-wrapper-text-only" style="background-image: url('')">
+                <div class="post-title">
+                    MySQL的优化和高可用
+                    <div class="post-meta">
+                        <time datetime="2019-03-26T03:56:11.000Z" itemprop="datePublished">
+                            2019-03-26 11:56
+                        </time>&nbsp;
                         
-                        <a href="/archives/2017">2017</a> / 03
+    
                         
                     </div>
                 </div>
             </div>
+    
+            <div class="post-body-wrapper">
+                <div class="post-body">
+                    <h1><span id="优化">优化</span></h1><h2><span id="服务器物理硬件的优化">服务器物理硬件的优化</span></h2><ul>
+<li>磁盘寻到能力（磁盘IO）：机械硬盘，可以选择SAS 15000转做RAID10；在资金允许的情况下，可以选择固态硬盘来代替机械硬盘。</li>
+<li>选择运算能力强悍的CPU如：Intel XEON 5504</li>
+<li>内存不小于4G，现在一般的高端服务器的内存都超过了32G</li>
+</ul>
+<h2><span id="配置文件的优化">配置文件的优化</span></h2><p>MySQL自身的优化主要是对期配置文件my.cnf中各项参数进行优化调整。</p>
+<p>[mysqld]段落</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"># 避免外部锁定，减少出错几率，增强稳定性</span><br><span class="line">skip-external-locking</span><br><span class="line"># 禁止MySQL对外部链接进行DNS解析，可以消除MySQL进行DNS解析的时间</span><br><span class="line">skip-name-resolve</span><br><span class="line"># back_log</span><br><span class="line">back_log=384</span><br><span class="line">key_buffer_size=384M</span><br><span class="line">max_allowed_packet=4M</span><br><span class="line">thread_stack=256K</span><br><span class="line">table_cache=614K</span><br><span class="line">sort_buffer_size=6M</span><br><span class="line">read_buffer_size=4M</span><br><span class="line">join_buffer_size=8M</span><br><span class="line">thread_cache_size=64</span><br><span class="line">query_cache_size=64M</span><br><span class="line">tmp_table_size=256M</span><br><span class="line">max_connections=768</span><br><span class="line">max_connect_errors=1000</span><br><span class="line">wait_timeout=10</span><br><span class="line">thread_concurrency=8</span><br><span class="line">skip-networking</span><br><span class="line">table_cache=1024</span><br><span class="line">innodb_additional_mem_pool_szie=4M</span><br><span class="line">innodb_flush_log_at_trx_commit=1</span><br><span class="line">innodb_log_buffer_size=2M</span><br><span class="line">innodb_thread_concurrency=8</span><br><span class="line">tmp_table_size=64M</span><br><span class="line">read_rnd_buffer_size=16M</span><br></pre></td></tr></table></figure>
+<h2><span id="上线后根据status进行优化">上线后，根据status进行优化</span></h2><p>show global status;</p>
+<h3><span id="慢查询">慢查询</span></h3><p>show variables like “%slow%”;</p>
+<p>show global status like “%slow”;</p>
+<p>mysqldumpslow -s -c -t 20 host-slow.log</p>
+<p>启用慢查询可能会对系统性能有一点影响，如果是主从结构，可以考虑打开其中一台从服务器的慢查询日志。</p>
+<h3><span id="连接数">连接数</span></h3><p>“MySQL:ERROR 1040:Too many connections”，原因有可能是：</p>
+<ul>
+<li><p>访问量确实很高，服务器扛不住，此时需考虑增加从服务器分散读压力；</p>
+</li>
+<li><p>配置文件中max_connections的值过小</p>
+<p>show variables like “max_connections”;</p>
+<p>show global status like “Max_used_connections”;</p>
+</li>
+</ul>
+
+                </div>
+            </div>
+    
+            <nav class="post-pagination">
+    
+    <span class="page-number"></span>
+    
+    <a class="older-posts" href="/2019/03/21/负载调度算法/">
+        次の記事<br>负载调度算法
+    </a>
+    
+</nav>
+
+    
+            
+
+
         </div>
-        
-
-        <a href="/2017/03/20/Nginx中SSL的配置/" class="a-block">
-            <div class="post-item-wrapper">
-                <div class="post-item post-item-no-gaps">
-                    <div class="post-item-info-wrapper">
-                        <div class="post-item-title">
-                            Nginx中SSL的配置
-                        </div>
-                        <div class="post-item-meta">
-                            2017-03-20
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-
-        
-        
-
-        <a href="/2017/03/20/url监控/" class="a-block">
-            <div class="post-item-wrapper">
-                <div class="post-item post-item-no-gaps">
-                    <div class="post-item-info-wrapper">
-                        <div class="post-item-title">
-                            url监控
-                        </div>
-                        <div class="post-item-meta">
-                            2017-03-20
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-
-        
     </div>
-
     <div class="single-column-footer">
     Proudly published with Hexo<br>
     
@@ -210,7 +213,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?81234801"></script>
+<script src="/js/journal.js?7673835"></script>
+
+
 
 </body>
 </html>
