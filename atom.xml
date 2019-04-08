@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-27T04:46:37.655Z</updated>
+  <updated>2019-04-08T05:07:03.023Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,94 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Linux性能优化之性能优化的一般方法</title>
+    <link href="http://yoursite.com/2019/04/08/Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%84%E4%B8%80%E8%88%AC%E6%96%B9%E6%B3%95/"/>
+    <id>http://yoursite.com/2019/04/08/Linux性能优化之性能优化的一般方法/</id>
+    <published>2019-04-08T02:19:16.000Z</published>
+    <updated>2019-04-08T05:07:03.023Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux性能优化之性能工具速查</title>
+    <link href="http://yoursite.com/2019/04/08/Linux%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B9%8B%E6%80%A7%E8%83%BD%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/"/>
+    <id>http://yoursite.com/2019/04/08/Linux性能优化之性能工具速查/</id>
+    <published>2019-04-08T01:54:26.000Z</published>
+    <updated>2019-04-08T02:20:16.485Z</updated>
+    
+    <content type="html"><![CDATA[<p>在进行性能分析和优化时，借助合适的工具，可以让整个过程事半功倍。</p><p>以下是Brendan Gregg整理的性能工具图谱：</p><p><img src="/2019/04/08/Linux性能优化之性能工具速查/1554688884569.png" alt="1554688884569"></p><p>可使用man、info查看相应工具的使用方法。</p><p>根据性能指标的不同，可将性能工具划分为不同类型：</p><h2><span id="cpu性能工具">CPU性能工具</span></h2><p><img src="/2019/04/08/Linux性能优化之性能工具速查/1554688975359.png" alt="1554688975359"></p><p><img src="/2019/04/08/Linux性能优化之性能工具速查/1554689047030.png" alt="1554689047030"></p><h2><span id="内存性能工具">内存性能工具</span></h2><p><img src="/2019/04/08/Linux性能优化之性能工具速查/1554689080568.png" alt="1554689080568"></p><p><img src="/2019/04/08/Linux性能优化之性能工具速查/1554689104188.png" alt="1554689104188"></p><h2><span id="磁盘io性能工具">磁盘IO性能工具</span></h2><p><img src="/2019/04/08/Linux性能优化之性能工具速查/1554689137466.png" alt="1554689137466"></p><p><img src="/2019/04/08/Linux性能优化之性能工具速查/1554689157154.png" alt="1554689157154"></p><h2><span id="网络性能工具">网络性能工具</span></h2><p><img src="/2019/04/08/Linux性能优化之性能工具速查/1554689183346.png" alt="1554689183346"></p><p><img src="/2019/04/08/Linux性能优化之性能工具速查/1554689203413.png" alt="1554689203413"></p><h2><span id="基准测试工具">基准测试工具</span></h2><p><img src="/2019/04/08/Linux性能优化之性能工具速查/1554689235658.png" alt="1554689235658"></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;在进行性能分析和优化时，借助合适的工具，可以让整个过程事半功倍。&lt;/p&gt;
+&lt;p&gt;以下是Brendan Gregg整理的性能工具图谱：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2019/04/08/Linux性能优化之性能工具速查/1554688884569.png&quot; alt=&quot;
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>会计</title>
+    <link href="http://yoursite.com/2019/04/04/%E4%BC%9A%E8%AE%A1/"/>
+    <id>http://yoursite.com/2019/04/04/会计/</id>
+    <published>2019-04-04T15:01:31.000Z</published>
+    <updated>2019-04-08T05:17:05.889Z</updated>
+    
+    <content type="html"><![CDATA[<p>又到了立flag的好时节了</p><p>逢考毕胜的在下，在过去的几年中，好似忘记精进考业这回事儿了，现在醒悟过来，发现为时不晚，赶紧立个小目标，要在4年内把CPA拿下。</p><p>计划是：</p><table><thead><tr><th>时间</th><th>科目</th></tr></thead><tbody><tr><td>2019年</td><td>会计+审计+税法</td></tr><tr><td>2020年</td><td>财管+经济法+战略</td></tr><tr><td>2021年</td><td>综合</td></tr></tbody></table><p> 本篇是学习会计的相关笔记的糅合。</p><h1><span id="总论">总论</span></h1><h2><span id="会计概述">会计概述</span></h2><p>会计是以货币为主要计量单位，反映和监督一个单位经济活动的一种经济管理工作。</p><p>反映企业的财务状况、经营成果和现金流量</p><p>对经营活动和财务收支进行监督。</p><h2><span id="财务报告目标-会计基本假设和会计基础">财务报告目标、会计基本假设和会计基础</span></h2><p>财务报告目标：</p><ul><li><p>受托责任观</p><p>公司制企业：公司财产所有权与经营权分离。</p><p>财务报表应当能恰当有效地反映受托经营者管理责任的履行情况，向委托人揭示过去的经营活动和财务成果。</p></li><li><p>决策有用观</p><p>资本市场</p><p>股权交换和流通</p><p>股权进一步分散，财务报告要为投资者提供有助于决策的信息</p></li></ul><h2><span id="会计信息质量要求">会计信息质量要求</span></h2><h2><span id="会计要素及其确认与计量">会计要素及其确认与计量</span></h2><h2><span id="财务报告">财务报告</span></h2><h1><span id="会计政策-会计估计及其变更和差错更正">会计政策、会计估计及其变更和差错更正</span></h1><h2><span id="会计政策及其变更的概述">会计政策及其变更的概述</span></h2><h2><span id="会计估计及其变更的概述">会计估计及其变更的概述</span></h2><h2><span id="会计政策与会计估计及其变更的划分">会计政策与会计估计及其变更的划分</span></h2><h2><span id="会计政策与会计估计变更的会计处理">会计政策与会计估计变更的会计处理</span></h2><h2><span id="前期差错及其更正">前期差错及其更正</span></h2><h1><span id="存货">存货</span></h1><h2><span id="存货的确认和初始计量">存货的确认和初始计量</span></h2><h2><span id="发出存货的计量">发出存货的计量</span></h2><h2><span id="期末存货的计量">期末存货的计量</span></h2><h2><span id="存货的清查盘点">存货的清查盘点</span></h2><h1><span id="固定资产">固定资产</span></h1><h2><span id="固定资产的确认和初始计量">固定资产的确认和初始计量</span></h2><h2><span id="固定资产的后续计量">固定资产的后续计量</span></h2><h2><span id="固定资产的处置">固定资产的处置</span></h2><h1><span id="无形资产">无形资产</span></h1><h2><span id="无形资产的确认和初始计量">无形资产的确认和初始计量</span></h2><h2><span id="内部研究开发支出的确认和计量">内部研究开发支出的确认和计量</span></h2><h2><span id="无形资产的后续计量">无形资产的后续计量</span></h2><h2><span id="无形资产的处置">无形资产的处置</span></h2><h1><span id="投资性房产">投资性房产</span></h1><h1><span id="长期股权投资与合营安排">长期股权投资与合营安排</span></h1><h1><span id="资产减值">资产减值</span></h1><h1><span id="负债">负债</span></h1><h1><span id="职工薪酬">职工薪酬</span></h1><h1><span id="借款费用">借款费用</span></h1><h1><span id="股份支付">股份支付</span></h1><h1><span id="或有事项">或有事项</span></h1><h1><span id="金融工具">金融工具</span></h1><h1><span id="所有者权益">所有者权益</span></h1><h1><span id="收入-费用和利润">收入、费用和利润</span></h1><h1><span id="政府补助">政府补助</span></h1><h1><span id="非货币性资产交换">非货币性资产交换</span></h1><h1><span id="债务重组">债务重组</span></h1><h1><span id="所得税">所得税</span></h1><h1><span id="外币折算">外币折算</span></h1><h1><span id="租赁">租赁</span></h1><h1><span id="财务报告">财务报告</span></h1><h1><span id="资产负债表日后事项">资产负债表日后事项</span></h1><h1><span id="持有待售的非流动资产-处置组和终止经营">持有待售的非流动资产、处置组和终止经营</span></h1><h1><span id="企业合并">企业合并</span></h1><h1><span id="合并财务报表">合并财务报表</span></h1><h1><span id="每股收益">每股收益</span></h1><h1><span id="公允价值计量">公允价值计量</span></h1><h1><span id="政府及民间非营利组织会计">政府及民间非营利组织会计</span></h1>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;又到了立flag的好时节了&lt;/p&gt;
+&lt;p&gt;逢考毕胜的在下，在过去的几年中，好似忘记精进考业这回事儿了，现在醒悟过来，发现为时不晚，赶紧立个小目标，要在4年内把CPA拿下。&lt;/p&gt;
+&lt;p&gt;计划是：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;时间&lt;/th&gt;
+&lt;t
+      
+    
+    </summary>
+    
+    
+      <category term="CPA" scheme="http://yoursite.com/tags/CPA/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>iptables</title>
+    <link href="http://yoursite.com/2019/03/28/iptables/"/>
+    <id>http://yoursite.com/2019/03/28/iptables/</id>
+    <published>2019-03-28T01:51:58.000Z</published>
+    <updated>2019-03-28T02:14:28.248Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://www.frozentux.net/iptables-tutorial/cn/iptables-tutorial-cn-1.1.19.html#RCFLUSH-IPTABLESTXT" target="_blank" rel="noopener">iptables指南</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://www.frozentux.net/iptables-tutorial/cn/iptables-tutorial-cn-1.1.19.html#RCFLUSH-IPTABLESTXT&quot; target=&quot;_blank&quot; rel=&quot;noopen
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>MySQL的优化和高可用</title>
@@ -217,9 +305,9 @@
     <link href="http://yoursite.com/2019/03/14/%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/"/>
     <id>http://yoursite.com/2019/03/14/大型网站技术架构/</id>
     <published>2019-03-14T15:04:49.000Z</published>
-    <updated>2019-03-18T11:53:31.294Z</updated>
+    <updated>2019-04-04T14:50:00.622Z</updated>
     
-    <content type="html"><![CDATA[<p>此篇为读书笔记。</p><p>待更。。。</p><h1><span id="概述">概述</span></h1><h2><span id="大型网站架构演化">大型网站架构演化</span></h2><h2><span id="大型网站架构模式">大型网站架构模式</span></h2><h2><span id="大型网站核心架构要素">大型网站核心架构要素</span></h2><h1><span id="架构">架构</span></h1><h2><span id="高性能架构">高性能架构</span></h2><h2><span id="高可用架构">高可用架构</span></h2><h2><span id="伸缩性架构">伸缩性架构</span></h2><h2><span id="可扩展架构">可扩展架构</span></h2><h2><span id="安全架构">安全架构</span></h2>]]></content>
+    <content type="html"><![CDATA[<p>此篇为读书笔记。</p><p>待更。。。</p><h1><span id="概述大型网站架构演化">概述大型网站架构演化</span></h1><h2><span id="大型网站架构模式">大型网站架构模式</span></h2><h2><span id="大型网站核心架构要素">大型网站核心架构要素</span></h2><h1><span id="架构">架构</span></h1><h2><span id="高性能架构">高性能架构</span></h2><p>网站性能是客观的指标，可以具体体现到响应时间、吞吐量等技术指标，同时也是主观的感受。</p><h3><span id="网站性能测试">网站性能测试</span></h3><p>性能测试是性能优化的前提和基础，也是性能优化结果的检查和度量标准。不同视角下的网站性能有不同的标准，也有不同的优化手段。</p><h4><span id="不同视角下的网站性能">不同视角下的网站性能</span></h4><h2><span id="高可用架构">高可用架构</span></h2><h2><span id="伸缩性架构">伸缩性架构</span></h2><h2><span id="可扩展架构">可扩展架构</span></h2><h2><span id="安全架构">安全架构</span></h2>]]></content>
     
     <summary type="html">
     
@@ -227,7 +315,7 @@
       
         &lt;p&gt;此篇为读书笔记。&lt;/p&gt;
 &lt;p&gt;待更。。。&lt;/p&gt;
-&lt;h1&gt;&lt;span id=&quot;概述&quot;&gt;概述&lt;/span&gt;&lt;/h1&gt;&lt;h2&gt;&lt;span id=&quot;大型网站架构演化&quot;&gt;大型网站架构演化&lt;/span&gt;&lt;/h2&gt;&lt;h2&gt;&lt;span id=&quot;大型网站架构模式&quot;&gt;大型网站架构模式&lt;/s
+&lt;h1&gt;&lt;span id=&quot;概述大型网站架构演化&quot;&gt;概述大型网站架构演化&lt;/span&gt;&lt;/h1&gt;&lt;h2&gt;&lt;span id=&quot;大型网站架构模式&quot;&gt;大型网站架构模式&lt;/span&gt;&lt;/h2&gt;&lt;h2&gt;&lt;span id=&quot;大型网站核
       
     
     </summary>
@@ -242,18 +330,16 @@
     <link href="http://yoursite.com/2019/03/12/TCP%E7%8A%B6%E6%80%81%E8%AF%A6%E8%A7%A3/"/>
     <id>http://yoursite.com/2019/03/12/TCP状态详解/</id>
     <published>2019-03-12T13:42:31.000Z</published>
-    <updated>2019-03-26T01:47:09.909Z</updated>
+    <updated>2019-04-04T10:39:53.494Z</updated>
     
-    <content type="html"><![CDATA[<p>LISTENING：侦听来自远方的TCP端口的连接请求。</p><p>服务器端打开一个socket进行监听，状态为LISTEN。</p><p>待更</p><h1><span id="三次握手">三次握手</span></h1><p><img src="/2019/03/12/TCP状态详解/1553563117387.png" alt="1553563117387"></p>]]></content>
+    <content type="html"><![CDATA[<p><img src="/2019/03/12/TCP状态详解/1553563117387.png" alt="1553563117387"></p><p>LISTEN：服务端打开一个socket进行监听，状态为LISTEN。此socket侦听来自远方TCP端口的连接请求。</p><p>SYN_SENT：客户端发送一个SYN请求建立一个连接。之后状态置为SYN_SENT</p><p>SYN_RECV：服务端应发出ACK确认客户端的SYN，状态置为SYN_RECV</p><p>ESTABLISHED：双方可以进行或已经在数据交互了</p><p>FIN_WAIT1：主动关闭端应用程序调用close，发出FIN请求主动关闭连接，之后进入FIN_WAIT1状态</p><p>CLOSE_WAIT：被动关闭端TCP接收FIN后，就发出ACK回应FIN，并进入CLOSE_WAIT</p><p>FIN_WAIT2：主动关闭端接收到ACK后，就进入FIN_WAIT2</p><p>LAST_ACK：被动关闭端发动一个FIN，等待对方的ACK，就进入LAST_ACK</p><p>TIME_WAIT：在主动关闭端接收到FIN后，发送ACK包，并进入TIME_WAIT状态</p><p>CLOSING：</p><p>CLOSED：被动关闭端在接受到ACK包后，就进入closed的状态。连接结束</p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;LISTENING：侦听来自远方的TCP端口的连接请求。&lt;/p&gt;
-&lt;p&gt;服务器端打开一个socket进行监听，状态为LISTEN。&lt;/p&gt;
-&lt;p&gt;待更&lt;/p&gt;
-&lt;h1&gt;&lt;span id=&quot;三次握手&quot;&gt;三次握手&lt;/span&gt;&lt;/h1&gt;&lt;p&gt;&lt;img src=&quot;/2019/03
+        &lt;p&gt;&lt;img src=&quot;/2019/03/12/TCP状态详解/1553563117387.png&quot; alt=&quot;1553563117387&quot;&gt;&lt;/p&gt;
+&lt;p&gt;LISTEN：服务端打开一个socket进行监听，状态为LISTEN。此socket侦听来自远方TCP端口的连接请求。&lt;
       
     
     </summary>
@@ -428,103 +514,6 @@
     
     
       <category term="Nginx" scheme="http://yoursite.com/tags/Nginx/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Nginx的优化</title>
-    <link href="http://yoursite.com/2019/03/06/nginx%E7%9A%84%E4%BC%98%E5%8C%96/"/>
-    <id>http://yoursite.com/2019/03/06/nginx的优化/</id>
-    <published>2019-03-06T02:26:22.000Z</published>
-    <updated>2019-03-10T17:26:17.399Z</updated>
-    
-    <content type="html"><![CDATA[<h1><span id="基本安全优化">基本安全优化</span></h1><h2><span id="隐藏版本信息">隐藏版本信息</span></h2><h2><span id="更改nginx服务的默认用户">更改Nginx服务的默认用户</span></h2><h2><span id="降权启动nginx">降权启动Nginx</span></h2><h1><span id="参数优化nginx服务性能">参数优化Nginx服务性能</span></h1><h2><span id="进程个数-单个进程的最大连接数">进程个数、单个进程的最大连接数</span></h2><h2><span id="绑定cpu">绑定CPU</span></h2><h2><span id="gzip">gzip</span></h2><h2><span id="expires">expires</span></h2><h1><span id="日志的优化">日志的优化</span></h1><h1><span id="防盗链">防盗链</span></h1><h1><span id="防爬虫">防爬虫</span></h1><h1><span id="目录权限优化">目录权限优化</span></h1>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1&gt;&lt;span id=&quot;基本安全优化&quot;&gt;基本安全优化&lt;/span&gt;&lt;/h1&gt;&lt;h2&gt;&lt;span id=&quot;隐藏版本信息&quot;&gt;隐藏版本信息&lt;/span&gt;&lt;/h2&gt;&lt;h2&gt;&lt;span id=&quot;更改nginx服务的默认用户&quot;&gt;更改Nginx服务的默认用户&lt;/span&gt;&lt;/h2&gt;&lt;h2&gt;
-      
-    
-    </summary>
-    
-    
-      <category term="Nginx" scheme="http://yoursite.com/tags/Nginx/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>无之文</title>
-    <link href="http://yoursite.com/2019/03/04/%E6%97%A0%E9%A2%98/"/>
-    <id>http://yoursite.com/2019/03/04/无题/</id>
-    <published>2019-03-03T16:28:27.000Z</published>
-    <updated>2019-03-26T11:34:43.209Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>‘无意识流’<sup>自撰</sup>码点字儿，权当消遣、游戏。</p><p>具体写些什么，写出什么，我自己也是不知道的。</p><p>不断填充，每更以时间戳为领。</p></blockquote><!-- toc --><ul><li><a href="#1934">19/3/4</a></li><li><a href="#1935">19/3/5</a></li><li><a href="#1936">19/3/6</a></li><li><a href="#1938">19/3/8</a></li><li><a href="#1939">19/3/9</a></li><li><a href="#19310">19/3/10</a></li><li><a href="#19312">19/3/12</a></li><li><a href="#19313">19/3/13</a></li><li><a href="#19314">19/3/14</a></li><li><a href="#19320">19/3/20</a></li></ul><!-- tocstop --><h1><span id="1934">19/3/4</span></h1><p>老夫聊发少年狂，不自量，频思量，要和困滞斗一场<br>人生不如意十八九，又何必，妄自沉，且奋起，争朝夕，人生百年是不枉</p><p>内核源码纷上阵，战得个天昏又地暗<br>人道是，廿一世纪，人工智能日日新，所能之事无限<br>现如今，百业俱兴于互联网<br>信息流转无量，人人都是网中虫<br>码农立功改了世界，创了互联界，人神之间自此有了个第三界</p><p>微信淘宝千百度，淘了个什么，又信了个什么？<br>大小屏幕满城皆是，人人淹没其间。<br>要在屏幕引源流，码农誓要战到深夜，不眠不休。</p><p>王者荣耀坑起来，坑到王者亦非常人也<br>鲁班后羿虽善射，易被珂切<br>项羽是个霸王，本色是喜欢虞姬<br>妲己是个妖女，总想一套秒<br>凯也是个肉，打不死还善单挑<br>典韦疯癫，满场飞奔…</p><p>恩金克思是个宝<br>鲁啊美月协助跑<br>林刘克思做服务<br>韦伯搞网成了王</p><hr><h1><span id="1935">19/3/5</span></h1><p>iHola!</p><p>¿Como estas?</p><p>香尘已隔犹回面<br>居人匹马映林嘶</p><p>新绿小池塘<br>帘动、碎影、斜阳<br>金屋去来 旧时巢燕<br>土花缭绕 前度霉墙<br>绣阁凤帷理丝簧</p><p>天寒水鸟自相依<br>十百为群戏落辉<br>行人过尽都不起<br>忽闻水响一起飞</p><p>携杖来追凉<br>花桥倚胡床<br>船笛参差起<br>池莲自在香</p><hr><h1><span id="1936">19/3/6</span></h1><p>知海无涯<br>海里行<br>无向即无功<br>看四周，都是极似<br>手中罗盘<br>历历晰晰<br>准方向<br>不旁骛<br>自可离海登陆<br>船体牢靠<br>方向笃定<br>定成航海王，掌控自生</p><hr><p>不自怨艾，稳住，都将烟消云散<br>云开日现<br>金晖永在，云遮不显<br>拨云自可见日<br>谁可拨？<br>大风耶？大风起兮云飞扬<br>大风来，尘土混乌云，暗无天日<br>小风耶？和风暖阳，自是佳时<br>小风何来？自来也<br>拨云见日者，非人力<br>人自求福，不自作孽，静待日开，得其光<br>但日总在，不因云遮就无<br>光透云，人依然可得其几许<br>故莫担心，莫贪心，莫失心<br>阴晴才是此间正道<br>阴晴都是那颗太阳</p><hr><h1><span id="1938">19/3/8</span></h1><p>二月二日 三八女节<br>雌雄合一 天地交泰<br>龙飞凤舞 双翔呈瑞<br>元亨利贞 吉吉吉吉</p><hr><h1><span id="1939">19/3/9</span></h1><p>痛通，痛得不欲生，就通了<br>自不量力者，撞的头破血流，心痛通</p><p>太阳照常升起，逝者从未停歇<br>珍惜光阴，涓滴莫弃<br>昨天已不复存在，明天从未到来，唯有今天，才是所有</p><p>乱 清理 有序<br>减 减 减<br>只剩一个 所向披靡</p><p>不家 于外 往西行</p><hr><h1><span id="19310">19/3/10</span></h1><p>喜鹊上下游嬉<br>貔貅口衔红币<br>金蟾门口招财<br>晶洞坐镇玄武<br>金鸡雄立西方</p><p>尼采句，大乱写：</p><p>能飞之人向上飞<br>于不能飞之人看来，<br>愈高愈渺</p><p>凝视深渊，深渊亦然<br>与恶魔斗，慎成恶魔</p><p>每天<br>若不曾起舞<br>即是<br>辜负了生命</p><p>谦逊基于力量<br>傲慢基于无能</p><p>世界弥漫着焦躁不安，因众人皆急于从各自的枷锁中获得解放</p><p>不懂自己才是生命中最难的部分</p><p>曲则全，要曲莫直，曲曲折折，真理渐得显现</p><p>埋怨自己、憎恨他人之时。。。你需要休息了！</p><p>无有音乐，生活是错</p><p>智慧是个女人，她只爱战士——愿你勇敢、无忧、刚强</p><p>明为何而活，自可承受一切，幸与不幸</p><p>受苦之人，没有悲观的权力</p><hr><h1><span id="19312">19/3/12</span></h1><blockquote><p>引子：欲休息，偶翻莎翁十四行诗，译之，或可读？</p></blockquote><blockquote><p>前方高能：催婚催育，歌颂爱情！</p></blockquote><p>// 赞美爱人也</p><p>Shall I compare you to a summer’s day?<br>You are more lovely and more temperate:<br>Rough winds do shake the darling buds of May,<br>And summer’s lease has all too short a date;<br>Sometime too hot the eye of heaven shines,<br>And often is his gold complexion dimm’d<br>And every fair from fair sometime declines,<br>By chance or nature’s changing course untrimm’d:<br>But your eternal summer shall not fade,<br>Nor lose possession of that fair you own,<br>Nor shall Death brag you wand’rest in his shade,<br>When in eternal lines to time you grow’st.<br>So long as men can breathe or eyes can see,<br>So long lives this, and this gives life to you.</p><p>将你比作夏天？<br>你更美好温和：<br>强风摧折五月可爱花蕾，<br>夏之为期也是太过短暂。<br>日光有时太炙，<br>金色时常被霾。<br>美丽总要逝去，<br>不测或是自然。<br>但你常住之夏永不退，<br>你所有之美也将不失。<br>当你在这不朽诗篇中和时间合为一，<br>死神休大言说你在他的阴影里盘桓。<br>只要有人能看能呼吸，<br>此诗长存并予你生命。</p><p>// 谴责单身主义者也</p><p>From fairest creatures we desire increase,<br>That thereby beauty’s rose might never die,<br>But as the riper should by time decrease,<br>His tender heir might bear his memory:<br>But you, contracted to your own bright eyes,<br>Feed your light’s flame with self-substantial fuel,<br>Making a famine where abundance lies,<br>Yourself your foe, to your sweet self too cruel.<br>You that art now the world’s fresh ornament,<br>And only herald to the gaudy spring,<br>Within your own bud buried your content,<br>And, tender churl, make waste in niggarding:<br>Pity the world, or else this glutton be,<br>To eat the world’s due, by the grave and you.</p><p>美好藩息【好为第四声】<br>美瑰不死。<br>黄熟凋零<br>幼子承继。<br>只从你目<br>以己为柴<br>大烧目火。<br>丰地饥馑<br>尔实尔敌<br>残对汝身。<br>世之璀璨<br>春之先使<br>却事埋藏。<br>温柔残暴<br>吝啬浪费。<br>怜悯此世<br>若不怜世<br>实为贪夫<br>世所应得<br>汝墓及汝<br>尽将蚕食</p><hr><h1><span id="19313">19/3/13</span></h1><p>// 赞生育也，生育使美延续</p><p>When forty winters shall besiege your brow,<br>And dig deep trenches in your beauty’s field,<br>Your youth’s proud livery, so gazed on now,<br>Will be a tattered weed of small worth held:<br>Then being asked, where all your beauty lies,<br>Where all the treasure of your lusty days,<br>To say within your own deep-sunken eyes<br>Were an all-eating shame, and thriftless praise.<br>How much more praise deserved your beauty’s use,<br>If you could answer, “This fair child of mine<br>Shall sum my count, and make my old excuse,”<br>Proving his beauty by your succession.<br>This were to be new made when you are old,<br>And see your blood warm when you feel it cold.</p><p>四十个冬天将使你美丽的额头<br>沟壑起伏<br>你的青春华服，众所倾羡<br>也将破烂如杂草毫无价值<br>彼时，若被问：<br>你的美何在？<br>你光辉岁月的珍宝何在？<br>你深陷的眼窝里，<br>只有些能吞噬所有的羞耻和毫无意义的赞美。<br>但如果你能说，我美丽的孩子就是我的总结，<br>宽恕我的老迈，继承我的美<br>如此，你的美应得更多赞誉<br>当你老时，这就是新生<br>当你冷时，这使你热血</p><hr><h1><span id="19314">19/3/14</span></h1><p>世界上只有两种数学书：</p><ul><li>看了第一页，读不下去。。。</li><li>看了第一句，读不下去。。。</li></ul><hr><h1><span id="19320">19/3/20</span></h1><p>王者荣耀中，玩的最多的是项羽，故而读项羽传。<br>项羽骁勇善战。自吹力拔山、气盖世。吹归吹，毕竟是写诗嘛。不这样写，也无法和他的神勇相称。正史记载，项羽驰骋沙场，如入无人之境，不停的手起刀落，常能勇提几百个首级。这实力，也可算历史第一战士了。<br>正史还记载，敌将被项羽一瞋，就吓得魂散，若非夸张，项羽也该封战神了。以这实力，西楚霸王是实至名归。<br>项羽的神威战力从何而来，我也无法想象得出。<br>不过最终，项羽还是自刎了。<br>出来混，早晚是要还的啊。看项羽的作风，就是依仗暴力，杀杀杀的，光坑杀就好几回，也是残暴异常。<br>项羽的自我总结：非战之罪，天亡也。真-自知之明，总结的很对，其实就是天要亡他，因为他太残暴、杀了那么多的人，有些都是集体坑杀，毫无抵抗<br>还一把火把集聚重宝的皇宫烧了3个月，真是暴殄天物，太浪费了<br>项羽若得善终，历史都没法写下去。<br>苍天饶过谁？。。。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;blockquote&gt;
-&lt;p&gt;‘无意识流’&lt;sup&gt;自撰&lt;/sup&gt;码点字儿，权当消遣、游戏。&lt;/p&gt;
-&lt;p&gt;具体写些什么，写出什么，我自己也是不知道的。&lt;/p&gt;
-&lt;p&gt;不断填充，每更以时间戳为领。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;!-- toc --&gt;
-&lt;ul&gt;
-&lt;li
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Nginx中的位运算</title>
-    <link href="http://yoursite.com/2019/03/02/Nginx%E5%92%8C%E4%BD%8D%E8%BF%90%E7%AE%97/"/>
-    <id>http://yoursite.com/2019/03/02/Nginx和位运算/</id>
-    <published>2019-03-02T10:39:45.000Z</published>
-    <updated>2019-03-03T18:01:08.912Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>本篇是学习<a href="https://www.jishuwen.com/d/2EGC/zh-hk" target="_blank" rel="noopener">其他博文</a>的笔记，根据自己的理解，做了些增补和简化。</p></blockquote><p>位运算在Nginx的源码处处可见，如</p><ul><li><p>定义指令的类型</p></li><li><p>标记当前请求是否还有未发送完的数据</p></li><li><p>事件模块里用指针的最低位来标记一个事件是否过期</p></li></ul><p>下面分析以下在Nginx中位运算的经典使用场景。</p><h1><span id="经典使用场景">经典使用场景</span></h1><h2><span id="对齐">对齐</span></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/core/ngx_config.h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ngx_align(d, a)     (((d) + (a - 1)) &amp; ~(a - 1))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ngx_align_ptr(p, a)                                                    \</span></span><br><span class="line">    (u_char *) (((<span class="keyword">uintptr_t</span>) (p) + ((<span class="keyword">uintptr_t</span>) a - <span class="number">1</span>)) &amp; ~((<span class="keyword">uintptr_t</span>) a - <span class="number">1</span>))</span><br></pre></td></tr></table></figure><p>该宏使得d按a对齐<sup>第一个大于等于d的a倍数</sup>，其中a必须是2的幂次。</p><p>此宏就是寻找最小的且大于等于d的a的倍数。</p><p>由于a是2的幂次，因此a的二进制表示为00…1…00这样的形式，即它只有一个1，a-1便是00…01…1这样的形式。</p><p>接着，~(a-1)就会将低n为全部置0，n为a的低位连续0的个数。</p><p>此时，如果再将一个数和~（a-1）进行一次按位与，就能把这个数的低n位都清零（即成为a的倍数）。</p><p>而把这个数的低n位都清零，最多是从这个数减去a-1。</p><p>故而，d+（a-1）在经过和~（a-1）按位与而做了清零操作之后，最多也是减去a-1，也就是说，经过低位清零之后，其值最小是d，这样我们就得到了一个大于等于d，且低n位是0的对齐数，即一个大于等于d的a倍数。且是第一个大于等于d的a的倍数。</p><h2><span id="位图">位图</span></h2><p>位图，用以标记状态，只使用一个比特位来标记事物，从而节约内存，提升性能。</p><p>Nginx在对uri进行转义时，需要判断一个字符是否是一个保留字符，这样的字符需要被转义。</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">// src/core/ngx_string.c</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">uint32_t</span>   uri_component[] = &#123;</span><br><span class="line">        <span class="number">0xffffffff</span>, <span class="comment">/* 1111 1111 1111 1111  1111 1111 1111 1111 */</span></span><br><span class="line"></span><br><span class="line">                    <span class="comment">/* ?&gt;=&lt; ;:98 7654 3210  /.-, +*)( '&amp;%$ #"!  */</span></span><br><span class="line">        <span class="number">0xfc009fff</span>, <span class="comment">/* 1111 1100 0000 0000  1001 1111 1111 1111 */</span></span><br><span class="line"></span><br><span class="line">                    <span class="comment">/* _^]\ [ZYX WVUT SRQP  ONML KJIH GFED CBA@ */</span></span><br><span class="line">        <span class="number">0x78000001</span>, <span class="comment">/* 0111 1000 0000 0000  0000 0000 0000 0001 */</span></span><br><span class="line"></span><br><span class="line">                    <span class="comment">/*  ~&#125;| &#123;zyx wvut srqp  onml kjih gfed cba` */</span></span><br><span class="line">        <span class="number">0xb8000001</span>, <span class="comment">/* 1011 1000 0000 0000  0000 0000 0000 0001 */</span></span><br><span class="line"></span><br><span class="line">        <span class="number">0xffffffff</span>, <span class="comment">/* 1111 1111 1111 1111  1111 1111 1111 1111 */</span></span><br><span class="line">        <span class="number">0xffffffff</span>, <span class="comment">/* 1111 1111 1111 1111  1111 1111 1111 1111 */</span></span><br><span class="line">        <span class="number">0xffffffff</span>, <span class="comment">/* 1111 1111 1111 1111  1111 1111 1111 1111 */</span></span><br><span class="line">        <span class="number">0xffffffff</span>  <span class="comment">/* 1111 1111 1111 1111  1111 1111 1111 1111 */</span></span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure><p>如上所示，一个数组组成一个位图，共包含8各数字，每个数字表示32个状态，因此这个位图标识出了256个字符的状态。为0的位表示一个通用字符，不需要转义，为1的位代表该字符需要转义。<br>如何使用这个位图呢？Nginx在遍历uri的时候，通过一条简单的语句来进行判断：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uri_component[ch &gt;&gt; <span class="number">5</span>] &amp; (<span class="number">1</span> &lt;&lt; (ch &amp; <span class="number">0x1f</span>))</span><br></pre></td></tr></table></figure><p>如上所示，ch表示当前字符，ch&gt;&gt;5是对ch右移5位，这起到一个除以32的效果，这一步操作确定了ch在uri_component的第几个数字上；</p><p>ch&amp;0x1f，则是取出ch低5位的值，相当于取模32，这个值表示ch在对应数字上的第几位；</p><p>1&lt;&lt;(ch&amp;0x1f)，将1左移ch在对应数字上的所在位数。将该数和对应数字相与，就可以取出对应数字上与ch相对应位置的bit位。</p><p>如：ch是‘0’（即数字48），它存在于位图的第二个数字上（48&gt;&gt;5=1)，又在这个数字（0xfc009fff）的第16位上，所以它的状态就是0xfc009fff &amp; 0x10000 = 0，所以‘0’是个通用字符，不用对它转义。</p><blockquote><p>位运算技巧：对一个2的幂次的数进行取模或者除操作的时候，可以通过位运算来实现。</p></blockquote><h2><span id="寻找最低位1的位置">寻找最低位1的位置</span></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lowbit</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &amp; ~(x - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>~(x-1)使得除了最低位1的那个位置，其他位置和x都是相反的，因此二者进行按位与操作后，结果里只可能有一个1，便是原本x最低位的1。</p><h2><span id="寻找最高位1的位置">寻找最高位1的位置</span></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">size_t</span> bsf(<span class="keyword">size_t</span> input)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">size_t</span> pos;</span><br><span class="line"></span><br><span class="line">    __asm__(<span class="string">"bsfq %1, %0"</span> : <span class="string">"=r"</span> (pos) : <span class="string">"rm"</span> (input));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> pos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">size_t bsf(size_t input)</span><br><span class="line">&#123;</span><br><span class="line">    input |= input &gt;&gt; 1;</span><br><span class="line">    input |= input &gt;&gt; 2;</span><br><span class="line">    input |= input &gt;&gt; 4;</span><br><span class="line">    input |= input &gt;&gt; 8;</span><br><span class="line">    input |= input &gt;&gt; 16;</span><br><span class="line">    input |= input &gt;&gt; 32;</span><br><span class="line"></span><br><span class="line">    return input - (input &gt;&gt; 1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2><span id="计算1的个数">计算1的个数</span></h2>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;blockquote&gt;
-&lt;p&gt;本篇是学习&lt;a href=&quot;https://www.jishuwen.com/d/2EGC/zh-hk&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;其他博文&lt;/a&gt;的笔记，根据自己的理解，做了些增补和简化。&lt;/p&gt;
-&lt;/bloc
-      
-    
-    </summary>
-    
-    
-      <category term="Nginx" scheme="http://yoursite.com/tags/Nginx/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>微服务设计</title>
-    <link href="http://yoursite.com/2019/02/28/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1/"/>
-    <id>http://yoursite.com/2019/02/28/微服务设计/</id>
-    <published>2019-02-28T14:53:03.000Z</published>
-    <updated>2019-03-21T09:42:34.293Z</updated>
-    
-    <content type="html"><![CDATA[<h1><span id="微服务">微服务</span></h1><h1><span id="演化式架构师">演化式架构师</span></h1><h1><span id="如何建模服务">如何建模服务</span></h1><h1><span id="集成">集成</span></h1><h1><span id="分解单块系统">分解单块系统</span></h1><h1><span id="部署">部署</span></h1><blockquote><p>构建什么、如何构建以及如何部署？</p></blockquote><h2><span id="持续集成简介">持续集成简介</span></h2><ul><li>你是否每天签入代码到主线？</li><li>你是否有一组测试来验证修改？</li><li>当构建失败后，团队是否把修复CI当作第一优先级的事情来做？</li></ul><h2><span id="把ci映射到微服务">把CI映射到微服务</span></h2><p>如何在微服务、CI构建及源代码三者之间，建立起合适的映射呢？</p><p>最简单的，把所有东西放在一起。如下所示，一个巨大的代码库，其中包括所有的代码，并且只有一个构建。向该代码库任何一次的代码提交都会触发构建，在构建中运行相关的验证，然后生成多个构建物，所有这些都是在同一个构建中完成。</p><p><img src="/2019/02/28/微服务设计/1552533778038.png" alt="1552533778038"></p><p>这种模式存在很多明显的缺点：</p><p>如果我仅仅修改了用户访问中的一行代码，所有其他的服务都需要解析验证和构建，但实际上它们并不需要重新验证和构建，在这里，我们花费了不必要的时间。</p><p>这种方法的一个变体是保留一个代码库，但是用多个CI分别映射到代码库的不同部分，如下所示：</p><p><img src="/2019/02/28/微服务设计/1552533870065.png" alt="1552533870065"></p><p>这种模式可能是双刃剑：一方面它会简化检出/检入的流程，但另一方面，由于可以很轻松地同时提交对多个服务的修改，从而容易做出将多个服务耦合在一起的修改。</p><p>另外一种模式是，每个微服务都有自己的CI，可以在将该微服务部署到生产环境之前做一个快速的验证，如下所示：</p><p><img src="/2019/02/28/微服务设计/1552533913998.png" alt="1552533913998"></p><h2><span id="构建流水线">构建流水线</span></h2><p>使用构建流水线的标准发布流程：</p><p><img src="/2019/02/28/微服务设计/1552536246615.png" alt="1552536246615"></p><p>在微服务的世界，我们想要保证服务之间可以独立于彼此进行部署，所以每个服务都有自己独立的CI。</p><p>但也有例外：刚启动一个新项目时，在什么都没有的情况之下，要花很多时间来识别服务边界。</p><p>在识别出稳定的边界之前，可以把所有的初始服务都放到一起，只用一个构建。此时，也经常会发生跨服务边界的修改，把所有的服务都放在同一个构建中，可以减轻跨服务修改的代价。</p><p>当服务的API稳定之后，就可以开始把它们移动到各自的构建之中。</p><h2><span id="平台特定的构建物">平台特定的构建物</span></h2><p>大多数技术栈都有相应的构建物类型，同时也有相关的工具来创建和安装这些构建物。如：Ruby有gem，Java有JAR包和WAR包，Python有egg。</p><p>从部署的角度，只有构建物本身通常是不够的。如Python应用程序需要运行在Nginx或Apache中。</p><p>为了部署和启动这些构建物，需要安装和配置一些其他的软件。使用Ansible、SaltStack进行自动化配置管理，可以很好的解决这个问题。</p><h2><span id="操作系统构建物">操作系统构建物</span></h2><p>有一种方法可以避免多种技术栈下的构建物所带来的问题，那就是使用操作系统支持的构建物。如，基于RedHat或者CentOS的系统来收，可以使用RPM；对于Ubuntu，可以使用deb包；对于Windows，使用MSI。</p><h2><span id="定制化镜像">定制化镜像</span></h2><p>创建定制化虚拟机镜像：</p><p><img src="/2019/02/28/微服务设计/1552537789945.png" alt="1552537789945"></p><p>只需要构建一次镜像，然后根据这些镜像启动虚拟机，不需要再花费时间来安装相应的依赖，因为它们已经在镜像中安装好了。</p><p>如果你的核心依赖没有改变，那么新版本的服务就可以继续使用相同的基础镜像。</p><h3><span id="将镜像作为构建物">将镜像作为构建物</span></h3><p>把服务本身也包含在镜像中，这样就把镜像变成了构建物。</p><p>现在当你启动镜像时，服务就已经就绪了。</p><p>就像使用OS特定软件包那样，可以认为这些VM镜像是对不同技术栈的一层抽象。我们不需要关心运行在镜像中的服务所使用的语言是Ruby还是Java，我们唯一关心的就是它是否工作。然后把精力放在镜像创建和部署的自动化上即可。</p><h3><span id="不可变服务器">不可变服务器</span></h3><p>通过把配置都存到版本控制代码中，我们可以自动化重建服务，甚至重建整个环境。</p><p>但如果部署完成之后，有人登陆到机器上修改了一些东西，就会导致机器的实际配置和源代码管理中的配置不再一致，整个问题叫做配置漂移。</p><p>为了避免这个问题，可以禁止对任何运行的服务器做手动修改。</p><p>并且，无论修改多么小，都需要经过构建流水线来创建新的机器。</p><h2><span id="环境">环境</span></h2><p>不同环境中部署的服务是相同的，但是每个环境的用途却不一样。</p><p>从笔记本到UAT，再到生产环境，我们希望前面的环境都能不断地靠近生产环境，这样就可以更快地捕获到由于环境差异导致的问题。</p><p>类生产环境和快速反馈之间需要持续地做权衡。</p><h2><span id="服务配置">服务配置</span></h2><p>不同环境的配置差异，如何在部署流程中对其进行处理呢？</p><p>可以对每个环境创建不同的构建物，并把配置内建在该构建物中。</p><p>更好的方法是：只创建一个构建物，并将配置单独管理。</p><p>每个环境一个属性文件。</p><p>应对大量微服务时，这是个很好的方法，即使用专用系统来提供配置。</p><h2><span id="服务与主机之间的映射">服务与主机之间的映射</span></h2><h3><span id="每个主机一个服务">每个主机一个服务</span></h3><p><img src="/2019/02/28/微服务设计/1552544268022.png" alt="1552544268022"></p><h3><span id="平台即服务">平台即服务</span></h3><h2><span id="自动化">自动化</span></h2><h2><span id="从物理机到虚拟机">从物理机到虚拟机</span></h2><h2><span id="一个部署接口">一个部署接口</span></h2><p>不管用于部署的底层平台和构建物是什么，使用统一接口来部署给定的服务都是很关键的。</p><p>在很多场景下，都有触发部署的需求，从本地开发测试到生产环境部署。这些不同环境的部署机制应该尽量相似。</p><p>参数化的命令行调用是触发任何部署最合理的方式。可以使用CI工具或手动键入来触发脚本的调用。</p><p>部署脚本需要三个参数：</p><ul><li>部署物是什么？微服务的名字</li><li>把该微服务部署到哪个环境之中？</li><li>该微服务的版本信息</li></ul><p>假设，我们已经创建了一个这样的部署脚本。</p><p>在本地开发时，我们键入：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deploy artifact=catalog environment=local version=local</span><br></pre></td></tr></table></figure><p>代码一旦提交，CI进行一次构建，生成一个新的构建物，其编号为b456。这个值会在整个流水线中传递。到了测试阶段，CI会执行：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deplog artifact=catalog environmet=ci version=b456</span><br></pre></td></tr></table></figure><p>环境定义：</p><h1><span id="测试">测试</span></h1><h1><span id="监控">监控</span></h1><h1><span id="安全">安全</span></h1><h1><span id="康威定律和系统设计">康威定律和系统设计</span></h1><h1><span id="规模化微服务">规模化微服务</span></h1><p>故障无法避免</p><p>故障是必然事件。</p><p>系统正常只是所有异常中的一种特例。</p><p>故障是无法避免的。不要想着如何避免故障，而是要想着怎么样快速从故障恢复出来。</p><p>何为太多</p><p>功能降级</p><p>架构安全</p><p>反脆弱</p><p>幂等</p><p>扩展</p><p>缓存</p><p>自动伸缩</p><p>CAP</p><p>服务发现</p><p>动态服务注册</p><p>文档服务</p><p>自描述</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1&gt;&lt;span id=&quot;微服务&quot;&gt;微服务&lt;/span&gt;&lt;/h1&gt;&lt;h1&gt;&lt;span id=&quot;演化式架构师&quot;&gt;演化式架构师&lt;/span&gt;&lt;/h1&gt;&lt;h1&gt;&lt;span id=&quot;如何建模服务&quot;&gt;如何建模服务&lt;/span&gt;&lt;/h1&gt;&lt;h1&gt;&lt;span id=&quot;集成&quot;&gt;集成&lt;/span
-      
-    
-    </summary>
-    
     
   </entry>
   

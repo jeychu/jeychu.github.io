@@ -8,8 +8,8 @@
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content="LISTENING：侦听来自远方的TCP端口的连接请求。
-服务器端打开一个socket进行监听，状态为LISTEN...">
+<meta name="description" content="
+LISTEN：服务端打开一个socket进行监听，状态为LISTEN。此socket侦听来自远方TCP端口的连接...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -19,7 +19,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?25846417">
+<link rel="stylesheet" href="/css/journal.css?32818518">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -60,10 +60,10 @@
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                首页
+                Home
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                归档
+                Archive
             </a>
 
             
@@ -107,7 +107,7 @@
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            归档
+            Archive
         </a>
 
         
@@ -156,10 +156,18 @@
     
             <div class="post-body-wrapper">
                 <div class="post-body">
-                    <p>LISTENING：侦听来自远方的TCP端口的连接请求。</p>
-<p>服务器端打开一个socket进行监听，状态为LISTEN。</p>
-<p>待更</p>
-<h1><span id="三次握手">三次握手</span></h1><p><img src="/2019/03/12/TCP状态详解/1553563117387.png" alt="1553563117387"></p>
+                    <p><img src="/2019/03/12/TCP状态详解/1553563117387.png" alt="1553563117387"></p>
+<p>LISTEN：服务端打开一个socket进行监听，状态为LISTEN。此socket侦听来自远方TCP端口的连接请求。</p>
+<p>SYN_SENT：客户端发送一个SYN请求建立一个连接。之后状态置为SYN_SENT</p>
+<p>SYN_RECV：服务端应发出ACK确认客户端的SYN，状态置为SYN_RECV</p>
+<p>ESTABLISHED：双方可以进行或已经在数据交互了</p>
+<p>FIN_WAIT1：主动关闭端应用程序调用close，发出FIN请求主动关闭连接，之后进入FIN_WAIT1状态</p>
+<p>CLOSE_WAIT：被动关闭端TCP接收FIN后，就发出ACK回应FIN，并进入CLOSE_WAIT</p>
+<p>FIN_WAIT2：主动关闭端接收到ACK后，就进入FIN_WAIT2</p>
+<p>LAST_ACK：被动关闭端发动一个FIN，等待对方的ACK，就进入LAST_ACK</p>
+<p>TIME_WAIT：在主动关闭端接收到FIN后，发送ACK包，并进入TIME_WAIT状态</p>
+<p>CLOSING：</p>
+<p>CLOSED：被动关闭端在接受到ACK包后，就进入closed的状态。连接结束</p>
 
                 </div>
             </div>
@@ -167,13 +175,13 @@
             <nav class="post-pagination">
     
     <a class="newer-posts" href="/2019/03/14/大型网站技术架构/">
-        上一篇<br>大型网站技术架构
+        Previous post<br>大型网站技术架构
     </a>
     
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2019/03/12/Linux性能优化之磁盘篇/">
-        下一篇<br>Linux性能优化之磁盘篇
+        Next post<br>Linux性能优化之磁盘篇
     </a>
     
 </nav>
@@ -199,7 +207,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?30992054"></script>
+<script src="/js/journal.js?58630305"></script>
 
 
 
