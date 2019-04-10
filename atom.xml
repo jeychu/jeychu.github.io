@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-04-08T05:46:39.133Z</updated>
+  <updated>2019-04-10T08:21:15.159Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>高并发和高可用</title>
+    <link href="http://yoursite.com/2019/04/10/%E9%AB%98%E5%B9%B6%E5%8F%91%E5%92%8C%E9%AB%98%E5%8F%AF%E7%94%A8/"/>
+    <id>http://yoursite.com/2019/04/10/高并发和高可用/</id>
+    <published>2019-04-10T03:36:16.000Z</published>
+    <updated>2019-04-10T08:21:15.159Z</updated>
+    
+    <content type="html"><![CDATA[<h1><span id="高并发high-concurrency">高并发<sup>High Concurrency</sup></span></h1><h2><span id="概述">概述</span></h2><p>高并发指的是通过设计保证系统能够同时并行处理很多请求。</p><p>相关指标：</p><ul><li>响应时间<sup>Response time</sup>，系统对请求做出响应的时间</li><li>吞吐量<sup>Throughput</sup>，单位时间内处理的请求数量</li><li>QPS<sup>Query Per Second</sup>，每秒响应请求数，和吞吐量没有明显的区分</li><li>并发用户数，同时承载正常使用系统功能的用户数量</li></ul><h2><span id="如何提升系统的并发能力">如何提升系统的并发能力</span></h2><p>在方法论上，有两种：</p><ul><li><p>垂直扩展</p><p>提高单机处理能力：</p><ul><li>增强单机硬件性能：如增加CPU的核数，升级网卡、SSD硬盘，扩充内存</li><li>提升单机架构性能：如使用Cache来减少IO次数，使用异步来增加单服务吞吐量，使用无锁数据结构来减少响应时间</li></ul></li><li><p>水平扩展</p><p>通过系统架构设计实现：只要增加服务器数量，就能线性扩充系统性能。</p></li></ul><h2><span id="各分层的水平扩展实践">各分层的水平扩展实践</span></h2><h3><span id="反向代理层">反向代理层</span></h3><p>通过DNS轮询实现。</p><p>DNS server对于一个域名配置多个解析ip，每次DNS解析请求来访问，DNS server会轮流返回这些ip。</p><p>当反向代理层的Nginx成为瓶颈的时候，只要增加服务器的数量，新增Nginx部署，增加外网ip，就可以扩展反向代理层的性能，做到理论上的无限高并发。</p><h3><span id="站点层">站点层</span></h3><p>通过Nginx实现。</p><p>通过修改Nginx.conf，可以设置多个web后端。</p><p>当web后端成为瓶颈的时候，只要增加服务器的数量，新增web服务的部署，在Nginx配置上新的web后端，就能扩展站点层的性能，做到理论上的无限高并发。</p><h3><span id="服务层">服务层</span></h3><p>通过“服务连接池”实现。</p><p>站点层通过RPC client调用服务层的RPC server时，RPC client中连接池会建立于下游服务多个连接。</p><p>当服务成为瓶颈的时候，只要增加服务器的数量，新增服务部署，在RPC client处建立新的下游服务连接，就能扩展服务层性能，做到理论上的无限高并发。</p><h3><span id="数据层">数据层</span></h3><p>在数据量很大的情况下，数据层做数据的水平扩展，将原本存储于一台服务器上的数据水平拆分到不同服务器上去，以达到扩充系统系统的目的。</p><ul><li><p>数据按照范围水平拆分</p><p>每个数据库，存储一定范围的数据</p></li><li><p>数据按照哈希水平拆分</p><p>每个数据库，存储某个key值hash后的部分数据</p></li></ul><h1><span id="高可用high-availability">高可用<sup>High Availability</sup></span></h1><h2><span id="概述">概述</span></h2><p>高可用指的是通过设计减少系统不能提供服务的时间。</p><p>假设系统一直能够提供服务，则系统的可用性是100%。</p><p>如果高可用的目标是4各9，就意味着，系统的年停机时间为8.76各小时。</p><h2><span id="如何保障系统的高可用">如何保障系统的高可用</span></h2><p>方法论上：</p><p>高可用=冗余+自动故障转移。</p><h2><span id="各分层高可用架构实践">各分层高可用架构实践</span></h2><h3><span id="反向代理层">反向代理层</span></h3><p>通过反向代理层的冗余来实现。</p><p>一台对线上提供服务，另一台冗余以保证高可用，用keepalived做存活探测，以相同的VIP提供服务。</p><h3><span id="站点层">站点层</span></h3><p>通过站点层的冗余来实现。</p><p>在nginx.conf中配置多个web后端，nginx能够探测到多个后端的存活性。当一台web server挂了，nginx能够自动进行故障转移，将流量自动迁移到其他的web server，整个过程由nginx自动完成。</p><h3><span id="服务层">服务层</span></h3><p>通过服务层的冗余来实现。</p><p>服务连接池会建立与下游服务多个连接，每次请求会随机选取连接来访问下游服务。</p><p>当某个service挂了，服务连接池能够探测到，会自动进行故障转移，将流量自动迁移到其他的service，整个过程由连接池自动完成。</p><h3><span id="缓存层">缓存层</span></h3><p>通过缓存数据的冗余来实现。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1&gt;&lt;span id=&quot;高并发high-concurrency&quot;&gt;高并发&lt;sup&gt;High Concurrency&lt;/sup&gt;&lt;/span&gt;&lt;/h1&gt;&lt;h2&gt;&lt;span id=&quot;概述&quot;&gt;概述&lt;/span&gt;&lt;/h2&gt;&lt;p&gt;高并发指的是通过设计保证系统能够同时并行处理很多请求。&lt;
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>Linux性能优化之性能优化的一般方法</title>
@@ -491,37 +512,6 @@
     
     </summary>
     
-    
-  </entry>
-  
-  <entry>
-    <title>The Kernel of Nginx之用好浏览器的缓存</title>
-    <link href="http://yoursite.com/2019/03/06/The-Kernel-of-Nginx%E4%B9%8B%E7%94%A8%E5%A5%BD%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E7%BC%93%E5%AD%98/"/>
-    <id>http://yoursite.com/2019/03/06/The-Kernel-of-Nginx之用好浏览器的缓存/</id>
-    <published>2019-03-06T03:02:25.000Z</published>
-    <updated>2019-03-08T12:57:26.489Z</updated>
-    
-    <content type="html"><![CDATA[<p>浏览器的缓存与nginx缓存</p><ul><li><p>浏览器缓存</p><ul><li>优点：<ul><li>使用有效缓存时，没有网络消耗，速度最快</li><li>即使有网络消耗，但对失效缓存使用304响应做到网络流量消耗最小化</li></ul></li><li>缺点：<ul><li>只提升一个用户的体验</li></ul></li></ul></li><li><p>Nginx缓存</p><ul><li>优点<ul><li>提升所有用户的体验</li><li>相比浏览器缓存，有效降低上游服务的负载</li><li>通过304响应减少Nginx与上游服务间的流量消耗</li></ul></li><li>缺点<ul><li>用户仍然保持网络消耗</li></ul></li></ul></li></ul><p>同时使用浏览器和Nginx缓存</p><p>浏览器缓存</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">st=&gt;start: 浏览器请求</span><br><span class="line">op1=&gt;operation: 有缓存</span><br><span class="line">op2=&gt;operation: 向浏览器请求带If-None_Match</span><br><span class="line">op3=&gt;operation: 向浏览器请求带If-Modified-Since</span><br><span class="line">op4=&gt;operation: 从缓存读取 200（from cache）</span><br><span class="line">op5=&gt;operation: 向web服务器请求</span><br><span class="line">op6=&gt;operation: 请求响应，缓存协商</span><br><span class="line">op7=&gt;operation: 从缓存读取</span><br><span class="line">con1=&gt;condition: 是否过期？</span><br><span class="line">con2=&gt;condition: Etag？</span><br><span class="line">con3=&gt;condition: Last-Modified？</span><br><span class="line">con4=&gt;condition: 200 or 304？</span><br><span class="line">end=&gt;end: 呈现</span><br><span class="line">st-&gt;op1-&gt;con1</span><br><span class="line">con1(no)-&gt;op4-&gt;end</span><br><span class="line">con1(yes)-&gt;con2</span><br><span class="line">con2(yes)-&gt;op2-&gt;con4</span><br><span class="line">con2(no)-&gt;con3</span><br><span class="line">con3(yes)-&gt;op3-&gt;con4</span><br><span class="line">con3(no)-&gt;op5-&gt;op6</span><br><span class="line">con4(yes)-&gt;op6</span><br><span class="line">con4(no)-&gt;op7-&gt;end</span><br><span class="line">op6-&gt;end</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Syntax： etag on|off;</span><br><span class="line">Default: etag on;</span><br><span class="line">Context: http, server, location</span><br></pre></td></tr></table></figure><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ngx_sprintf(etag-&gt;value.data, <span class="string">"\"%xT-%xO\""</span>,</span><br><span class="line">           r-&gt;headers_out.last_modified_time,</span><br><span class="line">           r-&gt;headers_out.contect_length_n)</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;浏览器的缓存与nginx缓存&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;浏览器缓存&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;优点：&lt;ul&gt;
-&lt;li&gt;使用有效缓存时，没有网络消耗，速度最快&lt;/li&gt;
-&lt;li&gt;即使有网络消耗，但对失效缓存使用304响应做到网络流量消耗最小化&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/
-      
-    
-    </summary>
-    
-    
-      <category term="Nginx" scheme="http://yoursite.com/tags/Nginx/"/>
     
   </entry>
   
