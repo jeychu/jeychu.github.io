@@ -21,7 +21,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?24545741">
+<link rel="stylesheet" href="/css/journal.css?84339980">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -188,7 +188,7 @@
 <h3><span id="服务层">服务层</span></h3><p>通过“服务连接池”实现。</p>
 <p>站点层通过RPC client调用服务层的RPC server时，RPC client中连接池会建立于下游服务多个连接。</p>
 <p>当服务成为瓶颈的时候，只要增加服务器的数量，新增服务部署，在RPC client处建立新的下游服务连接，就能扩展服务层性能，做到理论上的无限高并发。</p>
-<h3><span id="数据层">数据层</span></h3><p>在数据量很大的情况下，数据层做数据的水平扩展，将原本存储于一台服务器上的数据水平拆分到不同服务器上去，以达到扩充系统系统的目的。</p>
+<h3><span id="数据层">数据层</span></h3><p>在数据量很大的情况下，数据层（缓存+数据库）会做数据的水平扩展，将原本存储于一台服务器上的数据水平拆分到不同服务器上去，以达到扩充系统性能的目的。</p>
 <ul>
 <li><p>数据按照范围水平拆分</p>
 <p>每个数据库，存储一定范围的数据</p>
@@ -199,7 +199,7 @@
 </ul>
 <h1><span id="高可用high-availability">高可用<sup>High Availability</sup></span></h1><h2><span id="概述">概述</span></h2><p>高可用指的是通过设计减少系统不能提供服务的时间。</p>
 <p>假设系统一直能够提供服务，则系统的可用性是100%。</p>
-<p>如果高可用的目标是4各9，就意味着，系统的年停机时间为8.76各小时。</p>
+<p>如果高可用的目标是4个9，就意味着，系统的年停机时间为8.76各小时。</p>
 <h2><span id="如何保障系统的高可用">如何保障系统的高可用</span></h2><p>方法论上：</p>
 <p>高可用=冗余+自动故障转移。</p>
 <h2><span id="各分层高可用架构实践">各分层高可用架构实践</span></h2><h3><span id="反向代理层">反向代理层</span></h3><p>通过反向代理层的冗余来实现。</p>
@@ -210,6 +210,18 @@
 <p>服务连接池会建立与下游服务多个连接，每次请求会随机选取连接来访问下游服务。</p>
 <p>当某个service挂了，服务连接池能够探测到，会自动进行故障转移，将流量自动迁移到其他的service，整个过程由连接池自动完成。</p>
 <h3><span id="缓存层">缓存层</span></h3><p>通过缓存数据的冗余来实现。</p>
+<p>以redis为例，redis天然支持主从同步，redis官方也有sentinel机制，来做redis的存活性检测。</p>
+<p>当redis主挂了的时候，sentinel能够探测到，会通知调用方访问新的redis，整个过程由sentinel和redis集群配合完成。</p>
+<h3><span id="数据库层">数据库层</span></h3><ul>
+<li>读库高可用</li>
+</ul>
+<p>数据库连接池会建立与读库多个连接，每次请求会路由到这些读库。</p>
+<p>当读库挂了，db connection pool能够探测到，会自动的进行故障转移，将流量迁移到其他读库，整个过程由连接池自动完成。</p>
+<ul>
+<li>写库高可用</li>
+</ul>
+<p>写库冗余，设置MySQL双主同步，一台对线上提供服务，另一台冗余以保证高可用，用keepalived做存活探测，相同VIP提供服务。</p>
+<p>当写库挂了，keepalived能够探测到，自动进行故障转移，将流量自动迁移到shadow-db-master。</p>
 
                 </div>
             </div>
@@ -245,7 +257,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?48492511"></script>
+<script src="/js/journal.js?21462435"></script>
 
 
 
