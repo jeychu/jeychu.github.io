@@ -8,10 +8,14 @@
 <meta charset="utf-8">
 <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Javfa">
-<meta name="description" content="高并发High Concurrency概述高并发指的是通过设计保证系统能够同时并行处理很多请求。
-相关指标：
+<meta name="description" content="
 
-响...">
+高并发High Concurrency
+概述
+如何提升系统的并发能力
+各分层的水平扩展实践
+反向代理层
+站点层...">
 <meta name="keywords" content>
 
     <meta charset="utf-8">
@@ -21,7 +25,7 @@
     <meta name="renderer" content="webkit">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-<link rel="stylesheet" href="/css/journal.css?84339980">
+<link rel="stylesheet" href="/css/journal.css?11871390">
 <script src="/js/loadCSS.js"></script>
 <script>
     loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
@@ -62,10 +66,10 @@
     <div class="drawer-content">
         <div class="drawer-menu">
             <a class="a-block drawer-menu-item false" href="http://yoursite.com">
-                ホーム
+                Home
             </a>
             <a class="a-block drawer-menu-item false" href="/archives">
-                記事一覧
+                Archive
             </a>
 
             
@@ -109,7 +113,7 @@
 
     <div class="nav-link-list">
         <a class="a-block no-tint nav-link-item false" href="/archives">
-            記事一覧
+            Archive
         </a>
 
         
@@ -158,7 +162,36 @@
     
             <div class="post-body-wrapper">
                 <div class="post-body">
-                    <h1><span id="高并发high-concurrency">高并发<sup>High Concurrency</sup></span></h1><h2><span id="概述">概述</span></h2><p>高并发指的是通过设计保证系统能够同时并行处理很多请求。</p>
+                    <!-- toc -->
+<ul>
+<li><a href="#高并发suphigh-concurrencysup">高并发<sup>High Concurrency</sup></a><ul>
+<li><a href="#概述">概述</a></li>
+<li><a href="#如何提升系统的并发能力">如何提升系统的并发能力</a></li>
+<li><a href="#各分层的水平扩展实践">各分层的水平扩展实践</a><ul>
+<li><a href="#反向代理层">反向代理层</a></li>
+<li><a href="#站点层">站点层</a></li>
+<li><a href="#服务层">服务层</a></li>
+<li><a href="#数据层">数据层</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#高可用suphigh-availabilitysup">高可用<sup>High Availability</sup></a><ul>
+<li><a href="#概述-1">概述</a></li>
+<li><a href="#如何保障系统的高可用">如何保障系统的高可用</a></li>
+<li><a href="#各分层高可用架构实践">各分层高可用架构实践</a><ul>
+<li><a href="#反向代理层-1">反向代理层</a></li>
+<li><a href="#站点层-1">站点层</a></li>
+<li><a href="#服务层-1">服务层</a></li>
+<li><a href="#缓存层">缓存层</a></li>
+<li><a href="#数据库层">数据库层</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h1><span id="高并发high-concurrency">高并发<sup>High Concurrency</sup></span></h1><h2><span id="概述">概述</span></h2><p>高并发指的是通过设计保证系统能够同时并行处理很多请求。</p>
 <p>相关指标：</p>
 <ul>
 <li>响应时间<sup>Response time</sup>，系统对请求做出响应的时间</li>
@@ -179,13 +212,13 @@
 <p>通过系统架构设计实现：只要增加服务器数量，就能线性扩充系统性能。</p>
 </li>
 </ul>
-<h2><span id="各分层的水平扩展实践">各分层的水平扩展实践</span></h2><h3><span id="反向代理层">反向代理层</span></h3><p>通过DNS轮询实现。</p>
+<h2><span id="各分层的水平扩展实践">各分层的水平扩展实践</span></h2><h3><span id="反向代理层">反向代理层</span></h3><p>通过<em>DNS轮询</em>实现。</p>
 <p>DNS server对于一个域名配置多个解析ip，每次DNS解析请求来访问，DNS server会轮流返回这些ip。</p>
 <p>当反向代理层的Nginx成为瓶颈的时候，只要增加服务器的数量，新增Nginx部署，增加外网ip，就可以扩展反向代理层的性能，做到理论上的无限高并发。</p>
-<h3><span id="站点层">站点层</span></h3><p>通过Nginx实现。</p>
+<h3><span id="站点层">站点层</span></h3><p><em>通过Nginx实现</em>。</p>
 <p>通过修改Nginx.conf，可以设置多个web后端。</p>
 <p>当web后端成为瓶颈的时候，只要增加服务器的数量，新增web服务的部署，在Nginx配置上新的web后端，就能扩展站点层的性能，做到理论上的无限高并发。</p>
-<h3><span id="服务层">服务层</span></h3><p>通过“服务连接池”实现。</p>
+<h3><span id="服务层">服务层</span></h3><p><em>通过“服务连接池”实现</em>。</p>
 <p>站点层通过RPC client调用服务层的RPC server时，RPC client中连接池会建立于下游服务多个连接。</p>
 <p>当服务成为瓶颈的时候，只要增加服务器的数量，新增服务部署，在RPC client处建立新的下游服务连接，就能扩展服务层性能，做到理论上的无限高并发。</p>
 <h3><span id="数据层">数据层</span></h3><p>在数据量很大的情况下，数据层（缓存+数据库）会做数据的水平扩展，将原本存储于一台服务器上的数据水平拆分到不同服务器上去，以达到扩充系统性能的目的。</p>
@@ -203,7 +236,7 @@
 <h2><span id="如何保障系统的高可用">如何保障系统的高可用</span></h2><p>方法论上：</p>
 <p>高可用=冗余+自动故障转移。</p>
 <h2><span id="各分层高可用架构实践">各分层高可用架构实践</span></h2><h3><span id="反向代理层">反向代理层</span></h3><p>通过反向代理层的冗余来实现。</p>
-<p>一台对线上提供服务，另一台冗余以保证高可用，用keepalived做存活探测，以相同的VIP提供服务。</p>
+<p>如：一台对线上提供服务，另一台冗余以保证高可用，用keepalived做存活探测，以相同的VIP提供服务。</p>
 <h3><span id="站点层">站点层</span></h3><p>通过站点层的冗余来实现。</p>
 <p>在nginx.conf中配置多个web后端，nginx能够探测到多个后端的存活性。当一台web server挂了，nginx能够自动进行故障转移，将流量自动迁移到其他的web server，整个过程由nginx自动完成。</p>
 <h3><span id="服务层">服务层</span></h3><p>通过服务层的冗余来实现。</p>
@@ -213,15 +246,15 @@
 <p>以redis为例，redis天然支持主从同步，redis官方也有sentinel机制，来做redis的存活性检测。</p>
 <p>当redis主挂了的时候，sentinel能够探测到，会通知调用方访问新的redis，整个过程由sentinel和redis集群配合完成。</p>
 <h3><span id="数据库层">数据库层</span></h3><ul>
-<li>读库高可用</li>
-</ul>
-<p>数据库连接池会建立与读库多个连接，每次请求会路由到这些读库。</p>
+<li><p>读库高可用</p>
+<p>读库冗余，数据库连接池会建立与读库多个连接，每次请求会路由到这些读库。</p>
 <p>当读库挂了，db connection pool能够探测到，会自动的进行故障转移，将流量迁移到其他读库，整个过程由连接池自动完成。</p>
-<ul>
-<li>写库高可用</li>
-</ul>
+</li>
+<li><p>写库高可用</p>
 <p>写库冗余，设置MySQL双主同步，一台对线上提供服务，另一台冗余以保证高可用，用keepalived做存活探测，相同VIP提供服务。</p>
 <p>当写库挂了，keepalived能够探测到，自动进行故障转移，将流量自动迁移到shadow-db-master。</p>
+</li>
+</ul>
 
                 </div>
             </div>
@@ -231,7 +264,7 @@
     <span class="page-number"></span>
     
     <a class="older-posts" href="/2019/04/08/Linux性能优化之性能优化的一般方法/">
-        次の記事<br>Linux性能优化之性能优化的一般方法
+        Next post<br>Linux性能优化之性能优化的一般方法
     </a>
     
 </nav>
@@ -257,7 +290,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
-<script src="/js/journal.js?21462435"></script>
+<script src="/js/journal.js?90755244"></script>
 
 
 
