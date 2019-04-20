@@ -1,0 +1,266 @@
+
+
+<!DOCTYPE html>
+<html lang xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <title>Pro CD - javfa&#39;s blog</title>
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Javfa">
+<meta name="description" content="Elements of CDWhat is CD?CD practices can include more or...">
+<meta name="keywords" content>
+
+    <meta charset="utf-8">
+    <meta name="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta content="telephone=no" name="format-detection">
+    <meta name="renderer" content="webkit">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/journal.css?65402338">
+<script src="/js/loadCSS.js"></script>
+<script>
+    loadCSS("https://fonts.googleapis.com/css?family=Lora|Montserrat|Fira+Mono|Material+Icons");
+    (function (d) {
+        var config = {
+                kitId: 'dwg1tuc',
+                scriptTimeout: 3000,
+                async: true
+            },
+            h = d.documentElement, t = setTimeout(function () {
+                h.className = h.className.replace(/\bwf-loading\b/g, "") + " wf-inactive";
+            }, config.scriptTimeout), tk = d.createElement("script"), f = false,
+            s = d.getElementsByTagName("script")[0], a;
+        h.className += " wf-loading";
+        tk.src = 'https://use.typekit.net/' + config.kitId + '.js';
+        tk.async = true;
+        tk.onload = tk.onreadystatechange = function () {
+            a = this.readyState;
+            if (f || a && a != "complete" && a != "loaded") return;
+            f = true;
+            clearTimeout(t);
+            try {
+                Typekit.load(config)
+            } catch (e) {
+            }
+        };
+        s.parentNode.insertBefore(tk, s)
+    })(document);
+</script>
+<noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora|Montserrat|Anonymous+Pro:400|Material+Icons">
+</noscript>
+</head>
+<body>
+<div id="top"></div>
+<div id="app">
+<div class="single-column-drawer-container" ref="drawer" v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            <a class="a-block drawer-menu-item false" href="http://yoursite.com">
+                Home
+            </a>
+            <a class="a-block drawer-menu-item false" href="/archives">
+                Archive
+            </a>
+
+            
+            
+
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav ref="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div ref="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a ref="navTitle" class="navbar-brand" href="/">
+            javfa&#39;s blog
+        </a>
+    </div>
+</nav>
+<div class="single-column-header-container" ref="pageHead" v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="/">
+        <div class="single-column-header-title">javfa&#39;s blog</div>
+        <div class="single-column-header-subtitle"></div>
+    </a>
+</div>
+<div ref="sideContainer" class="side-container">
+    <a class="a-block nav-head false" href="/">
+        <div class="nav-title">
+            {博客@家發}
+        </div>
+        <div class="nav-subtitle">
+            隻言片語<br>於此匯聚
+        </div>
+    </a>
+
+    <div class="nav-link-list">
+        <a class="a-block no-tint nav-link-item false" href="/archives">
+            Archive
+        </a>
+
+        
+        
+
+        
+    </div>
+
+    
+    <div class="nav-footer">
+        Proudly published with Hexo<br>
+        
+        Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+        
+        &copy; 2019 <a href="http://yoursite.com">javfa&#39;s blog</a>
+    </div>
+</div>
+<div ref="extraContainer" class="extra-container">
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+
+        
+    </div>
+</div>
+
+<div ref="streamContainer" class="stream-container">
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            <div class="post-head-wrapper-text-only" style="background-image: url('')">
+                <div class="post-title">
+                    Pro CD
+                    <div class="post-meta">
+                        <time datetime="2019-04-20T05:31:06.000Z" itemprop="datePublished">
+                            2019-04-20 13:31
+                        </time>&nbsp;
+                        
+    
+                        
+                    </div>
+                </div>
+            </div>
+    
+            <div class="post-body-wrapper">
+                <div class="post-body">
+                    <h1><span id="elements-of-cd">Elements of CD</span></h1><h2><span id="what-is-cd">What is CD?</span></h2><p>CD practices can include more or less the following entities:</p>
+<ul>
+<li>a good branching strategy</li>
+<li>a working ci process</li>
+<li>distributed builds</li>
+<li>automated testing</li>
+<li>distributed or parallel testing</li>
+<li>automated and quick environment      provisioning</li>
+<li>automated code promotion</li>
+</ul>
+<h2><span id="branching-stratege">Branching Stratege</span></h2><p>…</p>
+<h2><span id="ci">CI</span></h2><p>A robust CI can be defined by:</p>
+<h3><span id="a-codable-ci-pipeline">A codable CI pipeline</span></h3><p>A CI pipeline is a set of sequential or parallel jobs.</p>
+<p>To  maintain the pipelines effectively, Jenkins and Gitlab come up with the concept of  pipeline as a code.</p>
+<p>In Jenkins, the file that stores the pipeline script is referred to as Jenkinsfile.</p>
+<p>Jenkinsfile’s abilities:</p>
+<ul>
+<li>Jenkinsfile can be a version control along with your source code</li>
+<li>jenkinsfile is easily shareable</li>
+<li>developers can themselves define  what a jenkinsfile should do</li>
+<li>you can have different  jenkinsfile for different branches </li>
+</ul>
+<p>Example:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">node(&apos;master&apos;)&#123;</span><br><span class="line">    stage(&apos;build&apos;)&#123;</span><br><span class="line">        sh &apos;mvn clean install&apos;;</span><br><span class="line">    &#125;</span><br><span class="line">    stage(&apos;static code analysis&apos;)&#123;</span><br><span class="line">        sh &apos;mvn verify sonar:sonar&apos;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4><span id="how-to-use-jenkinfile">How to Use Jenkinfile?</span></h4><p><img src="/2019/04/20/Pro-CD/1555739495932.png" alt="1555739495932"></p>
+<p>Jenkinsfile is stored along with the source code inside a version control system.</p>
+<p>Whenever there is a code commit on the version control system, the following steps take place:</p>
+<ul>
+<li>A source control webhook is sent to Jenkins.</li>
+<li>The Jenkins pipeline Job is triggered on receiving the webhook condition.</li>
+<li>The Jenkins pipeline Job downloads the latest source code as well as the Jenkinsfile from the version control system.</li>
+<li>Jenkins reads the Jenkinsfile and executes the pipeline steps accordingly.</li>
+</ul>
+<h4><span id="how-to-use-a-dockerfile-with-jenkins">How to use a Dockerfile with Jenkins?</span></h4><p><img src="/2019/04/20/Pro-CD/1555740390269.png" alt="1555740390269"></p>
+<p>One dockerfile per environment:</p>
+<ul>
+<li>Dockerfile for build &amp; Unit test</li>
+<li>Dockerfile for build &amp; Integration test</li>
+<li>Dockerfile for Acceptance testing</li>
+<li>Dockerfile for Performance testing</li>
+<li>Dockerfile for end-to-end testing</li>
+</ul>
+<p>All these files can be kept under a version control system along with your source code.</p>
+<p>Whenever there is  a code commit on the version control system, the following steps take place:</p>
+<ul>
+<li>A version control webhook is sent to Jenkins</li>
+<li>The Jenkins pipeline Job gets triggered on receicing the webhook</li>
+<li>The Jenkins pipeline Job downloads the latest source code as well as the Jenkinsfile and the set of Dockerfies from the version control system</li>
+<li>Jenkins reads the  Jenkinsfile and executes the pipeline steps accordingly</li>
+<li>The first step inside the Jenkinsfile is to build all the required Docker images using the Dockerfiles</li>
+<li>With the required Docker images built, Jenkins can now perform various pipeline steps on the respective Docker containers that are spawned using the Docker images.</li>
+</ul>
+<h4><span id="how-to-use-kubernetes-with-jenkins">How to use kubernetes with Jenkins?</span></h4><p><img src="/2019/04/20/Pro-CD/1555741160684.png" alt="1555741160684"></p>
+<p>More than one Docker host.</p>
+<p>The responsibility of running and maintaining containers across multiple Docker hosts is with the Kubernetes manager.</p>
+<h4><span id="ci-master-ha">CI master HA</span></h4><p>…</p>
+<h3><span id="parallel-testing">Parallel Testing</span></h3><p>The process of running multiple test cases on a  distributed testing infrastructure.</p>
+<p>This distributed testing infratructrue can be a set of virtual machines or Docker containers.</p>
+<p>Key advantages of PT:</p>
+<ul>
+<li><p>Broader Compatibility</p>
+<p><img src="/2019/04/20/Pro-CD/1555742373413.png" alt="1555742373413"></p>
+<p><img src="/2019/04/20/Pro-CD/1555742420222.png" alt="1555742420222"></p>
+</li>
+<li><p>Reduce Testing Time</p>
+<p><img src="/2019/04/20/Pro-CD/1555742434516.png" alt="1555742434516"></p>
+</li>
+</ul>
+<h1><span id="pipeline-as-a-code">Pipeline As a Code</span></h1>
+                </div>
+            </div>
+    
+            <nav class="post-pagination">
+    
+    <span class="page-number"></span>
+    
+    <a class="older-posts" href="/2019/04/15/MongoDB集群/">
+        Next post<br>MongoDB集群
+    </a>
+    
+</nav>
+
+    
+            
+
+
+        </div>
+    </div>
+    <div class="single-column-footer">
+    Proudly published with Hexo<br>
+    
+    Theme <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> by <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a><br>
+    
+    &copy; 2018 <a href="http://yoursite.com">javfa&#39;s blog</a>
+</div>
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js" integrity="sha256-EGs9T1xMHdvM1geM8jPpoo8EZ1V1VRsmcJz8OByENLA=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.min.js" integrity="sha256-FtWfRI+thWlNz2sB3SJbwKx5PgMyKIVgwHCTwa3biXc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll@14.2.1/dist/smooth-scroll.polyfills.min.js" integrity="sha256-CI4Gq5E0io1Pv0xM3qPM+NUIOhbIBvC3GiN1Y4KhXpw=" crossorigin="anonymous"></script>
+<script src="/js/journal.js?22209878"></script>
+
+
+
+</body>
+</html>
